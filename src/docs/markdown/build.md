@@ -1,35 +1,35 @@
 ---
-title: "Build from source"
+title: "从源代码构建"
 ---
 
-# Build from source
+# 从源代码构建
 
-There are multiple options for building Caddy, if you need a customized build (e.g. with plugins):
-- [Git](#git): Build from Git repo
-- [`xcaddy`](#xcaddy): Build using `xcaddy`
-- [Docker](#docker): Build a custom Docker image
+如果您需要自定义构建（例如带插件），有多种 Caddy 构建选项：
+- [Git](#git): 从 Git 仓库构建
+- [`xcaddy`](#xcaddy): 使用 `xcaddy` 构建
+- [Docker](#docker): 构建自定义 Docker 镜像
 
-Requirements:
+要求：
 
-- [Go](https://golang.org/doc/install) 1.20 or newer
+- [Go](https://golang.org/doc/install) 1.20 或更高版本
 
-The [Package Support Files](#package-support-files-for-custom-builds-for-debianubunturaspbian) section contains instructions for users who installed Caddy using the APT command on Debian-derivative system yet need the custom build executable for their operations.
+[自定义构建的包支持文件](#debianubunturaspbian-自定义构建的包支持文件) 部分包含已使用 APT 命令在 Debian 衍生系统上安装 Caddy 但需要自定义构建可执行文件进行操作的用户的说明。
 
 
 
 ## Git
 
-Requirements:
+要求：
 
-- Go installed (see above)
+- 已安装 Go（见上文）
 
-Clone the repository:
+克隆仓库：
 
 <pre><code class="cmd bash">git clone "https://github.com/caddyserver/caddy.git"</code></pre>
 
-If you don't have git, you can download the source code as a file archive [from GitHub](https://github.com/caddyserver/caddy). Each [release](https://github.com/caddyserver/caddy/releases) also has source snapshots.
+如果您没有 git，可以从 [GitHub](https://github.com/caddyserver/caddy) 下载源代码作为文件压缩包。每个 [发布](https://github.com/caddyserver/caddy/releases) 也有源代码快照。
 
-Build:
+构建：
 
 <pre><code class="cmd"><span class="bash">cd caddy/cmd/caddy/</span>
 <span class="bash">go build</span></code></pre>
@@ -37,17 +37,17 @@ Build:
 
 <aside class="tip">
 
-Due to [a bug in Go](https://github.com/golang/go/issues/29228), these basic steps do not embed version information. If you want the version (`caddy version`), you need to compile Caddy as a dependency rather than as the main module. Instructions for this are in Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go) file. Or, you can use [`xcaddy`](#xcaddy) which automates this.
+由于 [Go 中的 bug](https://github.com/golang/go/issues/29228)，这些基本步骤不嵌入版本信息。如果您想要版本信息（`caddy version`），您需要将 Caddy 作为依赖项编译，而不是作为主模块。此说明在 Caddy 的 [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go) 文件中。或者，您可以使用 [`xcaddy`](#xcaddy) 来自动化此过程。
 
 </aside>
 
-Go programs are easy to compile for other platforms. Just set the `GOOS`, `GOARCH`, and/or `GOARM` environment variables that are different. ([See the go documentation for details.](https://golang.org/doc/install/source#environment))
+Go 程序很容易为其他平台编译。只需设置不同的 `GOOS`、`GOARCH` 和/或 `GOARM` 环境变量。（[参见 go 文档了解详情。](https://golang.org/doc/install/source#environment)）
 
-For example, to compile Caddy for Windows when you're not on Windows:
+例如，当您不在 Windows 上时为 Windows 编译 Caddy：
 
 <pre><code class="cmd bash">GOOS=windows go build</code></pre>
 
-Or similarly for Linux ARMv6 when you're not on Linux or on ARMv6:
+或类似地，当您不在 Linux 或不在 ARMv6 上时为 Linux ARMv6 编译：
 
 <pre><code class="cmd bash">GOOS=linux GOARCH=arm GOARM=6 go build</code></pre>
 
@@ -55,28 +55,28 @@ Or similarly for Linux ARMv6 when you're not on Linux or on ARMv6:
 
 ## xcaddy
 
-The [`xcaddy` command](https://github.com/caddyserver/xcaddy) is the easiest way to build Caddy with version information and/or plugins.
+[`xcaddy` 命令](https://github.com/caddyserver/xcaddy) 是使用版本信息和/或插件构建 Caddy 的最简单方式。
 
-Requirements:
+要求：
 
-- Go installed (see above)
-- Make sure [`xcaddy`](https://github.com/caddyserver/xcaddy/releases) is in your `PATH`
+- 已安装 Go（见上文）
+- 确保 [`xcaddy`](https://github.com/caddyserver/xcaddy/releases) 在您的 `PATH` 中
 
-You do **not** need to download the Caddy source code (it will do that for you).
+您**不需要**下载 Caddy 源代码（它会自动为您下载）。
 
-Then building Caddy (with version information) is as easy as:
+然后构建 Caddy（带版本信息）非常简单：
 
 <pre><code class="cmd bash">xcaddy build</code></pre>
 
-To build with plugins, use `--with`:
+要使用插件构建，使用 `--with`：
 
 <pre><code class="cmd bash">xcaddy build \
     --with github.com/caddyserver/nginx-adapter
 	--with github.com/caddyserver/ntlm-transport@v0.1.1</code></pre>
 
-As you can see, you can customize the versions of plugins with `@` syntax. Versions can be a tag name, commit SHA, or branch.
+如您所见，您可以使用 `@` 语法自定义插件的版本。版本可以是标签名、提交 SHA 或分支。
 
-Cross-platform compilation with `xcaddy` works the same as with the `go` command. For example, to cross-compile for macOS:
+`xcaddy` 的跨平台编译与 `go` 命令相同。例如，为 macOS 交叉编译：
 
 <pre><code class="cmd bash">GOOS=darwin xcaddy build</code></pre>
 
@@ -84,7 +84,7 @@ Cross-platform compilation with `xcaddy` works the same as with the `go` command
 
 ## Docker
 
-You can use the `:builder` image as a short-cut to building a new Caddy binary with custom modules:
+您可以使用 `:builder` 镜像作为快捷方式来构建带有自定义模块的新 Caddy 二进制文件：
 
 ```Dockerfile
 FROM caddy:<version>-builder AS builder
@@ -100,28 +100,28 @@ FROM caddy:<version>
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 ```
 
-Make sure to replace `<version>` with the latest version of Caddy to start.
+确保用最新的 Caddy 版本替换 `<version>`。
 
-Note the second `FROM` instruction — this produces a much smaller image by simply overlaying the newly-built binary on top of the regular `caddy` image.
+注意第二个 `FROM` 指令——这通过将新构建的二进制文件直接覆盖在常规 `caddy` 镜像上来生成更小的镜像。
 
-The builder uses `xcaddy` to build Caddy with the provided modules, similar to the process [outlined above](#xcaddy). The `--mount=type=cache,target=/go/pkg/mod` and `--mount=type=cache,target=/root/.cache/go-build` options are used to cache the Go module dependencies and build artifacts, respectively, which speeds up subsequent builds. The flag is [a feature of Docker](https://docs.docker.com/build/cache/optimize/#use-cache-mounts), not of `xcaddy`.
+构建器使用 `xcaddy` 以提供模块构建 Caddy，类似于[上述流程](#xcaddy)。`--mount=type=cache,target=/go/pkg/mod` 和 `--mount=type=cache,target=/root/.cache/go-build` 选项用于缓存 Go 模块依赖项和构建产物，分别加快后续构建。该标志是 [Docker 的特性](https://docs.docker.com/build/cache/optimize/#use-cache-mounts)，而非 `xcaddy` 的。
 
-To use Docker Compose, see our recommended [`compose.yml`](/docs/running#docker-compose) and usage instructions.
+要使用 Docker Compose，请参阅我们推荐的 [`compose.yml`](/docs/running#docker-compose) 和使用说明。
 
 
 
-## Package support files for custom builds for Debian/Ubuntu/Raspbian
+## Debian/Ubuntu/Raspbian 自定义构建的包支持文件
 
-This procedure aims to simplify running custom `caddy` binaries while keeping support files from the `caddy` package.
+此过程旨在简化运行自定义 `caddy` 二进制文件的同时保留来自 `caddy` 包的支持文件。
 
-This procedure allows users to take advantage of the default configuration, systemd service files and bash-completion from the official package.
+此过程允许用户利用官方包的默认配置、systemd 服务文件和 bash 补全。
 
-Requirements:
-- Install the `caddy` package according to [these instructions](/docs/install#debian-ubuntu-raspbian)
-- Build your custom `caddy` binary (see above sections), or [download](/download) a custom build
-- Your custom `caddy` binary should be located in the current directory
+要求：
+- 按照 [这些说明](/docs/install#debian-ubuntu-raspbian) 安装 `caddy` 包
+- 构建您的自定义 `caddy` 二进制文件（见上述部分），或 [下载](/download) 自定义构建
+- 您的自定义 `caddy` 二进制文件应位于当前目录
 
-Procedure:
+流程：
 <pre><code class="cmd"><span class="bash">sudo dpkg-divert --divert /usr/bin/caddy.default --rename /usr/bin/caddy</span>
 <span class="bash">sudo mv ./caddy /usr/bin/caddy.custom</span>
 <span class="bash">sudo update-alternatives --install /usr/bin/caddy caddy /usr/bin/caddy.default 10</span>
@@ -129,16 +129,16 @@ Procedure:
 <span class="bash">sudo systemctl restart caddy</span>
 </code></pre>
 
-Explanation:
+解释：
 
-- `dpkg-divert` will move `/usr/bin/caddy` binary to `/usr/bin/caddy.default` and put a diversion in place in case any package want to install a file to this location.
+- `dpkg-divert` 将移动 `/usr/bin/caddy` 二进制文件到 `/usr/bin/caddy.default` 并放置一个防止任何包将文件安装到此位置的转换。
 
-- `update-alternatives` will create a symlink from the desired caddy binary to `/usr/bin/caddy`
+- `update-alternatives` 将创建从期望的 caddy 二进制文件到 `/usr/bin/caddy` 的符号链接
 
-- `systemctl restart caddy` will shut down the default version of the Caddy server and start the custom one.
+- `systemctl restart caddy` 将关闭默认版本的 Caddy 服务器并启动自定义版本。
 
-You can change between the custom and default `caddy` binaries by executing the below, and following the on screen information. Then, restart the Caddy service.
+您可以通过执行以下操作在自定义和默认 `caddy` 二进制文件之间切换，并遵循屏幕信息。然后，重启 Caddy 服务。
 
 <pre><code class="cmd bash">update-alternatives --config caddy</code></pre>
 
-To upgrade Caddy after this point, you may run [`caddy upgrade`](/docs/command-line#caddy-upgrade). This attempts to [download](/download) a build with the same plugins as your current build, with the latest version of Caddy, then replace the current binary with the new one.
+从此点升级 Caddy，您可以运行 [`caddy upgrade`](/docs/command-line#caddy-upgrade)。这尝试 [下载](/download) 与您当前构建相同插件的构建，使用最新版本的 Caddy，然后用新二进制文件替换当前二进制文件。

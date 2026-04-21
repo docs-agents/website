@@ -1,5 +1,5 @@
 ---
-title: Request matchers (Caddyfile)
+title: 请求匹配器 (Caddyfile)
 ---
 
 <script>
@@ -22,21 +22,21 @@ ready(function() {
 		let anchor = "named-matchers";
 		if (text == "*") anchor = "wildcard-matchers";
 		if (text.startsWith('/')) anchor = "path-matchers";
-		item.innerHTML = `<a href="#${anchor}" style="color: inherit;" title="Matcher token">${text}</a>`;
+		item.innerHTML = `<a href="#${anchor}" style="color: inherit;" title="匹配器令牌">${text}</a>`;
 	});
 });
 </script>
 
-# Request Matchers
+# 请求匹配器
 
-**Request matchers** can be used to filter (or classify) requests by various criteria.
+**请求匹配器**可用于根据各种标准来过滤（或分类）请求。
 
-- [Syntax](#syntax)
-	- [Examples](#examples)
-	- [Wildcard matchers](#wildcard-matchers)
-	- [Path matchers](#path-matchers)
-	- [Named matchers](#named-matchers)
-- [Standard matchers](#standard-matchers)
+- [语法](#语法)
+	- [示例](#示例)
+	- [通配符匹配器](#通配符匹配器)
+	- [路径匹配器](#路径匹配器)
+	- [命名匹配器](#命名匹配器)
+- [标准匹配器](#标准匹配器)
 	- [client_ip](#client-ip)
 	- [expression](#expression)
 	- [file](#file)
@@ -54,38 +54,38 @@ ready(function() {
 	- [vars_regexp](#vars-regexp)
 
 
-## Syntax
+## 语法
 
-In the Caddyfile, a **matcher token** immediately following the directive can limit that directive's scope. The matcher token can be one of these forms:
+在 Caddyfile 中，紧跟在指令后的**匹配器令牌**可以限制该指令的范围。匹配器令牌可以是以下形式之一：
 
-1. [**`*`**](#wildcard-matchers) to match all requests (wildcard; default).
-2. [**`/path`**](#path-matchers) start with a forward slash to match a request path.
-3. [**`@name`**](#named-matchers) to specify a _named matcher_.
+1. [**`*`**](#通配符匹配器) 匹配所有请求（通配符；默认值）。
+2. [**`/path`**](#路径匹配器) 以正斜杠开头以匹配请求路径。
+3. [**`@name`**](#命名匹配器) 指定一个_命名匹配器_。
 
-If a directive supports matchers, it will appear as `[<matcher>]` in its syntax documentation. Matcher tokens are [usually optional](/docs/caddyfile/directives#syntax), denoted by `[ ]`. If the matcher token is omitted, it is the same as a wildcard matcher (`*`).
+如果某指令支持匹配器，它将在其语法文档中显示为 `[<匹配器>]`。匹配器令牌通常在语法中是 [可选的](/docs/caddyfile/directives#syntax)，用 `[ ]` 表示。如果省略匹配器令牌，则等同于通配符匹配器（`*`）。
 
 
-#### Examples
+#### 示例
 
-This directive applies to [all](#wildcard-matchers) HTTP requests:
+此指令应用于 [所有](#通配符匹配器) HTTP 请求：
 
 ```caddy-d
 reverse_proxy localhost:9000
 ```
 
-And this is the same (`*` is unnecessary here):
+这与以下内容相同（此处不需要 `*`）：
 
 ```caddy-d
 reverse_proxy * localhost:9000
 ```
 
-But this directive applies only to requests having a [path](#path-matchers) starting with `/api/`:
+但此指令仅应用于 [路径](#路径匹配器) 以 `/api/` 开头的请求：
 
 ```caddy-d
 reverse_proxy /api/* localhost:9000
 ```
 
-To match on anything other than a path, define a [named matcher](#named-matchers) and refer to it using `@name`:
+若要匹配路径以外的内容，请定义一个 [命名匹配器](#命名匹配器) 并使用 `@name` 引用它：
 
 ```caddy-d
 @postfoo {
@@ -98,35 +98,35 @@ reverse_proxy @postfoo localhost:9000
 
 
 
-### Wildcard matchers
+### 通配符匹配器
 
-The wildcard (or "catch-all") matcher `*` matches all requests, and is only needed if a matcher token is required. For example, if the first argument you want to give a directive also happens to be a path, it would look exactly like a path matcher! So you can use a wildcard matcher to disambiguate, for example:
+通配符（或"捕获所有"）匹配器 `*` 匹配所有请求，仅当需要匹配器令牌时才需要它。例如，如果您想给指令的第一个参数恰好是一个路径，它会看起来正像一个路径匹配器！因此您可以使用通配符匹配器来消除歧义，例如：
 
 ```caddy-d
 root * /home/www/mysite
 ```
 
-Otherwise, this matcher is not often used. We generally recommend omitting it if syntax doesn't require it.
+否则，此匹配器并不常使用。如果语法不需要，我们通常建议省略它。
 
 
-### Path matchers
+### 路径匹配器
 
-Matching by URI path is the most common way to match requests, so the matcher can be inlined, like this:
+通过 URI 路径匹配是最常用的匹配请求方式，因此匹配器可以内联，如下所示：
 
 ```caddy-d
 redir /old.html /new.html
 ```
 
-Path matcher tokens must start with a forward slash `/`.
+路径匹配器令牌必须以正斜杠 `/` 开头。
 
-**[Path matching](#path) is an exact match by default, not a prefix match.** You must append a `*` for a fast prefix match. Note that `/foo*` will match `/foo` and `/foo/` as well as `/foobar`; you might actually want `/foo/*` instead.
+**[路径匹配](#路径) 默认是精确匹配，而不是前缀匹配。** 您必须附加一个 `*` 才能进行快速前缀匹配。注意 `/foo*` 将匹配 `/foo`、`/foo/` 和 `/foobar`；您可能实际上想要的是 `/foo/*`。
 
 
-### Named matchers
+### 命名匹配器
 
-All matchers that are not path or wildcard matchers must be named matchers. This is a matcher that is defined outside of any particular directive, and can be reused.
+所有不是路径或通配符的匹配器都必须是命名匹配器。这是在任意特定指令之外定义的匹配器，可以重复使用。
 
-Defining a matcher with a unique name gives you more flexibility, allowing you to combine [any available matchers](#standard-matchers) into a set:
+使用唯一名称定义匹配器可为您提供更多灵活性，允许您将 [任何可用的匹配器](#标准匹配器) 组合成一个集合：
 
 ```caddy-d
 @name {
@@ -134,19 +134,19 @@ Defining a matcher with a unique name gives you more flexibility, allowing you t
 }
 ```
 
-or, if there is only one matcher in the set, you can put it on the same line:
+或者，如果集合中只有一个匹配器，您可以将其放在同一行：
 
 ```caddy-d
 @name ...
 ```
 
-Then you can use the matcher like so, by specifying it as the first argument to a directive:
+然后您可以像这样使用匹配器，将名称指定为指令的第一个参数：
 
 ```caddy-d
 directive @name
 ```
 
-For example, this proxies HTTP/1.1 websocket requests to `localhost:6001`, and other requests to `localhost:8080`. It matches requests that have a header field named `Connection` _containing_ `Upgrade`, **and** another field named `Upgrade` with exactly `websocket`:
+例如，此代理将 HTTP/1.1 websocket 请求转发到 `localhost:6001`，其他请求转发到 `localhost:8080`。它匹配具有名为 `Connection` 的字段_包含_ `Upgrade` 的请求，**并且**另一个名为 `Upgrade` 的字段恰好为 `websocket`：
 
 ```caddy
 example.com {
@@ -160,36 +160,36 @@ example.com {
 }
 ```
 
-If the matcher set consists of only one matcher, a one-liner syntax also works:
+如果匹配器集合仅包含一个匹配器，则单行语法也适用：
 
 ```caddy-d
 @post method POST
 reverse_proxy @post localhost:6001
 ```
 
-As a special case, the [`expression` matcher](#expression) may be used without specifying its name as long as one [quoted](/docs/caddyfile/concepts#tokens-and-quotes) argument (the CEL expression itself) follows the matcher name:
+作为特殊情况，[`expression` 匹配器](#expression) 可以在不指定其名称的情况下使用，只要有一个 [引用](/docs/caddyfile/concepts#tokens-and-quotes) 参数（CEL 表达式本身）跟在匹配器名称之后：
 
 ```caddy-d
 @not-found `{err.status_code} == 404`
 ```
 
-Like directives, named matcher definitions must go inside the [site blocks](/docs/caddyfile/concepts#structure) that use them.
+与指令一样，命名匹配器定义必须在 [站点块](/docs/caddyfile/concepts#structure) 内使用它们。
 
-A named matcher definition constitutes a _matcher set_. Matchers in a set are AND'ed together; i.e. all must match. For example, if you have both a [`header`](#header) and [`path`](#path) matcher in the set, both must match.
+命名匹配器定义构成一个_匹配器集合_。集合中的匹配器是 AND（与）关系；即必须全部匹配。例如，如果集合中有 [`header`](#header) 和 [`path`](#path) 匹配器，则两者都必须匹配。
 
-Multiple matchers of the same type may be merged (e.g. multiple [`path`](#path) matchers in the same set) using boolean algebra (AND/OR), as described in their respective sections below.
+同一类型的多个匹配器可以合并（例如，同一集合中的多个 [`path`](#path) 匹配器），使用布尔代数（AND/OR），如下节所述。
 
-For more complex boolean matching logic, it's recommended to the [`expression` matcher](#expression) to write a CEL expression, which supports **and** `&&`, **or** `||`, and **parentheses** `( )`.
-
-
+对于更复杂的布尔匹配逻辑，建议使用 [`expression` 匹配器](#expression) 编写 CEL 表达式，它支持 **and** `&&`、**or** `||` 和 **括号** `( )`。
 
 
 
-## Standard matchers
 
-Full matcher documentation can be found [in each respective matcher module's docs](/docs/json/apps/http/servers/routes/match/).
 
-Requests can be matched the following ways:
+## 标准匹配器
+
+完整的匹配器文档可在 [每个相应匹配器模块的文档](/docs/json/apps/http/servers/routes/match/) 中找到。
+
+请求可以通过以下方式匹配：
 
 
 
@@ -201,34 +201,34 @@ client_ip <ranges...>
 expression client_ip('<ranges...>')
 ```
 
-By the client IP address. Accepts exact IPs or CIDR ranges. IPv6 zones are supported.
+按客户端 IP 地址匹配。接受确切 IP 或 CIDR 范围。支持 IPv6 区域。
 
-This matcher is best used when the [`trusted_proxies`](/docs/caddyfile/options#trusted-proxies) global option is configured, otherwise it acts identically to the [`remote_ip`](#remote-ip) matcher. Only requests from trusted proxies will have their client IP parsed at the start of the request; untrusted requests will use the remote IP address of the immediate peer or the address set via [PROXY protocol](/docs/caddyfile/options#proxy-protocol).
+此匹配器在配置 [`trusted_proxies`](/docs/caddyfile/options#trusted-proxies) 全局选项时最适合使用，否则其作用与 [`remote_ip`](#remote-ip) 匹配器相同。只有受信任代理的请求才会在请求开始时解析其客户端 IP；不受信任的请求将使用直接对等点的远程 IP 地址或通过 [PROXY 协议](/docs/caddyfile/options#proxy-protocol) 设置的地址。
 
-As a shortcut, `private_ranges` can be used to match all private IPv4 and IPv6 ranges. It's the same as specifying all of these ranges: `192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8 fd00::/8 ::1`
+作为快捷方式，可以使用 `private_ranges` 匹配所有私有 IPv4 和 IPv6 范围。它与指定所有这些范围相同：`192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8 fd00::/8 ::1`
 
-There can be multiple `client_ip` matchers per named matcher, and their ranges will be merged and OR'ed together.
+每个命名匹配器可以有多个 `client_ip` 匹配器，它们的范围将合并并使用 OR（或）连接。
 
-#### Example:
+#### 示例：
 
-Match requests from private IPv4 addresses:
+匹配来自私有 IPv4 地址的请求：
 
 ```caddy-d
 @private-ipv4 client_ip 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8
 ```
 
-This matcher is commonly paired with the [`not`](#not) matcher to invert the match. For example, to abort all connections from _public_ IPv4 and IPv6 addresses (which is the inverse of all private ranges):
+此匹配器常与 [`not`](#not) 匹配器配对使用以反转匹配。例如，终止来自_公共_ IPv4 和 IPv6 地址（这是所有私有范围的反面）的所有连接：
 
 ```caddy
 example.com {
 	@denied not client_ip private_ranges
 	abort @denied
 
-	respond "Hello, you must be from a private network!"
+	respond "您好，您必须来自私有网络！"
 }
 ```
 
-In a [CEL expression](#expression), it would look like this:
+在 [CEL 表达式](#expression) 中，它将如下所示：
 
 ```caddy-d
 @my-friends `client_ip('12.23.34.45', '23.34.45.56')`
@@ -242,54 +242,54 @@ In a [CEL expression](#expression), it would look like this:
 expression <cel...>
 ```
 
-By any [CEL (Common Expression Language)](https://github.com/google/cel-spec) expression that returns `true` or `false`.
+根据任何 [CEL（公共表达式语言）](https://github.com/google/cel-spec) 表达式，该表达式返回 `true` 或 `false`。
 
-Most other request matchers can also be used in expressions as functions, which allows for more flexibility for boolean logic than outside expressions. See the documentation for each matcher for the supported syntax within CEL expressions.
+大多数其他请求匹配器也可以用作表达式中的函数，这允许在表达式之外进行更灵活的布尔逻辑。有关在 CEL 表达式中支持的语法的文档，请参阅每个匹配器的文档。
 
-Caddy [placeholders](/docs/conventions#placeholders) (or [Caddyfile shorthands](/docs/caddyfile/concepts#placeholders)) may be used in these CEL expressions, as they are preprocessed and converted to regular CEL function calls before being interpreted by the CEL environment. If a placeholder should be passed as a string argument to a matcher function, then the leading `{` should be escaped with a backslash `\` so that it is not preprocessed, for example `file('\{path}.md')`.
+Caddy [占位符](/docs/conventions#placeholders)（或 [Caddyfile 简写](/docs/caddyfile/concepts#placeholders)）可用于这些 CEL 表达式，因为它们会被预处理并转换为常规的 CEL 函数调用，然后再由 CEL 环境解释。如果占位符应作为字符串参数传递给匹配器函数，则前导 `{` 应使用反斜杠 `\` 转义，这样它就不会被预处理，例如 `file('\{path}.md')`。
 
-For convenience, the matcher name may be omitted if defining a named matcher that consists solely of a CEL expression. The CEL expression must be [quoted](/docs/caddyfile/concepts#tokens-and-quotes) (backticks or heredocs recommended). This reads quite nicely:
+为方便起见，如果定义的名命名匹配器完全由 CEL 表达式组成，则可以省略匹配器名称。CEL 表达式必须 [引用](/docs/caddyfile/concepts#tokens-and-quotes)（建议反引号或 heredocs）。这读起来很不错：
 
 ```caddy-d
 @mutable `{method}.startsWith("P")`
 ```
 
-In this case the CEL matcher is assumed.
+在这种情况下，假定是 CEL 匹配器。
 
-#### Examples:
+#### 示例：
 
-Match requests whose methods start with `P`, e.g. `PUT` or `POST`:
+匹配其方法以 `P` 开头的请求，例如 `PUT` 或 `POST`：
 
 ```caddy-d
 @methods expression {method}.startsWith("P")
 ```
 
-Match requests where handler returned error status code `404`, would be used in conjunction with the [`handle_errors` directive](/docs/caddyfile/directives/handle_errors):
+匹配处理器返回错误状态码 `404` 的请求，将与 [`handle_errors` 指令](/docs/caddyfile/directives/handle_errors) 一起使用：
 
 ```caddy-d
 @404 expression {err.status_code} == 404
 ```
 
-Match requests where the path matches one of two different regular expressions; this is only possible to write using an expression, because the [`path_regexp`](#path-regexp) matcher can normally only exist once per named matcher:
+匹配路径匹配两个不同正则表达式的请求；这只能使用表达式编写，因为 [`path_regexp`](#path-regexp) 匹配器通常每个命名匹配器只能存在一次：
 
 ```caddy-d
 @user expression path_regexp('^/user/(\w*)') || path_regexp('^/(\w*)')
 ```
 
-Or the same, omitting the matcher name, and wrapping in [backticks](/docs/caddyfile/concepts#tokens-and-quotes) so it's parsed as a single token:
+或者相同，省略匹配器名称，并用 [反引号](/docs/caddyfile/concepts#tokens-and-quotes) 包装以便将其解析为单个令牌：
 
 ```caddy-d
 @user `path_regexp('^/user/(\w*)') || path_regexp('^/(\w*)')`
 ```
 
-You may use [heredoc syntax](/docs/caddyfile/concepts#heredocs) to write multi-line CEL expressions:
+您可以使用 [heredoc 语法](/docs/caddyfile/concepts#heredocs) 编写多行 CEL 表达式：
 
 ```caddy-d
 @api <<CEL
 	{method} == "GET"
 	&& {path}.startsWith("/api/")
 	CEL
-respond @api "Hello, API!"
+respond @api "您好，API！"
 ```
 
 
@@ -314,65 +314,65 @@ expression `file({
 expression file('<files...>')
 ```
 
-By files.
+按文件匹配。
 
-- `root` defines the directory in which to look for files. Default is the current working directory, or the `root` [variable](/docs/modules/http.handlers.vars) (`{http.vars.root}`) if set (can be set via the [`root` directive](/docs/caddyfile/directives/root)).
+- `root` 定义在其中查找文件的目录。默认为当前工作目录，或设置的 `root` [变量](/docs/modules/http.handlers.vars) (`{http.vars.root}`)（可通过 [`root` 指令](/docs/caddyfile/directives/root) 设置）。
 
-- `try_files` checks files in its list that match the try_policy.
+- `try_files` 检查其列表中匹配 try_policy 的文件。
 
-  To match directories, append a trailing forward slash `/` to the path. All file paths are relative to the site [root](/docs/caddyfile/directives/root), and [glob patterns](https://pkg.go.dev/path/filepath#Match) will be expanded.
+  要匹配目录，在路径后附加尾随正斜杠 `/`。所有文件路径相对于站点 [根目录](/docs/caddyfile/directives/root)，并且 [通配符模式](https://pkg.go.dev/path/filepath#Match) 将被展开。
 
-  If the `try_policy` is `first_exist` (the default), then the last item in the list may be a number prefixed by `=` (e.g. `=404`), which as a fallback, will emit an error with that code; the error can be caught and handled with [`handle_errors`](/docs/caddyfile/directives/handle_errors).
+  如果 `try_policy` 是 `first_exist`（默认值），则列表中的最后一项可以是前缀为 `=` 的数字（例如 `=404`），作为回退，将发出带有该代码的错误；错误可以 [`handle_errors`](/docs/caddyfile/directives/handle_errors) 捕获和处理。
 
 
 
-- `try_policy` specifies how to choose a file. Default is `first_exist`.
+- `try_policy` 指定如何选择文件。默认为 `first_exist`。
 
-	- `first_exist` checks for file existence. The first file that exists is selected.
+	- `first_exist` 检查文件是否存在。选择第一个存在的文件。
 
-	- `first_exist_fallback` is similar to `first_exist`, but assumes that the last element in the list always exists to prevent a disk access.
+	- `first_exist_fallback` 类似于 `first_exist`，但假设列表中的最后一个元素始终存在以防止磁盘访问。
 
-	- `smallest_size` chooses the file with the smallest size.
+	- `smallest_size` 选择最小尺寸的文件。
 
-	- `largest_size` chooses the file with the largest size.
+	- `largest_size` 选择最大尺寸的文件。
 
-	- `most_recently_modified` chooses the file that was most recently modified.
+	- `most_recently_modified` 选择最近修改的文件。
 
-- `split_path` will cause the path to be split at the first delimiter in the list that is found in each filepath to try. For each split value, the left-hand side of the split including the delimiter itself will be the filepath that is tried. For example, `/remote.php/dav/` using a delimiter of `.php` would try the file `/remote.php`. Each delimiter must appear at the end of a URI path component in order to be used as a split delimiter. This is a niche setting and is mostly used when serving PHP sites.
+- `split_path` 将在每个尝试的文件名中找到的列表中的第一个分隔符处拆分路径。对于每个拆分值，拆分包括分隔符本身在内的左侧部分将是尝试的文件名。例如，使用分隔符 `.php`，`/remote.php/dav/` 将尝试文件 `/remote.php`。每个分隔符必须出现在 URI 路径组件的末尾才能用作拆分分隔符。这是一个特殊设置，主要用于服务 PHP 站点。
 
-Because `try_files` with a policy of `first_exist` is so common, there is a one-line shortcut for that:
+由于 `try_files` 使用策略 `first_exist` 非常常见，因此有一个单行快捷方式：
 
 ```caddy-d
 file <files...>
 ```
 
-An empty `file` matcher (one with no files listed after it) will see if the requested file&mdash;verbatim from the URI, relative to the [site root](/docs/caddyfile/directives/root)&mdash;exists. This is effectively the same as `file {path}`.
+空的 `file` 匹配器（未列出任何文件后）将检查请求的文件——来自 URI 的 verbatim，相对于 [站点根目录](/docs/caddyfile/directives/root)&mdash;是否存在。这实际上与 `file {path}` 相同。
 
 
 <aside class="tip">
 
-Since rewriting based on the existence of a file on disk is so common, there is also a [`try_files` directive](/docs/caddyfile/directives/try_files) which is a shortcut of the `file` matcher and a [`rewrite` handler](/docs/caddyfile/directives/rewrite).
+由于基于磁盘上文件的存在进行重写非常常见，因此还有一个 [`try_files` 指令](/docs/caddyfile/directives/try_files)，它是 `file` 匹配器和 [`rewrite` 处理器](/docs/caddyfile/directives/rewrite) 的快捷方式。
 
 </aside>
 
 
-Upon matching, four new placeholders will be made available:
+匹配后，将提供四个新的占位符：
 
-- `{file_match.relative}` The root-relative path of the file. This is often useful when rewriting requests.
-- `{file_match.absolute}` The absolute path of the matched file, including the root.
-- `{file_match.type}` The type of file, `file` or `directory`.
-- `{file_match.remainder}` The portion remaining after splitting the file path (if `split_path` is configured)
+- `{file_match.relative}` 文件的根相对路径。这通常在重写请求时很有用。
+- `{file_match.absolute}` 匹配文件的绝对路径，包括根目录。
+- `{file_match.type}` 文件类型，`file` 或 `directory`。
+- `{file_match.remainder}` 拆分文件路径后的剩余部分（如果配置了 `split_path`）
 
 
-#### Examples:
+#### 示例：
 
-Match requests where the path is a file that exists:
+匹配路径是存在的文件的请求：
 
 ```caddy-d
 @file file
 ```
 
-Match requests where the path followed by `.html` is a file that exists, or if not, where the path is a file that exists:
+匹配路径后跟 `.html` 是存在的文件，或者如果不是，则路径是存在的文件的请求：
 
 ```caddy-d
 @html file {
@@ -380,13 +380,13 @@ Match requests where the path followed by `.html` is a file that exists, or if n
 }
 ```
 
-Same as above, except using the one-line shortcut, and falling back to emitting a 404 error if a file is not found:
+与上面相同，但使用单行快捷方式，如果在找不到文件时回退到发出 404 错误：
 
 ```caddy-d
 @html-or-error file {path}.html {path} =404
 ```
 
-Some more examples using [CEL expressions](#expression). Keep in mind that placeholders are preprocessed and converted to regular CEL function calls before being interpreted by the CEL environment, so concatenation is used here. Additionally, the long-form must be used if concatenating with placeholders due to current parsing limitations:
+更多使用 [CEL 表达式](#expression) 的示例。请记住，占位符会被预处理并转换为常规的 CEL 函数调用，然后再由 CEL 环境解释，因此此处使用连接。此外，由于当前解析限制，如果使用占位符进行连接必须使用长格式：
 
 ```caddy-d
 @file `file()`
@@ -404,29 +404,29 @@ header <field> [<value> ...]
 expression header({'<field>': '<value>'})
 ```
 
-By request header fields.
+按请求头字段匹配。
 
-- `<field>` is the name of the HTTP header field to check.
-	- If prefixed with `!`, the field must not exist to match (omit value arg).
-- `<value>` is the value the field must have to match. One or more may be specified.
-	- If prefixed with `*`, it performs a fast suffix match (appears at the end).
-	- If suffixed with `*`, it performs a fast prefix match (appears at the start).
-	- If enclosed by `*`, it performs a fast substring match (appears anywhere).
-	- Otherwise, it is a fast exact match.
+- `<field>` 是要检查的 HTTP 头字段名称。
+	- 如果前缀为 `!`，则字段必须不存在才能匹配（省略值参数）。
+- `<value>` 是字段必须具有的匹配值。可以指定一个或多个值。
+	- 如果前缀为 `*`，则执行快速后缀匹配（出现在末尾）。
+	- 如果后缀为 `*`，则执行快速前缀匹配（出现在开头）。
+	- 如果由 `*` 包围，则执行快速子字符串匹配（出现在任何位置）。
+	- 否则，是快速精确匹配。
 
-Different header fields within the same set are AND-ed. Multiple values per field are OR'ed.
+同一集合中的不同头字段是 AND（与）关系。每个字段的多个值使用 OR（或）连接。
 
-Note that header fields may be repeated and have different values. Backend applications MUST consider that header field values are arrays, not singular values, and Caddy does not interpret meaning in such quandaries.
+请注意，头字段可以重复并具有不同的值。后端应用程序必须考虑头字段值是数组，而不是单个值，Caddy 不在此类情况中解释含义。
 
-#### Example:
+#### 示例：
 
-Match requests with the `Connection` header containing `Upgrade`:
+匹配具有包含 `Upgrade` 的 `Connection` 头的请求：
 
 ```caddy-d
 @upgrade header Connection *Upgrade*
 ```
 
-Match requests with the `Foo` header containing `bar` OR `baz`:
+匹配 `Foo` 头包含 `bar` 或 `baz` 的请求：
 
 ```caddy-d
 @foo {
@@ -435,13 +435,13 @@ Match requests with the `Foo` header containing `bar` OR `baz`:
 }
 ```
 
-Match requests that do not have the `Foo` header field at all:
+匹配完全不具有 `Foo` 头字段的请求：
 
 ```caddy-d
 @not_foo header !Foo
 ```
 
-Using an [CEL expression](#expression), match WebSocket requests by checking for the `Connection` header containing `Upgrade` and the `Upgrade` header equalling `websocket` (HTTP/2 has the `:protocol` header for this):
+使用 [CEL 表达式](#expression)，通过检查包含 `Upgrade` 的 `Connection` 头和等于 `websocket` 的 `Upgrade` 头来匹配 websocket 请求（HTTP/2 有用于此的 `:protocol` 头）：
 
 ```caddy-d
 @websockets `header({'Connection':'*Upgrade*','Upgrade':'websocket'}) || header({':protocol': 'websocket'})`
@@ -458,38 +458,38 @@ expression header_regexp('<name>', '<field>', '<regexp>')
 expression header_regexp('<field>', '<regexp>')
 ```
 
-Like [`header`](#header), but supports regular expressions.
+类似于 [`header`](#header)，但支持正则表达式。
 
-The regular expression language used is RE2, included in Go. See the [RE2 syntax reference](https://github.com/google/re2/wiki/Syntax) and the [Go regexp syntax overview](https://pkg.go.dev/regexp/syntax).
+使用的正则表达式语言是 RE2，包含在 Go 中。请参见 [RE2 语法参考](https://github.com/google/re2/wiki/Syntax) 和 [Go regexp 语法概述](https://pkg.go.dev/regexp/syntax)。
 
-As of v2.8.0, if `name` is _not_ provided, the name will be taken from the named matcher's name. For example a named matcher `@foo` will cause this matcher to be named `foo`. The main advantage of specifying a name is if more than one regexp matcher (e.g. `header_regexp` and [`path_regexp`](#path-regexp), or multiple different header fields) is used in the same named matcher.
+从 v2.8.0 开始，如果_未_提供 `name`，名称将取自命名匹配器的名称。例如，命名匹配器 `@foo` 将使此匹配器命名为 `foo`。指定名称的主要优势是如果在同一命名匹配器中使用多个 regexp 匹配器（例如 `header_regexp` 和 [`path_regexp`](#path-regexp)，或不同头字段的多个匹配器）。
 
-Capture groups can be accessed via [placeholder](/docs/caddyfile/concepts#placeholders) in directives after matching:
-- `{re.<name>.<capture_group>}` where:
-  - `<name>` is the name of the regular expression,
-  - `<capture_group>` is either the name or number of the capture group in the expression.
+捕获组可以通过匹配后的指令中的 [占位符](/docs/caddyfile/concepts#placeholders) 访问：
+- `{re.<name>.<capture_group>}` 其中：
+  - `<name>` 是正则表达式的名称，
+  - `<capture_group>` 是表达式中的捕获组的名称或编号。
 
-- `{re.<capture_group>}` without a name, is also populated for convenience. The caveat is that if multiple regexp matchers are used in sequence, then the placeholder values will be overwritten by the next matcher.
+- `{re.<capture_group>}` 无名称，也用于方便填充。缺点是如果在序列中使用多个 regexp 匹配器，则占位符值将被下一个匹配器覆盖。
 
-Capture group `0` is the full regexp match, `1` is the first capture group, `2` is the second capture group, and so on. So `{re.foo.1}` or `{re.1}` will both hold the value of the first capture group.
+捕获组 `0` 是完整的 regexp 匹配，`1` 是第一个捕获组，`2` 是第二个捕获组，依此类推。因此 `{re.foo.1}` 或 `{re.1}` 都将保存第一个捕获组的值。
 
-Only one regular expression is supported per header field, since regexp patterns cannot be merged; if you need more, consider using an [`expression` matcher](#expression). Matches against multiple different header fields will be AND'ed.
+每个头字段仅支持一个正则表达式，因为 regexp 模式无法合并；如果需要更多，请考虑使用 [`expression` 匹配器](#expression)。对多个不同头字段的匹配将进行 AND（与）连接。
 
-#### Example:
+#### 示例：
 
-Match requests where the Cookie header contains `login_` followed by a hex string, with a capture group that can be accessed with `{re.login.1}` or `{re.1}`.
+匹配 Cookie 头包含 `login_` 后跟十六进制字符串的请求，其中捕获组可以使用 `{re.login.1}` 或 `{re.1}` 访问。
 
 ```caddy-d
 @login header_regexp login Cookie login_([a-f0-9]+)
 ```
 
-This can be simplified by omitting the name, which will be inferred from the named matcher:
+可以通过省略名称来简化，该名称将从命名匹配器推断：
 
 ```caddy-d
 @login header_regexp Cookie login_([a-f0-9]+)
 ```
 
-Or the same, using a [CEL expression](#expression):
+或相同，使用 [CEL 表达式](#expression)：
 
 ```caddy-d
 @login `header_regexp('login', 'Cookie', 'login_([a-f0-9]+)')`
@@ -506,27 +506,27 @@ host <hosts...>
 expression host('<hosts...>')
 ```
 
-Matches request by the `Host` header field of the request.
+按请求的 `Host` 头字段匹配请求。
 
-Since most site blocks already indicate hosts in the address of the site, this matcher is more commonly used in site blocks that use a wildcard hostname (see the [wildcard certificates pattern](/docs/caddyfile/patterns#wildcard-certificates)), but where hostname-specific logic is required.
+由于大多数站点块已经在站点地址指示中指示主机，因此此匹配器更常用于使用通配符主机名的站点块中（参见 [通配符证书模式](/docs/caddyfile/patterns#wildcard-certificates)），但需要主机名特定逻辑。
 
-Multiple `host` matchers will be OR'ed together.
+多个 `host` 匹配器将一起使用 OR（或）连接。
 
-#### Example:
+#### 示例：
 
-Matching one subdomain:
+匹配一个子域：
 
 ```caddy-d
 @sub host sub.example.com
 ```
 
-Matching the apex domain and a subdomain:
+匹配根域和子域：
 
 ```caddy-d
 @site host example.com www.example.com
 ```
 
-Multiple subdomains using a [CEL expression](#expression):
+使用 [CEL 表达式](#expression) 匹配多个子域：
 
 ```caddy-d
 @app `host('app1.example.com', 'app2.example.com')`
@@ -543,25 +543,25 @@ method <verbs...>
 expression method('<verbs...>')
 ```
 
-By the method (verb) of the HTTP request. Verbs should be uppercase, like `POST`. Can match one or many methods.
+按 HTTP 请求的方法（动词）匹配。动词应为大写，如 `POST`。可以匹配一个或多个方法。
 
-Multiple `method` matchers will be OR'ed together.
+多个 `method` 匹配器将一起使用 OR（或）连接。
 
-#### Examples:
+#### 示例：
 
-Match requests with the `GET` method:
+匹配具有 `GET` 方法的请求：
 
 ```caddy-d
 @get method GET
 ```
 
-Match requests with the `PUT` or `DELETE` methods:
+匹配具有 `PUT` 或 `DELETE` 方法的请求：
 
 ```caddy-d
 @put-delete method PUT DELETE
 ```
 
-Match read-only methods using a [CEL expression](#expression):
+使用 [CEL 表达式](#expression) 匹配只读方法：
 
 ```caddy-d
 @read `method('GET', 'HEAD', 'OPTIONS')`
@@ -576,7 +576,7 @@ Match read-only methods using a [CEL expression](#expression):
 not <matcher>
 ```
 
-or, to negate multiple matchers which get AND'ed, open a block:
+或者，要否定多个 AND（与）连接的匹配器，打开一个块：
 
 ```caddy-d
 not {
@@ -584,11 +584,11 @@ not {
 }
 ```
 
-The results of the enclosed matchers will be negated.
+所封闭匹配器的结果将被否定。
 
-#### Examples:
+#### 示例：
 
-Match requests with paths that do NOT begin with `/css/` OR `/js/`.
+匹配路径_不_以 `/css/` 或 `/js/` 开头的请求。
 
 ```caddy-d
 @not-assets {
@@ -596,11 +596,11 @@ Match requests with paths that do NOT begin with `/css/` OR `/js/`.
 }
 ```
 
-Match requests WITH NEITHER:
-- an `/api/` path prefix, NOR
-- the `POST` request method
+匹配_既无_：
+- `/api/` 路径前缀，也_无_
+- `POST` 请求方法
 
-i.e. must have none of these to match:
+即必须都不具有这些才能匹配：
 
 ```caddy-d
 @with-neither {
@@ -609,11 +609,11 @@ i.e. must have none of these to match:
 }
 ```
 
-Match requests WITHOUT BOTH:
-- an `/api/` path prefix, AND
-- the `POST` request method
+匹配_不同时具有_：
+- `/api/` 路径前缀，_和_
+- `POST` 请求方法
 
-i.e. must have neither or either of these to match:
+即必须不具有或仅具有其中一个才能匹配：
 
 ```caddy-d
 @without-both {
@@ -624,13 +624,13 @@ i.e. must have neither or either of these to match:
 }
 ```
 
-There's no [CEL expression](#expression) for this matcher, because you may use the `!` operator for negation instead. For example:
+[CEL 表达式](#expression) 中对此没有匹配器，因为您可以使用 `!` 运算符进行否定。例如：
 
 ```caddy-d
 @without-both `!path('/api*') && !method('POST')`
 ```
 
-Which is the same as this, using parentheses:
+这与以下相同，使用括号：
 
 ```caddy-d
 @without-both `!(path('/api*') || method('POST'))`
@@ -648,44 +648,44 @@ path <paths...>
 expression path('<paths...>')
 ```
 
-By request path (the path component of the request URI). Path matches are exact but case-insensitive. Wildcards `*` may be used:
+按请求路径（请求 URI 的路径组件）。路径匹配是精确但不区分大小写的。可以使用通配符 `*`：
 
-- At the end only, for a prefix match (`/prefix/*`)
-- At the beginning only, for a suffix match (`*.suffix`)
-- On both sides only, for a substring match (`*/contains/*`)
-- In the middle only, for a globular match (`/accounts/*/info`)
+- 仅结尾处，用于前缀匹配（`/prefix/*`）
+- 仅开头处，用于后缀匹配（`*.suffix`）
+- 仅在两侧，用于子字符串匹配（`*/contains/*`）
+- 仅在中间，用于 globular 匹配（`/accounts/*/info`）
 
-Slashes are significant. For example, `/foo*` will match `/foo`, `/foobar`, `/foo/`, and `/foo/bar`, but `/foo/*` will _not_ match `/foo` or `/foobar`.
+斜杠是重要的。例如，`/foo*` 将匹配 `/foo`、`/foobar`、`/foo/` 和 `/foo/bar`，但 `/foo/*` 将_不_匹配 `/foo` 或 `/foobar`。
 
-Request paths are cleaned to resolve directory traversal dots before matching. Additionally, multiple slashes are merged unless the match pattern has multiple slashes. In other words, `/foo` will match `/foo` and `//foo`, but `//foo` will only match `//foo`.
+在匹配之前，请求路径会被清理以解析目录遍历点。此外，多个斜杠会合并，除非匹配模式具有多个斜杠。换句话说，`/foo` 将匹配 `/foo` 和 `//foo`，但 `//foo` 仅匹配 `//foo`。
 
-Because there are multiple escaped forms of any given URI, the request path is normalized (URL-decoded, unescaped) except for those escape sequences at positions where escape sequences are also present in the match pattern. For example, `/foo/bar` matches both `/foo/bar` and `/foo%2Fbar`, but `/foo%2Fbar` will match only `/foo%2Fbar`, because the escape sequence is explicitly given in the configuration.
+由于任何给定的 URI 都有多个转义形式，请求路径会被标准化（URL 解码，取消转义），除了匹配模式中存在的转义序列中的位置。例如，`/foo/bar` 匹配 `/foo/bar` 和 `/foo%2Fbar`，但 `/foo%2Fbar` 仅匹配 `/foo%2Fbar`，因为配置中明确给出了转义序列。
 
-The special wildcard escape `%*` can also be used instead of `*` to leave its matching span escaped. For example, `/bands/*/*` will not match `/bands/AC%2FDC/T.N.T` because the path will be compared in normalized space where it looks like `/bands/AC/DC/T.N.T`, which does not match the pattern; however, `/bands/%*/*` will match `/bands/AC%2FDC/T.N.T` because the span represented by `%*` will be compared without decoding escape sequences.
+特殊通配符转义 `%*` 也可以代替 `*` 使用，以保留其匹配跨度未转义。例如，`/bands/*/*` 将不匹配 `/bands/AC%2FDC/T.N.T`，因为路径将在标准化空间中比较，看起来像 `/bands/AC/DC/T.N.T`，这与模式不匹配；然而，`/bands/%*/*` 将匹配 `/bands/AC%2FDC/T.N.T`，因为 `%*` 表示的跨度将在不解码转义序列的情况下比较。
 
-Multiple paths will be OR'ed together.
+多个路径将一起使用 OR（或）连接。
 
-#### Examples:
+#### 示例：
 
-Match multiple directories and their contents:
+匹配多个目录及其内容：
 
 ```caddy-d
 @assets path /js/* /css/* /images/*
 ```
 
-Match a specific file:
+匹配特定文件：
 
 ```caddy-d
 @favicon path /favicon.ico
 ```
 
-Match file extensions:
+匹配文件扩展名：
 
 ```caddy-d
 @extensions path *.js *.css
 ```
 
-With a [CEL expression](#expression):
+使用 [CEL 表达式](#expression)：
 
 ```caddy-d
 @assets `path('/js/*', '/css/*', '/images/*')`
@@ -703,38 +703,38 @@ expression path_regexp('<name>', '<regexp>')
 expression path_regexp('<regexp>')
 ```
 
-Like [`path`](#path), but supports regular expressions. Runs against the URI-decoded/unescaped path.
+类似于 [`path`](#path)，但支持正则表达式。运行在 URI 解码/取消转义的路径上。
 
-The regular expression language used is RE2, included in Go. See the [RE2 syntax reference](https://github.com/google/re2/wiki/Syntax) and the [Go regexp syntax overview](https://pkg.go.dev/regexp/syntax).
+使用的正则表达式语言是 RE2，包含在 Go 中。请参见 [RE2 语法参考](https://github.com/google/re2/wiki/Syntax) 和 [Go regexp 语法概述](https://pkg.go.dev/regexp/syntax)。
 
-As of v2.8.0, if `name` is _not_ provided, the name will be taken from the named matcher's name. For example a named matcher `@foo` will cause this matcher to be named `foo`. The main advantage of specifying a name is if more than one regexp matcher (e.g. `path_regexp` and [`header_regexp`](#header-regexp)) is used in the same named matcher.
+从 v2.8.0 开始，如果_未_提供 `name`，名称将取自命名匹配器的名称。例如，命名匹配器 `@foo` 将使此匹配器命名为 `foo`。指定名称的主要优势是如果在同一命名匹配器中使用多个 regexp 匹配器（例如 `path_regexp` 和 [`header_regexp`](#header-regexp)）。
 
-Capture groups can be accessed via [placeholder](/docs/caddyfile/concepts#placeholders) in directives after matching:
-- `{re.<name>.<capture_group>}` where:
-  - `<name>` is the name of the regular expression,
-  - `<capture_group>` is either the name or number of the capture group in the expression.
+捕获组可以通过匹配后的指令中的 [占位符](/docs/caddyfile/concepts#placeholders) 访问：
+- `{re.<name>.<capture_group>}` 其中：
+  - `<name>` 是正则表达式的名称，
+  - `<capture_group>` 是表达式中的捕获组的名称或编号。
 
-- `{re.<capture_group>}` without a name, is also populated for convenience. The caveat is that if multiple regexp matchers are used in sequence, then the placeholder values will be overwritten by the next matcher.
+- `{re.<capture_group>}` 无名称，也用于方便填充。缺点是如果在序列中使用多个 regexp 匹配器，则占位符值将被下一个匹配器覆盖。
 
-Capture group `0` is the full regexp match, `1` is the first capture group, `2` is the second capture group, and so on. So `{re.foo.1}` or `{re.1}` will both hold the value of the first capture group.
+捕获组 `0` 是完整的 regexp 匹配，`1` 是第一个捕获组，`2` 是第二个捕获组，依此类推。因此 `{re.foo.1}` 或 `{re.1}` 都将保存第一个捕获组的值。
 
-There can only be one `path_regexp` pattern per named matcher, since this matcher cannot be merged with itself; if you need more, consider using an [`expression` matcher](#expression).
+每个命名匹配器只能有一个 `path_regexp` 模式，因为此匹配器无法与自身合并；如果需要更多，请考虑使用 [`expression` 匹配器](#expression)。
 
-#### Example:
+#### 示例：
 
-Match requests where the path ends a 6 character hex string followed by `.css` or `.js` as the file extension, with capture groups (parts enclosed in `( )`),  that can be accessed with `{re.static.1}` and `{re.static.2}` (or `{re.1}` and `{re.2}`), respectively:
+匹配路径以 6 字符十六进制字符串后跟 `.css` 或 `.js` 作为文件扩展名的请求，其中捕获组（括号中的部分），可以使用 `{re.static.1}` 和 `{re.static.2}`（或 `{re.1}` 和 `{re.2}`）访问：
 
 ```caddy-d
 @static path_regexp static \.([a-f0-9]{6})\.(css|js)$
 ```
 
-This can be simplified by omitting the name, which will be inferred from the named matcher:
+可以通过省略名称来简化，该名称将从命名匹配器推断：
 
 ```caddy-d
 @static path_regexp \.([a-f0-9]{6})\.(css|js)$
 ```
 
-Or the same, using a [CEL expression](#expression), also validating that the [`file`](#file) exists on disk:
+或相同，使用 [CEL 表达式](#expression)，同时也验证 [`file`](#file) 在磁盘上存在：
 
 ```caddy-d
 @static `path_regexp('\.([a-f0-9]{6})\.(css|js)$') && file()`
@@ -751,19 +751,19 @@ protocol http|https|grpc|http/<version>[+]
 expression protocol('http|https|grpc|http/<version>[+]')
 ```
 
-By request protocol. A broad protocol name such as `http`, `https`, or `grpc` can be used; or specific or minimum HTTP versions such as `http/1.1` or `http/2+`.
+按请求协议。可以使用广义协议名称，如 `http`、`https` 或 `grpc`；也可以使用特定的或最小 HTTP 版本，如 `http/1.1` 或 `http/2+`。
 
-There can only be one `protocol` matcher per named matcher.
+每个命名匹配器只能有一个 `protocol` 匹配器。
 
-#### Example:
+#### 示例：
 
-Match requests using HTTP/2:
+匹配使用 HTTP/2 的请求：
 
 ```caddy-d
 @http2 protocol http/2+
 ```
 
-With a [CEL expression](#expression):
+使用 [CEL 表达式](#expression)：
 
 ```caddy-d
 @http2 `protocol('http/2+')`
@@ -782,29 +782,29 @@ expression query({'<key>': '<val>'})
 expression query({'<key>': ['<vals...>']})
 ```
 
-By query string parameters. Should be a sequence of `key=value` pairs, or an empty string "". Keys are matched exactly (case-sensitively) but also support `*` to match any value. Values can use placeholders.  Empty string matches http requests with no query parameters.
+按查询字符串参数。应为一组 `key=value` 对序列，或空字符串 ""。键精确匹配（区分大小写）但也支持 `*` 以匹配任何值。值可以使用占位符。空字符串匹配没有查询参数的 HTTP 请求。
 
-There can be multiple `query` matchers per named matcher, and pairs with the same keys will be OR'ed together. Different keys will be AND'ed together. So, all keys in the matcher must have at least one matching value.
+每个命名匹配器可以有多个 `query` 匹配器，具有相同键的对将一起使用 OR（或）连接。不同键将一起使用 AND（与）连接。因此，匹配器中的所有键必须至少有一个匹配值。
 
-Illegal query strings (bad syntax, unescaped semicolons, etc.) will fail to parse and thus will not match.
+非法查询字符串（语法错误、未转义的分号等）将解析失败，因此不匹配。
 
-**NOTE:** Query string parameters are arrays, not singular values. This is because repeated keys are valid in query strings, and each one may have a different value. This matcher will match for a key if any one of its configured values is assigned in the query string. Backend applications using query strings MUST take into consideration that query string values are arrays and can have multiple values.
+**注意：** 查询字符串参数是数组，而不是单个值。这是因为重复的键在查询字符串中是有效的，每个键可能具有不同的值。此匹配器在查询字符串中分配了配置的任何值时将匹配键。使用查询字符串的后端应用程序必须考虑查询字符串值是数组并可以具有多个值。
 
-#### Example:
+#### 示例：
 
-Match a `q` query parameter with any value:
+匹配具有任何值的 `q` 查询参数：
 
 ```caddy-d
 @search query q=*
 ```
 
-Match a `sort` query parameter with the value `asc` or `desc`:
+匹配具有值 `asc` 或 `desc` 的 `sort` 查询参数：
 
 ```caddy-d
 @sorted query sort=asc sort=desc
 ```
 
-Matching both `q` and `sort`, with a [CEL expression](#expression):
+同时匹配 `q` 和 `sort`，使用 [CEL 表达式](#expression)：
 
 ```caddy-d
 @search-sort `query({'sort': ['asc', 'desc'], 'q': '*'})`
@@ -821,34 +821,34 @@ remote_ip <ranges...>
 expression remote_ip('<ranges...>')
 ```
 
-By remote IP address (i.e. the IP address of the immediate peer or the address set via [PROXY protocol](/docs/caddyfile/options#proxy-protocol)). Accepts exact IPs or CIDR ranges. IPv6 zones are supported.
+按远程 IP 地址（即直接对等点的 IP 地址或通过 [PROXY 协议](/docs/caddyfile/options#proxy-protocol) 设置的地址）。接受确切 IP 或 CIDR 范围。支持 IPv6 区域。
 
-As a shortcut, `private_ranges` can be used to match all private IPv4 and IPv6 ranges. It's the same as specifying all of these ranges: `192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8 fd00::/8 ::1`
+作为快捷方式，可以使用 `private_ranges` 匹配所有私有 IPv4 和 IPv6 范围。它与指定所有这些范围相同：`192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8 fd00::/8 ::1`
 
-if you wish to match the "real IP" of the client, as parsed from HTTP headers, use the [`client_ip`](#client-ip) matcher instead.
+如果您希望匹配客户端的"真实 IP"，即从 HTTP 头解析的 IP，请使用 [`client_ip`](#client-ip) 匹配器。
 
-There can be multiple `remote_ip` matchers per named matcher, and their ranges will be merged and OR'ed together.
+每个命名匹配器可以有多个 `remote_ip` 匹配器，它们的范围将合并并使用 OR（或）连接。
 
-#### Example:
+#### 示例：
 
-Match requests from private IPv4 addresses:
+匹配来自私有 IPv4 地址的请求：
 
 ```caddy-d
 @private-ipv4 remote_ip 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8
 ```
 
-This matcher is commonly paired with the [`not`](#not) matcher to invert the match. For example, to abort all connections from _public_ IPv4 and IPv6 addresses (which is the inverse of all private ranges):
+此匹配器常与 [`not`](#not) 匹配器配对使用以反转匹配。例如，终止来自_公共_ IPv4 和 IPv6 地址（这是所有私有范围的反面）的所有连接：
 
 ```caddy
 example.com {
 	@denied not remote_ip private_ranges
 	abort @denied
 
-	respond "Hello, you must be from a private network!"
+	respond "您好，您必须来自私有网络！"
 }
 ```
 
-In a [CEL expression](#expression), it would look like this:
+在 [CEL 表达式](#expression) 中，它将如下所示：
 
 ```caddy-d
 @my-friends `remote_ip('12.23.34.45', '23.34.45.56')`
@@ -866,42 +866,42 @@ expression vars({'<variable>': '<value>'})
 expression vars({'<variable>': ['<values...>']})
 ```
 
-By the value of a variable in the request context, or the value of a placeholder. Multiple values may be specified to match any of those possible values (OR'ed).
+按请求上下文中的变量值或占位符值。可以指定多个值以匹配这些可能值中的任何一个（OR 或）。
 
-The **&lt;variable&gt;** argument may be either a variable name or a placeholder in curly braces `{ }`. (Placeholders are not expanded in the first parameter.)
+**&lt;variable&gt;** 参数可以是变量名或花括号中的占位符 `{ }`。（第一个参数中的占位符不会展开。）
 
-This matcher is most useful when paired with the [`map` directive](/docs/caddyfile/directives/map) which sets outputs, with the [`vars` directive](/docs/caddyfile/directives/vars) within your routes, or with plugins which set some information in the request context.
+此匹配器在以下情况下最有用：与设置输出的 [`map` 指令](/docs/caddyfile/directives/map) 配对，在路由内使用 [`vars` 指令](/docs/caddyfile/directives/vars)，或与插件在请求上下文中设置某些信息。
 
-#### Example:
+#### 示例：
 
-Match an output of the [`map` directive](/docs/caddyfile/directives/map) named `magic_number` for the values `3` or `5`:
+匹配 [`map` 指令](/docs/caddyfile/directives/map) 名为 `magic_number` 的输出，值为 `3` 或 `5`：
 
 ```caddy-d
 vars {magic_number} 3 5
 ```
 
-Match an arbitrary placeholder's value, i.e. the authenticated user's ID, either `Bob` or `Alice`:
+匹配任意占位符的值，即已认证用户的 ID，`Bob` 或 `Alice`：
 
 ```caddy-d
 vars {http.auth.user.id} Bob Alice
 ```
 
-A complete example using the [`vars` directive](/docs/caddyfile/directives/vars) to set a variable, and then matching on it with the [`vars` matcher](#vars). Here we combine two request headers into one variable, and match on that variable:
+使用 [`vars` 指令](/docs/caddyfile/directives/vars) 设置变量，然后使用 [`vars` 匹配器](#vars) 进行匹配的完整示例。在此，我们将两个请求头合并为一个变量，并匹配该变量：
 
 ```caddy
 example.com {
 	vars combined_header "{header.Foo}_{header.Bar}"
 	@special vars {vars.combined_header} "123_456"
 	handle @special {
-		respond "You sent Foo=123 and Bar=456!"
+		respond "您发送了 Foo=123 和 Bar=456！"
 	}
 	handle {
-		respond "Foo and Bar were not special."
+		respond "Foo 和 Bar 不特殊。"
 	}
 }
 ```
 
-In a [CEL expression](#expression), it would look like this:
+在 [CEL 表达式](#expression) 中，它将如下所示：
 
 ```caddy-d
 @magic `vars({'magic_number': ['3', '5']})`
@@ -918,38 +918,38 @@ expression vars_regexp('<name>', '<variable>', '<regexp>')
 expression vars_regexp('<variable>', '<regexp>')
 ```
 
-Like [`vars`](#vars), but supports regular expressions.
+类似于 [`vars`](#vars)，但支持正则表达式。
 
-The regular expression language used is RE2, included in Go. See the [RE2 syntax reference](https://github.com/google/re2/wiki/Syntax) and the [Go regexp syntax overview](https://pkg.go.dev/regexp/syntax).
+使用的正则表达式语言是 RE2，包含在 Go 中。请参见 [RE2 语法参考](https://github.com/google/re2/wiki/Syntax) 和 [Go regexp 语法概述](https://pkg.go.dev/regexp/syntax)。
 
-As of v2.8.0, if `name` is _not_ provided, the name will be taken from the named matcher's name. For example a named matcher `@foo` will cause this matcher to be named `foo`. The main advantage of specifying a name is if more than one regexp matcher (e.g. `vars_regexp` and [`header_regexp`](#header-regexp)) is used in the same named matcher.
+从 v2.8.0 开始，如果_未_提供 `name`，名称将取自命名匹配器的名称。例如，命名匹配器 `@foo` 将使此匹配器命名为 `foo`。指定名称的主要优势是如果在同一命名匹配器中使用多个 regexp 匹配器（例如 `vars_regexp` 和 [`header_regexp`](#header-regexp)）。
 
-Capture groups can be accessed via [placeholder](/docs/caddyfile/concepts#placeholders) in directives after matching:
-- `{re.<name>.<capture_group>}` where:
-  - `<name>` is the name of the regular expression,
-  - `<capture_group>` is either the name or number of the capture group in the expression.
+捕获组可以通过匹配后的指令中的 [占位符](/docs/caddyfile/concepts#placeholders) 访问：
+- `{re.<name>.<capture_group>}` 其中：
+  - `<name>` 是正则表达式的名称，
+  - `<capture_group>` 是表达式中的捕获组的名称或编号。
 
-- `{re.<capture_group>}` without a name, is also populated for convenience. The caveat is that if multiple regexp matchers are used in sequence, then the placeholder values will be overwritten by the next matcher.
+- `{re.<capture_group>}` 无名称，也用于方便填充。缺点是如果在序列中使用多个 regexp 匹配器，则占位符值将被下一个匹配器覆盖。
 
-Capture group `0` is the full regexp match, `1` is the first capture group, `2` is the second capture group, and so on. So `{re.foo.1}` or `{re.1}` will both hold the value of the first capture group.
+捕获组 `0` 是完整的 regexp 匹配，`1` 是第一个捕获组，`2` 是第二个捕获组，依此类推。因此 `{re.foo.1}` 或 `{re.1}` 都将保存第一个捕获组的值。
 
-Only one regular expression is supported per variable name, since regexp patterns cannot be merged; if you need more, consider using an [`expression` matcher](#expression). Matches against multiple different variables will be AND'ed.
+每个变量名仅支持一个正则表达式，因为 regexp 模式无法合并；如果需要更多，请考虑使用 [`expression` 匹配器](#expression)。对多个不同变量的匹配将进行 AND（与）连接。
 
-#### Example:
+#### 示例：
 
-Match an output of the [`map` directive](/docs/caddyfile/directives/map) named `magic_number` for a value starting with `4`, capturing the value in a capture group that can be accessed with `{re.magic.1}` or `{re.1}`:
+匹配 [`map` 指令](/docs/caddyfile/directives/map) 名为 `magic_number` 的输出，值为以 `4` 开头的值，其中捕获组可以使用 `{re.magic.1}` 或 `{re.1}` 访问：
 
 ```caddy-d
 @magic vars_regexp magic {magic_number} ^(4.*)
 ```
 
-This can be simplified by omitting the name, which will be inferred from the named matcher:
+可以通过省略名称来简化，该名称将从命名匹配器推断：
 
 ```caddy-d
 @magic vars_regexp {magic_number} ^(4.*)
 ```
 
-In a [CEL expression](#expression), it would look like this:
+在 [CEL 表达式](#expression) 中，它将如下所示：
 
 ```caddy-d
 @magic `vars_regexp('magic_number', '^(4.*)')`

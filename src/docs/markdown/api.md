@@ -4,79 +4,79 @@ title: "API"
 
 # API
 
-Caddy is configured through an administration endpoint which can be accessed via HTTP using a [REST <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/Representational_state_transfer) API. You can [configure this endpoint](/docs/json/admin/) in your Caddy config.
+Caddy 通过管理端点进行配置，该端点可通过 HTTP 使用 [REST <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/Representational_state_transfer) API 访问。您可以在 Caddy 配置中[配置此端点](/docs/json/admin/)。
 
-**Default address: `localhost:2019`**
+**默认地址：`localhost:2019`**
 
-The default address can be changed by setting the `CADDY_ADMIN` environment variable. Some installation methods may set this to something different. The address in the Caddy config always takes precedence over the default.
+默认地址可以通过设置 `CADDY_ADMIN` 环境变量来更改。某些安装方法可能会将其设置为不同的值。Caddy 配置中的地址始终优先于默认地址。
 
 <aside class="tip">
-	If you are running untrusted code on your server (yikes 😬), make sure you protect your admin endpoint by isolating processes, patching vulnerable programs, and configuring the endpoint to bind to a permissioned unix socket instead.
+	如果您在服务器上运行不受信任的代码（哎呀 😬），请确保通过隔离进程、修补易受攻击的程序以及将端点配置为绑定到受限的 Unix socket 来保护您的管理端点。
 </aside>
 
-The latest configuration will be saved to disk after any changes (unless [disabled](/docs/json/admin/config/)). You can resume the last working config after a restart with [`caddy run --resume`](/docs/command-line#caddy-run), which guarantees config durability in the event of a power cycle or similar.
+任何更改后，最新配置都会保存到磁盘（除非[已禁用](/docs/json/admin/config/)）。您可以通过 [`caddy run --resume`](/docs/command-line#caddy-run) 恢复上次正常启动的配置，该命令可确保在断电或类似情况下配置持久化。
 
-To get started with the API, try our [API tutorial](/docs/api-tutorial) or, if you only have a minute, our [API quick-start guide](/docs/quick-starts/api).
+要开始使用 API，请尝试我们的 [API 教程](/docs/api-tutorial)，或者如果您只有一分钟时间，可以查看我们的 [API 快速入门指南](/docs/quick-starts/api)。
 
 ---
 
 - **[POST /load](#post-load)**
-  Sets or replaces the active configuration
+  设置或替换活动配置
 
 - **[POST /stop](#post-stop)**
-  Stops the active configuration and exits the process
+  停止活动配置并退出进程
 
 - **[GET /config/[path]](#get-configpath)**
-  Exports the config at the named path
+  导出指定路径的配置
 
 - **[POST /config/[path]](#post-configpath)**
-  Sets or replaces object; appends to array
+  设置或替换对象；追加到数组
   
 - **[PUT /config/[path]](#put-configpath)**
-  Creates new object; inserts into array
+  创建新对象；插入数组
 
 - **[PATCH /config/[path]](#patch-configpath)**
-  Replaces an existing object or array element
+  替换现有对象或数组元素
 
 - **[DELETE /config/[path]](#delete-configpath)**
-  Deletes the value at the named path
+  删除指定路径的值
 
-- **[Using `@id` in JSON](#using-id-in-json)**
-  Easily traverse into the config structure
+- **[在 JSON 中使用 `@id`](#using-id-in-json)**
+  轻松遍历配置结构
 
-- **[Concurrent config changes](#concurrent-config-changes)**
-  Avoid collisions when making unsynchronized changes to config
+- **[并发配置更改](#concurrent-config-changes)**
+  避免对配置进行未同步更改时的冲突
 
 - **[POST /adapt](#post-adapt)**
-  Adapts a configuration to JSON without running it
+  将配置适配为 JSON 但不运行它
 
 - **[GET /pki/ca/&lt;id&gt;](#get-pkicaltidgt)**
-  Returns information about a particular [PKI app](/docs/json/apps/pki/) CA
+  返回特定 [PKI 应用](/docs/json/apps/pki/) CA 的信息
 
 - **[GET /pki/ca/&lt;id&gt;/certificates](#get-pkicaltidgtcertificates)**
-  Returns the certificate chain of a particular [PKI app](/docs/json/apps/pki/) CA
+  返回特定 [PKI 应用](/docs/json/apps/pki/) CA 的证书链
 
 - **[GET /reverse_proxy/upstreams](#get-reverse-proxyupstreams)**
-  Returns the current status of the configured proxy upstreams
+  返回已配置的反向代理上游端的当前状态
 
 
 ## POST /load
 
-Sets Caddy's configuration, overriding any previous configuration. It blocks until the reload completes or fails. Configuration changes are lightweight, efficient, and incur zero downtime. If the new config fails for any reason, the old config is rolled back into place without downtime.
+设置 Caddy 配置，覆盖之前的任何配置。它会在重新加载完成或失败之前一直阻塞。配置更改非常轻量、高效，且零停机时间。如果新配置由于任何原因失败，旧配置会自动回滚，不会造成停机时间。
 
-This endpoint supports different config formats using config adapters. The request's Content-Type header indicates the config format used in the request body. Usually, this should be `application/json` which represents Caddy's native config format. For another config format, specify the appropriate Content-Type so that the value after the forward slash / is the name of the config adapter to use. For example, when submitting a Caddyfile, use a value like `text/caddyfile`; or for JSON 5, use a value such as `application/json5`; etc.
+此端点支持使用配置适配器使用不同的配置格式。请求的 Content-Type 头指示请求体中使用的配置格式。通常，这应该是 `application/json`，它表示 Caddy 的原生配置格式。对于另一种配置格式，请指定适当的 Content-Type，使得 `/` 之后的值是配置适配器的名称。例如，提交 Caddyfile 时，使用 `text/caddyfile`；对于 JSON 5，使用 `application/json5` 等。
 
-If the new config is the same as the current one, no reload will occur. To force a reload, set `Cache-Control: must-revalidate` in the request headers.
+如果新配置与当前配置相同，则不会重新加载。要强制重新加载，请在请求头中设置 `Cache-Control: must-revalidate`。
 
-### Examples
+### 示例
 
-Set a new active configuration:
+设置新的活动配置：
 
 <pre><code class="cmd bash">curl "http://localhost:2019/load" \
 	-H "Content-Type: application/json" \
 	-d @caddy.json</code></pre>
 
-Note: curl's `-d` flag removes newlines, so if your config format is sensitive to line breaks (e.g. the Caddyfile), use `--data-binary` instead:
+注意：curl 的 `-d` 标志会移除换行符，因此如果您的配置格式对换行符敏感（如 Caddyfile），请使用 `--data-binary`：
 
 <pre><code class="cmd bash">curl "http://localhost:2019/load" \
 	-H "Content-Type: text/caddyfile" \
@@ -85,22 +85,22 @@ Note: curl's `-d` flag removes newlines, so if your config format is sensitive t
 
 ## POST /stop
 
-Gracefully shuts down the server and exits the process. To only stop the running configuration without exiting the process, use [DELETE /config/](#delete-configpath).
+优雅地关闭服务器并退出进程。如果只想停止运行配置而不退出进程，请使用 [DELETE /config/](#delete-configpath)。
 
-### Example
+### 示例
 
-Stop the process:
+停止进程：
 
 <pre><code class="cmd bash">curl -X POST "http://localhost:2019/stop"</code></pre>
 
 
 ## GET /config/[path]
 
-Exports Caddy's current configuration at the named path. Returns a JSON body.
+导出 Caddy 在指定路径的当前配置。返回 JSON 体。
 
-### Examples
+### 示例
 
-Export entire config and pretty-print it:
+导出整个配置并以美观格式打印：
 
 <pre><code class="cmd"><span class="bash">curl "http://localhost:2019/config/" | jq</span>
 {
@@ -133,7 +133,7 @@ Export entire config and pretty-print it:
 	}
 }</code></pre>
 
-Export just the listener addresses:
+仅导出监听器地址：
 
 <pre><code class="cmd"><span class="bash">curl "http://localhost:2019/config/apps/http/servers/myserver/listen"</span>
 [":443"]</code></pre>
@@ -142,30 +142,30 @@ Export just the listener addresses:
 
 ## POST /config/[path]
 
-Changes Caddy's configuration at the named path to the JSON body of the request. If the destination value is an array, POST appends; if an object, it creates or replaces.
+将 Caddy 在指定路径的配置更改为请求的 JSON 体。如果目标值是一个数组，POST 会追加；如果是一个对象，它会创建或替换。
 
-As a special case, many items can be added to an array if:
+作为特殊情况，许多项目可以添加到数组中，如果：
 
-1. the path ends in `/...`
-2. the element of the path before `/...` refers to an array
-3. the payload is an array
+1. 路径以 `/...` 结尾
+2. `/...` 之前的路径元素引用一个数组
+3. 负载是一个数组
 
-In this case, the elements in the payload's array will be expanded, and each one will be appended to the destination array. In Go terms, this would have the same effect as:
+在这种情况下，负载数组中的元素将被扩展，每个元素将被追加到目标数组中。在 Go 术语中，这相当于：
 
 ```go
 baseSlice = append(baseSlice, newElems...)
 ```
 
-### Examples
+### 示例
 
-Add a listener address:
+添加监听器地址：
 
 <pre><code class="cmd bash">curl \
 	-H "Content-Type: application/json" \
 	-d '":8080"' \
 	"http://localhost:2019/config/apps/http/servers/myserver/listen"</code></pre>
 
-Add multiple listener addresses:
+添加多个监听器地址：
 
 <pre><code class="cmd bash">curl \
 	-H "Content-Type: application/json" \
@@ -174,11 +174,11 @@ Add multiple listener addresses:
 
 ## PUT /config/[path]
 
-Changes Caddy's configuration at the named path to the JSON body of the request. If the destination value is a position (index) in an array, PUT inserts; if an object, it strictly creates a new value.
+将 Caddy 在指定路径的配置更改为请求的 JSON 体。如果目标值是数组中的位置（索引），PUT 会插入；如果是一个对象，它会严格创建新值。
 
-### Example
+### 示例
 
-Add a listener address in the first slot:
+在第一个位置添加监听器地址：
 
 <pre><code class="cmd bash">curl -X PUT \
 	-H "Content-Type: application/json" \
@@ -188,11 +188,11 @@ Add a listener address in the first slot:
 
 ## PATCH /config/[path]
 
-Changes Caddy's configuration at the named path to the JSON body of the request. PATCH strictly replaces an existing value or array element.
+将 Caddy 在指定路径的配置更改为请求的 JSON 体。PATCH 严格替换现有值或数组元素。
 
-### Example
+### 示例
 
-Replace the listener addresses:
+替换监听器地址：
 
 <pre><code class="cmd bash">curl -X PATCH \
 	-H "Content-Type: application/json" \
@@ -203,24 +203,24 @@ Replace the listener addresses:
 
 ## DELETE /config/[path]
 
-Removes Caddy's configuration at the named path. DELETE deletes the target value.
+删除 Caddy 在指定路径的配置。DELETE 删除目标值。
 
-### Examples
+### 示例
 
-To unload the entire current configuration but leave the process running:
+卸载当前整个配置但保持进程运行：
 
 <pre><code class="cmd bash">curl -X DELETE "http://localhost:2019/config/"</code></pre>
 
-To stop only one of your HTTP servers:
+仅停止您的一个 HTTP 服务器：
 
 <pre><code class="cmd bash">curl -X DELETE "http://localhost:2019/config/apps/http/servers/myserver"</code></pre>
 
 
-## Using `@id` in JSON
+## 在 JSON 中使用 `@id`
 
-You can embed IDs in your JSON document for easier direct access to those parts of the JSON.
+您可以在 JSON 文档中嵌入 ID，以便更直接地访问这些部分。
 
-Simply add a field called `"@id"` to an object and give it a unique name. For example, if you had a reverse proxy handler that you wanted to access frequently:
+只需将名为 `"@id"` 的字段添加到对象中，并给它一个唯一名称。例如，如果您有一个反向代理处理器，您想频繁访问它：
 
 ```json
 {
@@ -229,58 +229,58 @@ Simply add a field called `"@id"` to an object and give it a unique name. For ex
 }
 ```
 
-To use it, simply make a request to the `/id/` API endpoint in the same way you would to the corresponding `/config/` endpoint, but without the whole path. The ID takes the request directly into that scope of the config for you.
+要使用它，只需以与相应 `/config/` 端点相同的方式向 `/id/` API 端点发出请求，只是不需要完整路径。ID 会将请求直接带入该配置范围。
 
-For example, to access the upstreams of the reverse proxy without an ID, the path would be something like
+例如，不使用 ID 访问反向代理的上游端，路径可能是：
 
 ```
 /config/apps/http/servers/myserver/routes/1/handle/0/upstreams
 ```
 
-but with an ID, the path becomes
+但使用 ID 后，路径变为：
 
 ```
 /id/my_proxy/upstreams
 ```
 
-which is much easier to remember and write by hand.
+这更容易记忆和手动编写。
 
-## Concurrent config changes
+## 并发配置更改
 
 <aside class="tip">
 
-This section is for all `/config/` endpoints. It is experimental and subject to change.
+本节适用于所有 `/config/` 端点。这是实验性的，可能会更改。
 
 </aside>
 
 
-Caddy's config API provides [ACID guarantees <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/ACID) for individual requests, but changes that involve more than a single request are subject to collisions or data loss if not properly synchronized.
+Caddy 的配置 API 为单个请求提供 [ACID 保证 <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/ACID)，但涉及多个请求的更改，如果没有适当同步，可能会发生冲突或数据丢失。
 
-For example, two clients may `GET /config/foo` at the same time, make an edit within that scope (config path), then call `POST|PUT|PATCH|DELETE /config/foo/...` at the same time to apply their changes, resulting in a collision: either one will overwrite the other, or the second might leave the config in an unintended state since it was applied to a different version of the config than it was prepared against. This is because the changes are not aware of each other.
+例如，两个客户端可能同时 `GET /config/foo`，在该范围内进行编辑（配置路径），然后同时调用 `POST|PUT|PATCH|DELETE /config/foo/...` 应用更改，导致冲突：要么一个会覆盖另一个，要么第二个可能将配置置于意外状态，因为它应用于与其准备不同的配置版本。这是因为更改彼此不感知。
 
-Caddy's API does not support transactions spanning multiple requests, and HTTP is a stateless protocol. However, you can use the `Etag` and `If-Match` headers to detect and prevent collisions for any and all changes as a kind of optimistic concurrency control. This is useful if there is any chance that you are using Caddy's `/config/...` endpoints concurrently without synchronization. All responses to `GET /config/...` requests have an HTTP header called `Etag` that contains the path and a hash of the contents in that scope (e.g. `Etag: "/config/apps/http/servers 65760b8e"`). Simply set the `If-Match` header on a mutative request to that of an Etag header from a previous `GET` request.
+Caddy 的 API 不支持跨多个请求的事务，HTTP 是无状态协议。但是，您可以使用 `Etag` 和 `If-Match` 头来检测和防止任何和所有更改的冲突，作为一种乐观并发控制。如果可能并未经过同步就并发使用 Caddy 的 `/config/...` 端点，这将很有用。所有 `GET /config/...` 请求的响应都有一个名为 `Etag` 的 HTTP 头，其中包含路径和该范围的哈希值（例如 `Etag: "/config/apps/http/servers 65760b8e"`）。只需在变更请求中将 `If-Match` 头设置为先前 `GET` 请求的 Etag 头的值。
 
-The basic algorithm for this is as follows:
+基本算法如下：
 
-1. Perform a `GET` request to any scope `S` within the config. Hold onto the `Etag` header of the response.
-2. Make your desired change on the returned config.
-3. Perform a `POST|PUT|PATCH|DELETE` request within scope `S`, setting the `If-Match` request header to the stored `Etag` value.
-4. If the response is HTTP 412 (Precondition Failed), repeat from step 1, or give up after too many attempts.
+1. 对配置内的任何范围 `S` 执行 `GET` 请求。保留响应的 `Etag` 头。
+2. 对返回的配置进行所需更改。
+3. 在范围 `S` 内执行 `POST|PUT|PATCH|DELETE` 请求，将 `If-Match` 请求头设置为存储的 `Etag` 值。
+4. 如果响应是 HTTP 412（前置条件失败），从步骤 1 重复，或在尝试过多后放弃。
 
-This algorithm safely allows multiple, overlapping changes to Caddy's configuration without explicit synchronization. It is designed so that simultaneous changes to different parts of the config don't require a retry: only changes that overlap the same scope of the config can possibly cause a collision and thus require a retry.
+此算法允许对 Caddy 配置进行多个重叠更改，而无需显式同步。它的设计使得对配置不同部分的并发更改不需要重试：只有重叠配置同一范围的更改才可能引起冲突，因此需要重试。
 
 
 ## POST /adapt
 
-Adapts a configuration to Caddy JSON without loading or running it. If successful, the resulting JSON document is returned in the response body.
+将配置适配为 Caddy JSON，但不加载或运行它。如果成功，结果 JSON 文档将在响应体中返回。
 
-The Content-Type header is used to specify the configuration format in the same way that [/load](#post-load) works. For example, to adapt a Caddyfile, set `Content-Type: text/caddyfile`.
+Content-Type 头用于指定配置格式，方式与 [/load](#post-load) 相同。例如，要适配 Caddyfile，设置 `Content-Type: text/caddyfile`。
 
-This endpoint will adapt any configuration format as long as the associated [config adapter](/docs/config-adapters) is plugged in to your Caddy build.
+此端点将适配任何配置格式，只要相关的 [配置适配器](/docs/config-adapters) 已插入您的 Caddy 构建。
 
-### Examples
+### 示例
 
-Adapt a Caddyfile to JSON:
+将 Caddyfile 适配为 JSON：
 
 <pre><code class="cmd bash">curl "http://localhost:2019/adapt" \
 	-H "Content-Type: text/caddyfile" \
@@ -289,7 +289,7 @@ Adapt a Caddyfile to JSON:
 
 ## GET /pki/ca/&lt;id&gt;
 
-Returns information about a particular [PKI app](/docs/json/apps/pki/) CA by its ID. If the requested CA ID is the default (`local`), then the CA will be provisioned if it has not already been. Other CA IDs will return an error if they have not been previously provisioned.
+通过 ID 返回特定 [PKI 应用](/docs/json/apps/pki/) CA 的信息。如果请求的 CA ID 是默认的 (`local`)，则如果尚未配置，将配置该 CA。其他 CA ID 如果尚未预先配置将返回错误。
 
 <pre><code class="cmd"><span class="bash">curl "http://localhost:2019/pki/ca/local" | jq</span>
 {
@@ -304,9 +304,9 @@ Returns information about a particular [PKI app](/docs/json/apps/pki/) CA by its
 
 ## GET /pki/ca/&lt;id&gt;/certificates
 
-Returns the certificate chain of a particular [PKI app](/docs/json/apps/pki/) CA by its ID. If the requested CA ID is the default (`local`), then the CA will be provisioned if it has not already been. Other CA IDs will return an error if they have not been previously provisioned.
+通过 ID 返回特定 [PKI 应用](/docs/json/apps/pki/) CA 的证书链。如果请求的 CA ID 是默认的 (`local`)，则如果尚未配置，将配置该 CA。其他 CA ID 如果尚未预先配置将返回错误。
 
-This endpoint is used internally by the [`caddy trust`](/docs/command-line#caddy-trust) command to allow installing the CA's root certificate to your system's trust store.
+此端点被 [`caddy trust`](/docs/command-line#caddy-trust) 命令内部使用，以允许将 CA 的根证书安装到系统信任存储区。
 
 <pre><code class="cmd"><span class="bash">curl "http://localhost:2019/pki/ca/local/certificates"</span>
 -----BEGIN CERTIFICATE-----
@@ -323,7 +323,7 @@ MIIBpDCCAUmgAwIBAgIQTS5a+3LUKNxC6qN3ZDR8bDAKBggqhkjOPQQDAjAwMS4w
 
 ## GET /reverse_proxy/upstreams
 
-Returns the current status of the configured reverse proxy upstreams (backends) as a JSON document.
+以 JSON 文档形式返回已配置的反向代理上游端（后端）的当前状态。
 
 <pre><code class="cmd"><span class="bash">curl "http://localhost:2019/reverse_proxy/upstreams" | jq</span>
 [
@@ -332,10 +332,10 @@ Returns the current status of the configured reverse proxy upstreams (backends) 
 	{"address": "10.0.1.3:80", "num_requests": 3, "fails": 3}
 ]</code></pre>
 
-Each entry in the JSON array is a configured [upstream](/docs/json/apps/http/servers/routes/handle/reverse_proxy/upstreams/) stored in the global upstream pool.
+JSON 数组中的每个条目是全局上游池中配置的 [上游端](/docs/json/apps/http/servers/routes/handle/reverse_proxy/upstreams/)。
 
-- **address** is the dial address of the upstream.
-- **num_requests** is the amount of active requests currently being handled by the upstream.
-- **fails** the current number of failed requests remembered, as configured by passive health checks.
+- **address** 是上游端的拨号地址。
+- **num_requests** 是当前由上游端处理的活跃请求数量。
+- **fails** 是当前记住的失败请求数量，如通过被动健康检查配置的。
 
-If your goal is to determine a backend's availability, you will need to cross-check relevant properties of the upstream against the handler configuration you are utilizing. For example, if you've enabled [passive health checks](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/) for your proxies, then you need to also take into consideration the `fails` and `num_requests` values to determine if an upstream is considered available: check that the `fails` amount is less than your configured maximum amount of failures for your proxy (i.e. [`max_fails`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/max_fails/)), and that `num_requests` is less than or equal to your configured amount of maximum requests per upstream (i.e. [`unhealthy_request_count`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/unhealthy_request_count/) for the whole proxy, or [`max_requests`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/upstreams/max_requests/) for individual upstreams).
+如果您的目标是确定后端的可用性，您需要将上游的相关属性与您使用的处理器配置进行交叉检查。例如，如果您已为代理启用 [被动健康检查](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/)，那么您还需要考虑 `fails` 和 `num_requests` 值来确定上游是否被视为可用：检查 `fails` 数量是否小于代理配置的失败最大数量（即 [`max_fails`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/max_fails/)），并且 `num_requests` 小于或等于您配置的每个上游的最大请求数量（即整个代理的 [`unhealthy_request_count`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/health_checks/passive/unhealthy_request_count/)，或单个上游端的 [`max_requests`](/docs/json/apps/http/servers/routes/handle/reverse_proxy/upstreams/max_requests/)）。

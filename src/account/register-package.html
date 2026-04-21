@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Register Package - Caddy</title>
+		<title>注册包 - Caddy</title>
 		{{import "/old/includes/account/head.html"}}
 		{{template "account-head"}}
 		<script src="/old/resources/js/account/register-package.js{{template "cacheBust"}}"></script>
@@ -15,24 +15,24 @@
 						<div class="form-fields">
 							<div class="field">
 								<label>
-									<b>Package import path</b>
+									<b>包导入路径</b>
 									<input type="text" name="package" required>
 								</label>
 								<div class="description">
-									You must use <a href="https://github.com/golang/go/wiki/Modules#semantic-import-versioning" target="_blank">semantic import versioning</a>. Basically, this means if your module is at v2 or higher the import path must be suffixed with <b>/vN</b> (where <b>N</b> is the major version number).
+									必须使用 <a href="https://github.com/golang/go/wiki/Modules#semantic-import-versioning" target="_blank">语义化导入版本控制</a>。也就是说，如果您的模块版本为 v2 或更高，导入路径必须附加 <b>/vN</b>（其中 <b>N</b> 是主版本号）。
 								</div>
 							</div>
 							<div class="field">
 								<label>
-									<b>Version</b>
-									<input type="text" name="version" placeholder="latest">
+									<b>版本</b>
+									<input type="text" name="version" placeholder="最新版本">
 								</label>
 								<div class="description">
-									Optional. Any version string recognized by <a href="https://github.com/golang/go/wiki/Modules#version-selection">Go module</a> tooling is acceptable.
+									选填。Go 模块工具识别的任何版本字符串均可。
 								</div>
 							</div>
 							<div class="text-center">
-								<button type="submit" id="submit" class="blue">Claim Package</button>
+								<button type="submit" id="submit" class="blue">认领包</button>
 							</div>
 						</div>
 					</form>

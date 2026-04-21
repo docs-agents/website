@@ -1,29 +1,29 @@
 ---
-title: Caddyfile Concepts
+title: Caddyfile 概念
 ---
 
-# Caddyfile Concepts
+# Caddyfile 概念
 
-This document will help you learn about the HTTP Caddyfile in detail.
+本文档将帮助您详细了解 HTTP Caddyfile。
 
-1. [Structure](#structure)
-	- [Blocks](#blocks)
-	- [Directives](#directives)
-	- [Tokens and quotes](#tokens-and-quotes)
-2. [Global options](#global-options)
-3. [Addresses](#addresses)
-4. [Matchers](#matchers)
-5. [Placeholders](#placeholders)
-6. [Snippets](#snippets)
-7. [Named Routes](#named-routes)
-8. [Comments](#comments)
-9. [Environment variables](#environment-variables)
+1. [结构](#structure)
+	- [代码块](#blocks)
+	- [指令](#directives)
+	- [令牌和引号](#tokens-and-quotes)
+2. [全局选项](#global-options)
+3. [地址](#addresses)
+4. [匹配器](#matchers)
+5. [占位符](#placeholders)
+6. [片段](#snippets)
+7. [命名路由](#named-routes)
+8. [注释](#comments)
+9. [环境变量](#environment-variables)
 
 
 
-## Structure
+## 结构
 
-The Caddyfile's structure can be described visually:
+Caddyfile 的结构可以用以下方式可视化描述：
 
 <style>
 	:root {
@@ -78,13 +78,13 @@ The Caddyfile's structure can be described visually:
 		--struct-subdir-bg: #6a4a2e;
 		--struct-subdir-fg: #ebc095;
 	}
-	/* color variables - easy to tweak */
+	/* 颜色变量 - 易于调整 */
 	.struct-caddyfile-visual-repl {
 		display: block;
 		margin: 0;
 		padding: 0;
 	}
-	/* default (light) visual background */
+	/* 默认（亮色）可视化背景 */
 	.struct-caddyfile-visual-repl .struct-visual {
 		box-sizing: border-box;
 		margin: 0 0 1.25rem;
@@ -95,7 +95,7 @@ The Caddyfile's structure can be described visually:
 		font-family: Inter, 'Source Sans Pro', Arial, system-ui, sans-serif;
 		line-height: 1.2;
 	}
-	/* layout */
+	/* 布局 */
 	.struct-caddyfile-visual-repl .struct-panel {
 		display: flex;
 		gap: 18px;
@@ -110,7 +110,7 @@ The Caddyfile's structure can be described visually:
 		width: 310px;
 		padding: 12px 4px;
 	}
-	/* code-like box: use normal whitespace so HTML pretty-printing won't leak source indentation */
+	/* 类似代码的框：使用普通空白字符，使 HTML 排版不会泄露源缩进 */
 	.struct-caddyfile-visual-repl .struct-code-box {
 		background: transparent;
 		border-radius: 8px;
@@ -192,7 +192,7 @@ The Caddyfile's structure can be described visually:
 	.struct-legend .struct-item-spacer {
 		height: 8px;
 	}
-	/* swatch for border-based legend items (blocks) */
+	/* 基于边框的图例项的色块（代码块） */
 	.struct-legend .struct-swatch-border {
 		width: 42px;
 		height: 24px;
@@ -201,7 +201,7 @@ The Caddyfile's structure can be described visually:
 		border: 4px solid transparent;
 		background: transparent;
 	}
-	/* swatch for filled legend items (text backgrounds) */
+	/* 基于填充的图例项的色块（文本背景） */
 	.struct-legend .struct-swatch-fill {
 		width: 42px;
 		height: 24px;
@@ -216,8 +216,8 @@ The Caddyfile's structure can be described visually:
 	.struct-caddyfile-visual-repl .struct-visual, .struct-caddyfile-visual-repl .struct-panel, .struct-caddyfile-visual-repl .struct-diagram, .struct-caddyfile-visual-repl .struct-legend, .struct-caddyfile-visual-repl .struct-code-box {
 		margin: 0;
 	}
-	/* force compact vertical rhythm and explicit indenting so global CSS can't leak in
-		NOTE: use normal whitespace so server-side HTML formatting doesn't create visible gaps */
+	/* 强制紧凑的垂直节奏和明确的缩进，防止全局 CSS 泄露
+		注意：使用普通空白字符，防止服务器端 HTML 格式创建可见间隙 */
 	.struct-line {
 		display: block !important;
 		margin: 0 !important;
@@ -225,8 +225,7 @@ The Caddyfile's structure can be described visually:
 		line-height: 1.2 !important;
 		white-space: normal !important;
 	}
-	/* helper to visually indent lines (do not rely on source file whitespace)
-		use an explicit spacer element so HTML formatting won't affect alignment */
+	/* 用于可视化缩进行的辅助：使用显式的间隔元素，防止 HTML 格式影响对齐 */
 	.struct-line.struct-indent {
 		padding-left: 0 !important;
 	}
@@ -236,7 +235,7 @@ The Caddyfile's structure can be described visually:
 		height: 1px;
 		margin-right: 0.18rem;
 	}
-	/* smaller spacer for sub-directive / nested lines */
+	/* 子指令/嵌套行的较小间隔 */
 	.struct-subindent-spacer {
 		display: inline-block;
 		width: 0.9rem;
@@ -260,7 +259,7 @@ The Caddyfile's structure can be described visually:
 					</div>
 					<div class="struct-block snippet">
 						<div class="struct-line">(snippet) {</div>
-						<div class="struct-line struct-indent"><span class="struct-indent-spacer"></span><span class="struct-comment"># this is a reusable snippet</span></div>
+						<div class="struct-line struct-indent"><span class="struct-indent-spacer"></span><span class="struct-comment"># 这是一个可重用的片段</span></div>
 						<div class="struct-line struct-indent"><span class="struct-indent-spacer"></span><span class="struct-directive">log</span> {</div>
 						<div class="struct-line"><span class="struct-subindent-spacer"></span><span class="struct-indent-spacer"></span><span class="struct-subdir">output</span> <span class="struct-arg">file</span> <span class="struct-arg">/var/log/access.log</span></div>
 						<div class="struct-line"><span class="struct-indent-spacer"></span>}</div>
@@ -289,44 +288,44 @@ The Caddyfile's structure can be described visually:
 				</div>
 			</div>
 			<div class="struct-legend" aria-hidden="false">
-				<div class="struct-legend-title">Legend</div>
+				<div class="struct-legend-title">图例</div>
 				<div class="struct-item-spacer"></div>
-				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-global)"></div><div class="struct-label">Global options block</div></div>
-				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-snippet)"></div><div class="struct-label">Snippet</div></div>
-				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-site)"></div><div class="struct-label">Site block</div></div>
-				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-matcher)"></div><div class="struct-label">Matcher definition</div></div>
+				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-global)"></div><div class="struct-label">全局选项代码块</div></div>
+				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-snippet)"></div><div class="struct-label">片段</div></div>
+				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-site)"></div><div class="struct-label">站点代码块</div></div>
+				<div class="struct-item"><div class="struct-swatch-border" style="border-color:var(--struct-border-matcher)"></div><div class="struct-label">匹配器定义</div></div>
 				<div class="struct-item-spacer"></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-opt-name-bg)"></div><div class="struct-label">Option name</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-opt-value-bg)"></div><div class="struct-label">Option value</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-comment-bg)"></div><div class="struct-label">Comment</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-site-addr-bg)"></div><div class="struct-label">Site address</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-directive-bg)"></div><div class="struct-label">Directive</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-matcher-token-bg)"></div><div class="struct-label">Matcher token</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-arg-bg)"></div><div class="struct-label">Argument</div></div>
-				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-subdir-bg)"></div><div class="struct-label">Subdirective</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-opt-name-bg)"></div><div class="struct-label">选项名称</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-opt-value-bg)"></div><div class="struct-label">选项值</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-comment-bg)"></div><div class="struct-label">注释</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-site-addr-bg)"></div><div class="struct-label">站点地址</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-directive-bg)"></div><div class="struct-label">指令</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-matcher-token-bg)"></div><div class="struct-label">匹配器令牌</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-arg-bg)"></div><div class="struct-label">参数</div></div>
+				<div class="struct-item"><div class="struct-swatch-fill" style="background:var(--struct-subdir-bg)"></div><div class="struct-label">子指令</div></div>
 			</div>
 		</div>
 	</div>
 </div>
 
-Key points:
+要点：
 
-- An optional [**global options block**](#global-options) can be the very first thing in the file.
+- 可选的 [**全局选项代码块**](#global-options) 可以出现在文件的最开始。
 
-- [Snippets](#snippets) or [named routes](#named-routes) may optionally appear next.
+- [片段](#snippets) 或 [命名路由](#named-routes) 可以选择性地出现在其后。
 
-- Otherwise, the first line of the Caddyfile is **always** the [address(es)](#addresses) of the site to serve.
+- 否则，Caddyfile 的第一行**始终**是要服务的站点的 [地址](#addresses)。
 
-- All [directives](#directives) and [matchers](#matchers) **must** go in a site block. There is no global scope or inheritance across site blocks.
+- 所有 [指令](#directives) 和 [匹配器](#matchers) **必须**放在站点代码块中。没有全局作用域，也不存在跨站点代码块的继承。
 
-- If there is only one site block, its curly braces `{ }` are optional.
+- 如果只有一个站点代码块，其花括号 `{ }` 是可选的。
 
-A Caddyfile consists of at least one or more site blocks, which always starts with one or more [addresses](#addresses) for the site. Any directives appearing before the address will be confusing to the parser.
+Caddyfile 由一个或多个站点代码块组成，每个站点代码块总是以一个或多个站点的 [地址](#addresses) 开始。出现在地址之前的任何指令都会使解析器感到困惑。
 
 
-### Blocks
+### 代码块
 
-Opening and closing a **block** is done with curly braces:
+使用花括号打开和关闭一个**代码块**：
 
 ```
 ... {
@@ -334,11 +333,11 @@ Opening and closing a **block** is done with curly braces:
 }
 ```
 
-- The open curly brace `{` must be at the end of its line and preceded by a space.
+- 开花括号 `{` 必须在其行的末尾，并且前面有一个空格。
 
-- The close curly brace `}` must be on its own line.
+- 闭花括号 `}` 必须在自己的行上。
 
-When there is only one site block, the curly braces (and indentation) are optional. This is for convenience to quickly define a single site, for example, this:
+当只有一个站点代码块时，花括号（和缩进）是可选的。这是为了方便快速定义单个站点，例如，这：
 
 ```caddy
 localhost
@@ -347,7 +346,7 @@ reverse_proxy /api/* localhost:9001
 file_server
 ```
 
-is equivalent to:
+等同于：
 
 ```caddy
 localhost {
@@ -356,9 +355,9 @@ localhost {
 }
 ```
 
-when you have only a single site block; it's a matter of preference.
+当你只有单个站点代码块时，这是一种个人偏好的问题。
 
-To configure multiple sites with the same Caddyfile, you **must** use curly braces around each one to separate their configurations:
+要使用同一个 Caddyfile 配置多个站点，您**必须**对每个站点使用花括号来分隔它们的配置：
 
 ```caddy
 example1.com {
@@ -371,12 +370,12 @@ example2.com {
 }
 ```
 
-If a request matches multiple site blocks, the site block with the most specific matching address is chosen. Requests don't cascade into to other site blocks.
+如果一个请求匹配多个站点代码块，则选择具有最具体匹配地址的站点代码块。请求不会级联到其他站点代码块。
 
 
-### Directives
+### 指令
 
-[**Directives**](/docs/caddyfile/directives) are functional keywords which customize how the site is served. They **must** appear within site blocks. For example, a complete file server config might look like this:
+[**指令**](/docs/caddyfile/directives) 是自定义站点服务方式的职能关键字。它们**必须**出现在站点代码块内。例如，一个完整的服务器的配置可能如下所示：
 
 ```caddy
 localhost {
@@ -384,7 +383,7 @@ localhost {
 }
 ```
 
-Or a reverse proxy:
+或者反向代理：
 
 ```caddy
 localhost {
@@ -392,11 +391,11 @@ localhost {
 }
 ```
 
-In these examples, [`file_server`](/docs/caddyfile/directives/file_server) and [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy) are directives. Directives are the first word on a line in a site block.
+在这些示例中，[`file_server`](/docs/caddyfile/directives/file_server) 和 [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy) 是指令。指令是站点代码块中一行的第一个单词。
 
-In the second example, `localhost:9000` is an **argument** because it appears on the same line after the directive.
+在第二个示例中，`localhost:9000` 是一个**参数**，因为它出现在指令之后的同一行上。
 
-Sometimes directives can open their own blocks. **Subdirectives** appear on the beginning of each line within directive blocks:
+有时指令可以打开它们自己的代码块。**子指令**出现在指令代码块中每行的开头：
 
 ```caddy
 localhost {
@@ -406,51 +405,51 @@ localhost {
 }
 ```
 
-Here, `lb_policy` is a subdirective to [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy) (it sets the load balancing policy to use between backends).
+这里，`lb_policy` 是 [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy) 的一个子指令（它设置要在后端之间使用的负载均衡策略）。
 
-**Unless otherwise documented, directives cannot be used within other directive blocks.** For example, [`basic_auth`](/docs/caddyfile/directives/basic_auth) cannot be used within [`file_server`](/docs/caddyfile/directives/file_server) because the file server does not know how to do authentication; but you can use directives within [`route`](/docs/caddyfile/directives/route), [`handle`](/docs/caddyfile/directives/handle), and [`handle_path`](/docs/caddyfile/directives/handle_path) blocks because they are specifically designed to group directives together.
+**除非另有说明，否则指令不能在其他指令代码块中使用。** 例如，[`basic_auth`](/docs/caddyfile/directives/basic_auth) 不能用于 [`file_server`](/docs/caddyfile/directives/file_server) 内，因为文件服务器不知道如何进行身份验证；但您可以在 [`route`](/docs/caddyfile/directives/route)、[`handle`](/docs/caddyfile/directives/handle) 和 [`handle_path`](/docs/caddyfile/directives/handle_path) 代码块中使用指令，因为它们是专门设计用于将指令组合在一起的。
 
-Note that when the HTTP Caddyfile is adapted, HTTP handler directives are sorted according to a specific default [directive order](/docs/caddyfile/directives#directive-order) unless in a [`route`](/docs/caddyfile/directives/route) block, so the order of appearance of the directives does not matter except in `route` blocks.
+注意，当 HTTP Caddyfile 被适配时，HTTP 处理器指令会根据特定的默认 [指令顺序](/docs/caddyfile/directives#directive-order) 进行排序，除非在 [`route`](/docs/caddyfile/directives/route) 代码块中，因此指令出现的顺序无关紧要，除了在 `route` 代码块中。
 
 
-### Tokens and quotes
+### 令牌和引号
 
-The Caddyfile is lexed into tokens before being parsed. Whitespace is significant in the Caddyfile, because tokens are separated by whitespace.
+Caddyfile 在解析之前会被词法分析为令牌。空白字符在 Caddyfile 中是重要的，因为令牌由空白字符分隔。
 
-Often, directives expect a certain number of arguments; if a single argument has a value with whitespace, it would be lexed as two separate tokens:
+通常，指令期望特定数量的参数；如果单个参数的值包含空白字符，它会被词法分析为两个单独的令牌：
 
 ```caddy-d
 directive abc def
 ```
 
-This could be problematic and return errors or unexpected behavior.
+这可能会产生问题并返回错误或意外行为。
 
-If `abc def` is supposed to be the value of a single argument, it needs to be quoted:
+如果 `abc def` 应该是单个参数的值，它需要被引用：
 
 ```caddy-d
 directive "abc def"
 ```
 
-Quotes can be escaped if you need to use quotes in quoted tokens, too:
+如果需要在使用引号的令牌中使用引号，则可以转义引号：
 
 ```caddy-d
 directive "\"abc def\""
 ```
 
-To avoid escaping quotes, you can instead use backticks <code>\` \`</code> to enclose tokens; for example:
+为了避免转义引号，您可以使用反引号 <code>\` \`</code> 来包裹令牌；例如：
 
 ```caddy-d
 directive `{"foo": "bar"}`
 ```
 
-Inside quoted tokens, all other characters are treated literally, including spaces, tabs, and newlines. Multi-line tokens are thus possible:
+在引用的令牌内，所有其他字符都被视为字面量，包括空格、制表符和换行符。因此多行令牌是可能的：
 
 ```caddy-d
-directive "first line
-	second line"
+directive "第一行
+	第二行"
 ```
 
-Heredocs <span id="heredocs"/> are also supported:
+支持多行字符串 <span id="heredocs"/>：
 
 ```caddy
 example.com {
@@ -463,16 +462,16 @@ example.com {
 }
 ```
 
-The opening heredoc marker must start with `<<`, followed by any text (uppercase letters recommended). The closing heredoc marker must be the same text (in the above example, `HTML`). The opening marker can be escaped with `\<<` to prevent heredoc parsing, if needed.
+开多行字符串标记必须以 `<<` 开头，后面跟任意文本（推荐使用大写字母）。闭多行字符串标记必须是相同的文本（在上述示例中为 `HTML`）。如果需要，开标记可以用 `\<<` 转义以防止多行字符串解析。
 
-The closing marker can be indented, which causes every line of text to have that much indentation stripped (inspired by [PHP](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc)) which is nice for readability inside [blocks](#blocks) while giving great control of the whitespace in the token text. The trailing newline is also stripped, but can be retained by adding an extra blank line before the closing marker.
+闭标记可以缩进，这会导致文本的每一行都减去该缩进（受 [PHP](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) 启发），这对于 [代码块](#blocks) 内的可读性很有用，同时在令牌文本中提供对空白的完全控制。尾部换行符也被剥离，但可以通过在闭标记前添加一个额外的空行来保留。
 
-Additional tokens may follow the closing marker as arguments to the directive (such as in the example above, the status code `200`).
+额外的令牌可以在闭标记之后出现，作为指令的参数（如上面的示例中，状态码 `200`）。
 
 
-## Global options
+## 全局选项
 
-A Caddyfile may optionally start with a special block that has no keys, called a [global options block](/docs/caddyfile/options):
+Caddyfile 可以选择以一个没有键的特殊代码块开始，称为 [全局选项代码块](/docs/caddyfile/options)：
 
 ```caddy
 {
@@ -480,11 +479,11 @@ A Caddyfile may optionally start with a special block that has no keys, called a
 }
 ```
 
-If present, it must be the very first block in the config.
+如果存在，它必须是配置中的第一个代码块。
 
-It is used to set options that apply globally, or not to any one site in particular. Inside, only global options can be set; you cannot use regular site directives in them.
+它用于设置全局应用的选项，或者不特定于任何站点。在其中，只能设置全局选项；您不能在其中使用常规站点指令。
 
-For example, to enable the `debug` global option, which is commonly used to produce verbose logs for troubleshooting:
+例如，要启用 `debug` 全局选项，该选项通常用于生成详细的日志以进行故障排除：
 
 ```caddy
 {
@@ -492,72 +491,72 @@ For example, to enable the `debug` global option, which is commonly used to prod
 }
 ```
 
-**[Read the Global Options page](/docs/caddyfile/options) to learn more.**
+**[阅读全局选项页面](/docs/caddyfile/options)以了解更多。**
 
 
 
-## Addresses
+## 地址
 
-An address always appears at the top of the site block, and is usually the first thing in the Caddyfile.
+地址始终出现在站点代码块的顶部，并且通常是 Caddyfile 中的第一个内容。
 
-These are examples of valid addresses:
+以下是有效地址的示例：
 
-| Address              | Effect                            |
+| 地址              | 效果                            |
 |----------------------|-----------------------------------|
-| `example.com`        | HTTPS with managed [publicly-trusted certificate](/docs/automatic-https#hostname-requirements) |
-| `*.example.com`      | HTTPS with managed [wildcard publicly-trusted certificate](/docs/caddyfile/patterns#wildcard-certificates) |
-| `localhost`          | HTTPS with managed [locally-trusted certificate](/docs/automatic-https#local-https) |
-| `http://`            | HTTP catch-all, affected by [`http_port`](/docs/caddyfile/options#http-port) |
-| `https://`           | HTTPS catch-all, affected by [`https_port`](/docs/caddyfile/options#http-port) |
-| `http://example.com` | HTTP explicitly, with a `Host` matcher |
-| `example.com:443`    | HTTPS due to matching the [`https_port`](/docs/caddyfile/options#http-port) default |
-| `:443`               | HTTPS catch-all due to matching the [`https_port`](/docs/caddyfile/options#http-port) default |
-| `:8080`              | HTTP on non-standard port, no `Host` matcher |
-| `localhost:8080`     | HTTPS on non-standard port, due to having a valid domain |
-| `https://example.com:443` | HTTPS, but having both `https://` and `:443` is redundant |
-| `127.0.0.1` | HTTPS, with a locally-trusted IP certificate |
-| `http://127.0.0.1` | HTTP, with an IP address `Host` matcher (rejects `localhost`) |
+| `example.com`        | HTTPS，并使用管理的 [公共信任的证书](/docs/automatic-https#hostname-requirements) |
+| `*.example.com`      | HTTPS，并使用管理的 [通配符公共信任的证书](/docs/caddyfile/patterns#wildcard-certificates) |
+| `localhost`          | HTTPS，并使用管理的 [本地信任的证书](/docs/automatic-https#local-https) |
+| `http://`            | HTTP 捕获所有，受 [`http_port`](/docs/caddyfile/options#http-port) 影响 |
+| `https://`           | HTTPS 捕获所有，受 [`https_port`](/docs/caddyfile/options#http-port) 影响 |
+| `http://example.com` | 显式 HTTP，带有 `Host` 匹配器 |
+| `example.com:443`    | 由于匹配 [`https_port`](/docs/caddyfile/options#http-port) 默认值而使用 HTTPS |
+| `:443`               | 由于匹配 [`https_port`](/docs/caddyfile/options#http-port) 默认值而使用 HTTPS 捕获所有 |
+| `:8080`              | 非标准端口上的 HTTP，无 `Host` 匹配器 |
+| `localhost:8080`     | 非标准端口上的 HTTPS，因为具有有效域名 |
+| `https://example.com:443` | HTTPS，但同时拥有 `https://` 和 `:443` 是冗余的 |
+| `127.0.0.1` | HTTPS，并使用本地信任的 IP 证书 |
+| `http://127.0.0.1` | HTTP，使用 IP 地址 `Host` 匹配器（拒绝 `localhost`） |
 
 
 <aside class="tip">
 
-[Automatic HTTPS](/docs/automatic-https) is enabled if your site's address contains a hostname or IP address. This behavior is purely implicit, however, so it never overrides any explicit configuration.
+如果您的站点地址包含主机名或 IP 地址，则启用 [自动 HTTPS](/docs/automatic-https)。然而，这种行为完全是隐式的，因此它永远不会覆盖任何显式配置。
 
-For example, if the site's address is `http://example.com`, auto-HTTPS will not activate because the scheme is explicitly `http://`.
+例如，如果站点的地址是 `http://example.com`，由于方案明确为 `http://`，自动 HTTPS 将不会激活。
 
 </aside>
 
 
-From the address, Caddy can potentially infer the scheme, host and port of your site. If the address is without a port, the Caddyfile will choose the port matching the scheme if specified, or the default port of 443 will be assumed.
+从地址，Caddy 可以推断出站点的方案、主机和端口。如果地址没有端口，Caddyfile 将选择与方案匹配的端口，或者假定默认端口 443。
 
-If you specify a hostname, only requests with a matching `Host` header will be honored. In other words, if the site address is `localhost`, then Caddy will not match requests to `127.0.0.1`.
+如果您指定了主机名，则只有匹配的 `Host` 头的请求才会被接受。换句话说，如果站点地址是 `localhost`，则 Caddy 将不会匹配发送到 `127.0.0.1` 的请求。
 
-Wildcards (`*`) may be used, but only to represent precisely one label of the hostname. For example, `*.example.com` matches `foo.example.com` but not `foo.bar.example.com`, and `*` matches `localhost` but not `example.com`. See the [wildcard certificates pattern](/docs/caddyfile/patterns#wildcard-certificates) for a practical example.
+可以使用通配符 (`*`)，但仅用于表示主机名的确切一个标签。例如，`*.example.com` 匹配 `foo.example.com` 但不匹配 `foo.bar.example.com`，而 `*` 匹配 `localhost` 但不匹配 `example.com`。请参阅 [通配符证书模式](/docs/caddyfile/patterns#wildcard-certificates) 获取实际示例。
 
-To catch all hosts, omit the host portion of the address, for example, simply `https://`. This is useful when using [On-Demand TLS](/docs/automatic-https#on-demand-tls), when you don't know the domains ahead of time.
+要捕获所有主机，请省略地址的主机部分，例如，只需 `https://`。这在需要使用 [按需 TLS](/docs/automatic-https#on-demand-tls) 时很有用，因为您事先不知道域名。
 
-If multiple sites share the same definition, you can list all of them together, separated with spaces and commas (at least one space is necessary). The following three examples are equivalent:
+如果多个站点共享相同的定义，您可以将它们列在一起，用空格和逗号分隔（至少需要一个空格）。以下三个示例是等价的：
 
 ```caddy
-# Comma separated site addresses
+# 逗号分隔的站点地址
 localhost:8080, example.com, www.example.com {
 	...
 }
 ```
 
-or
+或
 
 ```caddy
-# Space separated site addresses
+# 空格分隔的站点地址
 localhost:8080 example.com www.example.com {
 	...
 }
 ```
 
-or
+或
 
 ```caddy
-# Comma and new-line separated site addresses
+# 逗号和换行符分隔的站点地址
 localhost:8080,
 example.com,
 www.example.com {
@@ -565,9 +564,9 @@ www.example.com {
 }
 ```
 
-An address must be unique; you cannot specify the same address more than once.
+地址必须是唯一的；您不能指定同一个地址超过一次。
 
-[Placeholders](#placeholders) **cannot** be used in addresses, but you may use Caddyfile-style [environment variables](#environment-variables) in them:
+[占位符](#placeholders) **不能**在地址中使用，但您可以在其中使用 Caddyfile 样式的 [环境变量](#environment-variables)：
 
 ```caddy
 {$DOMAIN:localhost} {
@@ -575,42 +574,42 @@ An address must be unique; you cannot specify the same address more than once.
 }
 ```
 
-By default, sites bind on all network interfaces. If you wish to override this, use the [`bind` directive](/docs/caddyfile/directives/bind) or the [`default_bind` global option](/docs/caddyfile/options#default-bind) to do so.
+默认情况下，站点绑定在所有网络接口上。如果您希望覆盖此行为，请使用 [`bind` 指令](/docs/caddyfile/directives/bind) 或 [`default_bind` 全局选项](/docs/caddyfile/options#default-bind) 来做到这一点。
 
 
 
-## Matchers
+## 匹配器
 
-HTTP handler [directives](#directives) apply to all requests by default (unless otherwise documented).
+HTTP 处理器 [指令](#directives) 默认适用于所有请求（除非另有说明）。
 
-[Request matchers](/docs/caddyfile/matchers) can be used to classify requests by a given criteria. With matchers, you can specify exactly which requests a certain directive applies to.
+[请求匹配器](/docs/caddyfile/matchers) 可用于根据给定标准对请求进行分类。使用匹配器，您可以指定某些指令适用于哪些请求。
 
-For directives that support matchers, the first argument after the directive is the **matcher token**. Here are some examples:
+对于支持匹配器的指令，指令后的第一个参数是**匹配器令牌**。以下是一些示例：
 
 ```caddy-d
-root *           /var/www  # matcher token: *
-root /index.html /var/www  # matcher token: /index.html
-root @post       /var/www  # matcher token: @post
+root *           /var/www  # 匹配器令牌：*
+root /index.html /var/www  # 匹配器令牌：/index.html
+root @post       /var/www  # 匹配器令牌：@post
 ```
 
-Matcher tokens can be omitted entirely to match all requests; for example, `*` does not need to be given if the next argument does not look like a path matcher.
+匹配器令牌可以完全省略以匹配所有请求；例如，如果下一个参数不像路径匹配器，则不需要给出 `*`。
 
-**[Read the Request Matchers page](/docs/caddyfile/matchers) to learn more.**
-
-
+**[阅读请求匹配器页面](/docs/caddyfile/matchers)以了解更多。**
 
 
-## Placeholders
 
-[Placeholders](/docs/conventions#placeholders) are a simple way to inject dynamic values into your static configuration. They can be used as arguments to directives and subdirectives.
 
-Placeholders are bounded on either side by curly braces `{ }` and contain the identifier inside, for example: `{foo.bar}`. The opening placeholder brace can be escaped `\{like.this}` to prevent replacement. Placeholder identifiers are typically namespaced with dots to avoid collisions across modules.
+## 占位符
 
-Which placeholders are available depends on the context. Not all placeholders are available in all parts of the config. For example, [the HTTP app sets placeholders](/docs/json/apps/http/#docs) that are only available in areas of the config related to handling HTTP requests (i.e. in HTTP handler [directives](#directives) and [matchers](#matchers), but _not_ in [`tls` configuration](/docs/caddyfile/directives/tls)). Some directives or matchers may set their own placeholders too which can be used by anything that follows them. Some placeholders [are globally available](/docs/conventions#placeholders).
+[占位符](/docs/conventions#placeholders) 是一种简单的方法，可以将动态值注入到静态配置中。它们可以用作指令和子指令的参数。
 
-You can use any placeholders in the Caddyfile, but for convenience you can also use some of these equivalent shorthands which are expanded when the Caddyfile is parsed:
+占位符由两侧的花括号 `{ }` 限定，并包含内部的标识符，例如：`{foo.bar}`。开占位符花括号可以转义 `\{like.this}` 以防止替换。占位符标识符通常使用点命名空间以避免跨模块冲突。
 
-| Shorthand        | Replaces                            |
+哪些占位符可用取决于上下文。并非所有占位符都在配置的所有部分中可用。例如，[HTTP 应用设置占位符](/docs/json/apps/http/#docs) 仅在配置中与处理 HTTP 请求相关的区域可用（即在 HTTP 处理器 [指令](#directives) 和 [匹配器](#matchers) 中，但 _不_ 在 [`tls` 配置](/docs/caddyfile/directives/tls) 中）。一些指令或匹配器可能会设置它们自己的占位符，这些占位符可以被它们之后的任何内容使用。一些占位符 [在全球范围内可用](/docs/conventions#placeholders)。
+
+您可以在 Caddyfile 中使用任何占位符，但为了方便，您也可以使用这些等效的简写，它们在 Caddyfile 解析时会展开：
+
+| 简写        | 替换为                            |
 |------------------|-------------------------------------|
 | `{cookie.*}`     | `{http.request.cookie.*}`           |
 | `{client_ip}`    | `{http.vars.client_ip}`             |
@@ -660,14 +659,12 @@ You can use any placeholders in the Caddyfile, but for convenience you can also 
 | `{%uri}`              | `{http.request.uri_escaped}`             |
 | `{vars.*}`            | `{http.vars.*}`                          |
 
-Not all config fields support placeholders, but most do where you would expect it. Support for placeholders needs to have been explicitly added to those fields. Plugin authors can [read this article](/docs/extending-caddy/placeholders) to learn how to add support for placeholders in their own modules.
+并非所有配置字段都支持占位符，但大多数您期望的地方都支持。占位符支持需要显式添加到这些字段中。插件作者可以 [阅读此文章](/docs/extending-caddy/placeholders) 了解如何在其自己的模块中添加占位符支持。
 
 
+## 片段
 
-
-## Snippets
-
-You can define special blocks called snippets by giving them a name surrounded in parentheses:
+您可以通过将片段名称括在括号中来定义名为片段的特殊代码块：
 
 ```caddy
 (logging) {
@@ -678,7 +675,7 @@ You can define special blocks called snippets by giving them a name surrounded i
 }
 ```
 
-And then you can reuse this anywhere you need, using the special [`import`](/docs/caddyfile/directives/import) directive:
+然后您可以在任何需要的位置重用此片段，使用特殊的 [`import`](/docs/caddyfile/directives/import) 指令：
 
 ```caddy
 example.com {
@@ -690,7 +687,7 @@ www.example.com {
 }
 ```
 
-The [`import`](/docs/caddyfile/directives/import) directive can also be used to include other files in its place. If the argument does not match a defined snippet, it will be tried as a file. It also supports globs to import multiple files. As a special case, it can appear anywhere within the Caddyfile (except as an argument to another directive), including outside of site blocks:
+[`import`](/docs/caddyfile/directives/import) 指令也可用于在指定位置包含其他文件。如果参数不匹配定义的片段，它将尝试作为文件。它还支持通配符以导入多个文件。作为一个特殊情况，它可以出现在 Caddyfile 中的任何位置（除了作为另一个指令的参数），甚至在站点代码块之外：
 
 ```caddy
 {
@@ -700,25 +697,25 @@ The [`import`](/docs/caddyfile/directives/import) directive can also be used to 
 import sites/*
 ```
 
-You can pass arguments to an imported configuration (snippets or files) and use them like so:
+您可以向导入的配置（片段或文件）传递参数，并按如下方式使用它们：
 
 ```caddy
 (snippet) {
-	respond "Yahaha! You found {args[0]}!"
+	respond "Yahaha! 您找到了 {args[0]}!"
 }
 
 a.example.com {
-	import snippet "Example A"
+	import snippet "示例 A"
 }
 
 b.example.com {
-	import snippet "Example B"
+	import snippet "示例 B"
 }
 ```
 
-⚠️ <i>Experimental</i> <span style='white-space: pre;'> | </span> <span>v2.9.x+</span>
+⚠️ <i>实验性</i> <span style='white-space: pre;'> | </span> <span>v2.9.x+</span>
 
-You can also pass an optional block to an imported snippet, and use them as follows.
+您还可以向导入的片段传递一个可选的代码块，并按如下方式使用：
 
 ```caddy
 (snippet) {
@@ -739,14 +736,14 @@ b.example.com {
 }
 ```
 
-**[Read the `import` directive page](/docs/caddyfile/directives/import) to learn more.**
+**[阅读 `import` 指令页面](/docs/caddyfile/directives/import)以了解更多。**
 
 
-## Named Routes
+## 命名路由
 
-⚠️ <i>Experimental</i>
+⚠️ <i>实验性</i>
 
-Named routes use syntax similar to [snippets](#snippets); they're a special block defined outside of site blocks, prefixed with `&(` and ending in `)` with the name in between.
+命名路由使用与 [片段](#snippets) 类似的语法；它们是站点代码块之外定义的特殊代码块，以 `&(` 开头并以 `)` 结尾，中间是名称。
 
 ```caddy
 &(app-proxy) {
@@ -754,7 +751,7 @@ Named routes use syntax similar to [snippets](#snippets); they're a special bloc
 }
 ```
 
-And then you can reuse this named route within any site:
+然后您可以在任何站点内重用此命名路由：
 
 ```caddy
 example.com {
@@ -766,36 +763,36 @@ www.example.com {
 }
 ```
 
-This is particularly useful to reduce memory usage if the same route is needed in many different sites, or if multiple different matcher conditions are needed to invoke the same route.
+这在需要在许多不同站点中使用相同路由以减少内存使用量时特别有用，或者如果需要多个不同的匹配器条件来调用相同的路由。
 
-**[Read the `invoke` directive page](/docs/caddyfile/directives/invoke) to learn more.**
+**[阅读 `invoke` 指令页面](/docs/caddyfile/directives/invoke)以了解更多。**
 
 
 
-## Comments
+## 注释
 
-Comments start with `#` and proceed until the end of the line:
+注释以 `#` 开头并延续到行尾：
 
 ```caddy-d
-# Comments can start a line
-directive  # or go at the end
+# 注释可以从行开始
+directive  # 或者放在末尾
 ```
 
-The hash character `#` for a comment cannot appear in the middle of a token (i.e. it must be preceded by a space or appear at the beginning of a line). This allows the use of hashes within URIs or other values without requiring quoting.
+注释的哈希字符 `#` 不能出现在令牌的中间（即它必须前面有空格或出现在行的开头）。这允许在 URI 或其他值中使用哈希字符，而无需引用。
 
 
 
-## Environment variables
+## 环境变量
 
-If your configuration relies on environment variables, you can use them in the Caddyfile:
+如果您的配置依赖环境变量，您可以在 Caddyfile 中使用它们：
 
 ```caddy
 {$ENV}
 ```
 
-Environment variables in this form are substituted **before Caddyfile parsing begins**, so they can expand to empty values (i.e. `""`), partial tokens, complete tokens, or even multiple tokens and lines.
+此形式的环境变量在 **Caddyfile 解析开始之前** 被替换，因此它们可以扩展为空值（即 `""`）、部分令牌、完整令牌，甚至是多个令牌和行。
 
-For example, an environment variable `UPSTREAMS="app1:8080 app2:8080 app3:8080"` would expand to multiple [tokens](#tokens-and-quotes):
+例如，环境变量 `UPSTREAMS="app1:8080 app2:8080 app3:8080"` 将扩展为多个 [令牌](#tokens-and-quotes)：
 
 ```caddy
 example.com {
@@ -803,7 +800,7 @@ example.com {
 }
 ```
 
-A default value can be specified for when the environment variable is not found, by using `:` as the delimiter between the variable name and the default value:
+可以指定环境变量的默认值，在找不到环境变量时，使用 `:` 作为变量名和默认值之间的分隔符：
 
 ```caddy
 {$DOMAIN:localhost} {
@@ -811,9 +808,9 @@ A default value can be specified for when the environment variable is not found,
 }
 ```
 
-If you want to **defer the substitution** of an environment variable until runtime, you can use the [standard `{env.*}` placeholders](/docs/conventions#placeholders). Note that not all config parameters support these placeholders though, since module developers need to add a line of code to perform the replacement. If it doesn't seem to work, please file an issue to request support for it.
+如果您想要 **延迟** 环境变量的替换直到运行时，您可以使用 [标准 `{env.*}` 占位符](/docs/conventions#placeholders)。请注意，并非所有配置参数都支持这些占位符，因为模块开发者需要添加一行代码来执行替换。如果似乎不起作用，请提交问题以请求支持。
 
-For example, if you have the [`caddy-dns/cloudflare` plugin <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns/cloudflare) installed and wish to configure the [DNS challenge](/docs/automatic-https#dns-challenge), you can pass your `CLOUDFLARE_API_TOKEN` environment variable to the plugin like this:
+例如，如果您安装了 [`caddy-dns/cloudflare` 插件 <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns/cloudflare) 并希望配置 [DNS 挑战](/docs/automatic-https#dns-challenge)，您可以将此 `CLOUDFLARE_API_TOKEN` 环境变量传递给插件：
 
 ```caddy
 {
@@ -821,4 +818,4 @@ For example, if you have the [`caddy-dns/cloudflare` plugin <img src="/old/resou
 }
 ```
 
-If you're running Caddy as a systemd service, see [these instructions](/docs/running#overrides) for setting service overrides to define your environment variables.
+如果您作为 systemd 服务运行 Caddy，请参阅 [这些说明](/docs/running#overrides) 来设置服务覆盖以定义环境变量。

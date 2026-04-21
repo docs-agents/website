@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Caddy - The Ultimate Server with Automatic HTTPS</title>
+		<title>Caddy - 终极服务器，支持自动 HTTPS</title>
 		{{import "/includes/head.html"}}
 		{{template "head" .}}
 		<link rel="stylesheet" href="/resources/css/vendor/asciinema-player-3.6.1.css{{template "cacheBust"}}">
@@ -11,8 +11,8 @@
 		<link rel="stylesheet" href="/resources/css/marketing.css{{template "cacheBust"}}">
 		<link rel="stylesheet" href="/resources/css/home.css{{template "cacheBust"}}">
 
-		<!-- <meta property="og:title" content="Caddy 2 - The Ultimate Server with Automatic HTTPS">
-			<meta name="twitter:title" value="Caddy 2 - The Ultimate Server with Automatic HTTPS"> -->
+		<!-- <meta property="og:title" content="Caddy 2 - 终极服务器，支持自动 HTTPS">
+			<meta name="twitter:title" value="Caddy 2 - 终极服务器，支持自动 HTTPS"> -->
 	</head>
 	<body>
 		<div class="hero">
@@ -24,17 +24,17 @@
 						<div>
 							<h1>
 								<div class="color-dodge">
-									<div class="the">The</div>
-									Ultimate Server
+									<div class="the">终极</div>
+									服务器
 								</div>
 								<div class="subheading">
-									makes your sites more <b>secure</b>, more <b>reliable</b>, and more <b>scalable</b> than any other solution.
+									让您的网站在<b>安全性</b>、<b>可靠性</b>和<b>可扩展性</b>方面超越任何其他解决方案。
 								</div>
 							</h1>
 
 							<div class="action-buttons">
-								<a href="/download" class="button primary">Download</a>
-								<a href="/docs/" class="button cool">Docs<sh></sh></a>
+								<a href="/download" class="button primary">下载</a>
+								<a href="/docs/" class="button cool">文档<sh></sh></a>
 								<iframe src="https://ghbtns.com/github-btn.html?user=caddyserver&amp;repo=caddy&amp;type=star&amp;count=true&amp;size=large" frameborder="0" scrolling="0" width="160px" height="30px" class="github-stars"></iframe>
 							</div>
 						</div>
@@ -42,15 +42,15 @@
 							<div class="display right">
 								<div class="caption">
 									<div id="video-demo"></div>
-									Watch in real-time as Caddy serves HTTPS in &lt; 1 minute.
+									观看 Caddy 如何在 < 1 分钟内提供 HTTPS 服务。
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="sponsors-leaders">
-						<!-- <h3>Trusted, used, and sponsored by <b>leaders</b></h3> -->
-						<h3>Sponsored by <b>leaders</b></h3>
+						<!-- <h3>受<b>领先企业</b>信赖、使用和赞助</h3> -->
+						<h3>由<b>领先企业</b>赞助</h3>
 						
 						<!--
 							Images are not in any particular order except the top row is featured (higher-tier) sponsors.
@@ -140,11 +140,11 @@
 									<path d="M12 9l0 6"></path>
 									<path d="M4 6v-1a1 1 0 0 1 1 -1h1m5 0h2m5 0h1a1 1 0 0 1 1 1v1m0 5v2m0 5v1a1 1 0 0 1 -1 1h-1m-5 0h-2m-5 0h-1a1 1 0 0 1 -1 -1v-1m0 -5v-2m0 -5"></path>
 								</svg>
-								Join the ranks
+								加入赞助行列
 							</a>
 						</div>
-						<!-- <a href="#">Why a sponsorship</a> -->
-						<!-- <a href="/sponsor" class="button purple">Sponsorship info</a> -->
+						<!-- <a href="#">为何赞助</a> -->
+						<!-- <a href="/sponsor" class="button purple">赞助信息</a> -->
 					</div>
 				</div>
 			</div>
@@ -155,31 +155,31 @@
 
 			<div class="wavy-top">
 				<div class="bgtext">
-					Every<br>
-					<span class="site-on">site on</span><br>
-					HTTPS
+					每<br>
+					<span class="site-on">个站点</span><br>
+					使用 HTTPS
 				</div>
 				<h2 id="every-site-https">
-					<b>By default, </b>Caddy <b>automatically obtains</b> and <b>renews</b> TLS certificates for <b>all your sites.</b>
+					<b>默认情况下，</b>Caddy <b>会自动获取</b>并为<b>所有站点</b><b>续期</b>TLS 证书。
 				</h2>
 
 				<div class="wrapper feature cols">
 					<div class="col">
-						<h3 class="purple">HTTPS/TLS for custom domains</h3>
+						<h3 class="purple">自定义域名的 HTTPS/TLS</h3>
 						<p>
-							The secret sauce of almost every white-label SaaS is Caddy's original On-Demand TLS feature. Grow your SaaS business by orders of magnitude with ease!
+							几乎所有白标 SaaS 的秘诀都在于 Caddy 独创的按需 TLS 功能。轻松将您的 SaaS 业务扩大数倍！
 						</p>
 					</div>
 					<div class="col">
-						<h3 class="green">Dynamically provision certificates</h3>
+						<h3 class="green">动态配置证书</h3>
 						<p>
-							With On-Demand TLS, only Caddy obtains, renews, and maintains certificates on-the-fly during TLS handshakes. Perfect for customer-owned domains.
+							通过按需 TLS，只有 Caddy 会在 TLS 握手期间即时获取、续期和维护证书。非常适合客户自有域名。
 						</p>
 					</div>
 					<div class="col">
-						<h3 class="blue">Massively scale your TLS</h3>
+						<h3 class="blue">大规模扩展您的 TLS</h3>
 						<p>
-							Other web servers and scripted certificate tools fall over with hundreds of thousands of sites or thousands of instances. Caddy is designed to manage certificates reliably at this scale.
+							其他 Web 服务器和脚本证书工具在处理数十万个站点或数千个实例时会崩溃。Caddy 专为在此规模下可靠地管理证书而设计。
 						</p>
 					</div>
 				</div>
@@ -188,11 +188,11 @@
 					<div class="cols">
 						<div class="col">
 							<div class="sponsorship-primer">
-								<h3>sponsored by <b>users like you</b></h3>
+								<h3>由<b>像您一样的用户</b>赞助</h3>
 								<p>
-									Caddy is free software and relies on sponsorships to survive. Not just donations: sponsorships ensure ongoing development and provide your business with tangible benefits.
+									Caddy 是自由软件，依靠赞助生存。不仅仅是捐款：赞助能确保持续开发，并为您提供切实的利益。
 								</p>
-								<a href="/sponsor" class="button purple">See sponsorships</a>
+								<a href="/sponsor" class="button purple">查看赞助信息</a>
 							</div>
 						</div>
 						<div class="col">
@@ -200,7 +200,7 @@
 								<img src="/resources/images/sponsors/hopetv.png" class="experience-logo">
 								<div class="experience-content">
 									<div class="experience-quote">
-										"Caddy's powerful technology has enabled Hope Channel International to deliver hope to millions, reaching people in every corner of the world."
+										"Caddy 的强大技术使 Hope Channel International 能够将希望传递给数百万人，触达世界各个角落。"
 									</div>
 								</div>
 							</div>
@@ -212,57 +212,57 @@
 			<section class="light">
 				<div class="section-upset">
 					<div class="wrapper">
-						<h2 id="most-advanced">The <b>most advanced</b> HTTPS server <b>in the world</b></h2>
+						<h2 id="most-advanced"><b>全球最先进</b>的 HTTPS 服务器</h2>
 					</div>
 				</div>
 				<div class="wrapper">
 					
 					<div class="feature cols">
 						<div class="col">
-							<h3 class="green">All you need for TLS and PKI 🔐</h3>
+							<h3 class="green">满足您对 TLS 和 PKI 的所有需求 🔐</h3>
 							<p>
-								Caddy securely serves all sites with TLS by default. It can also manage your internal PKI for you across a fleet of servers and clients.
+								Caddy 默认使用 TLS 安全地提供所有站点。它还可以为您在服务器和客户端集群管理内部 PKI。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="purple">On-line config API ⚡️</h3>
+							<h3 class="purple">在线配置 API ⚡️</h3>
 							<p>
-								Caddy's native configuration is a JSON document that you can export and manipulate with a RESTful config API.
+								Caddy 的原生配置是一个 JSON 文档，您可以使用 RESTful 配置 API 导出并操作它。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="blue">PCI, HIPAA, and NIST compliant ✅</h3>
+							<h3 class="blue">符合 PCI、HIPAA 和 NIST 合规要求 ✅</h3>
 							<p>
-								Caddy's TLS defaults are secure and pass PCI, HIPAA, and NIST compliance requirements. Yes, defaults: no hassle required.
+								Caddy 的 TLS 默认配置安全且能通过 PCI、HIPAA 和 NIST 合规要求。是的，是默认值：无需任何繁琐操作。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="purple">HTTPS for localhost 🏠</h3>
+							<h3 class="purple">localhost 的 HTTPS 🏠</h3>
 							<p>
-								We mean it when we say Caddy serves every site on HTTPS. Even localhost and internal IPs are served with TLS using the intermediate of a fully-automated, self-managed CA that is automatically installed into most local trust stores.
+								我们说 Caddy 让每个站点都运行 HTTPS 是认真的。即使是 localhost 和内部 IP 也会通过 TLS 提供，使用自动管理且自动安装到大多数本地信任存储中的完全自动化、自管理 CA 的中间证书。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="blue">Cluster coordination 🌐</h3>
+							<h3 class="blue">集群协调 🌐</h3>
 							<p>
-								Simply configure multiple Caddy instances with the same storage, and they will automatically coordinate certificate management as a fleet and share resources such as keys and OCSP staples!
+								只需将多个 Caddy 实例配置为使用相同的存储，它们就会自动作为集群协调证书管理，并共享密钥和 OCSP  staples 等资源！
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="green">Fewer moving parts ⚙️</h3>
+							<h3 class="green">更少的移动部件 ⚙️</h3>
 							<p>
-								Simplify your infrastructure! Caddy saves money, increases developer productivity, and reduces problems in production. 
+								简化您的基础架构！Caddy 节省成本，提高开发人员生产力，并减少生产中的问题。
 							</p>
 						</div>
 					</div>
 
 					<div class="demobox">
-						<h2 id="on-demand-demo" lang="de">Experience it</h2>
+						<h2 id="on-demand-demo" lang="de">体验</h2>
 						<p>
-							<b>Discover Caddy's automagic HTTPS features with our hosted demo.</b>
+							<b>通过我们的托管演示探索 Caddy 的自动 HTTPS 功能。</b>
 						</p>
 						<p>
-							Point DNS records for any subdomain named <b><code>caddydemo</code></b> to either:
+							将任何名称为 <b><code>caddydemo</code></b> 的子域名的 DNS 记录指向以下任意一个：
 						</p>
 						<p class="demo-ips">
 							<code>
@@ -271,7 +271,7 @@
 							</code>
 						</p>
 						<p class="or">
-							or:
+							或者：
 						</p>
 						<p class="demo-ips">
 							<code>
@@ -284,23 +284,23 @@
 							</code>
 						</p>
 						<p>
-							Then <b>visit it</b> in your browser.
+							然后在您的浏览器中<b>访问它</b>。
 						</p>
 						<p>
-							You'll notice how Caddy <b>provisions a certificate</b> for your domain <b>automatically.</b>
+							您将注意到 Caddy 如何为域名<b>自动</b><b>配置证书</b>。
 						</p>
 						<div class="demo-help">
 							<p>
-								<b>Not working?</b> Make sure to use a direct subdomain of a registered domain, not a "sub-subdomain."
-								Verify you have created the public DNS records shown above with the correct values.
-								You may have to allow time for propagation. Consult your DNS provider's documentation or support for assistance.
-								Your browser/client must set the TLS ServerName indication (most do).
+								<b>不生效？</b> 确保使用注册域的直接子域名，而不是"子子域名"。
+								验证您是否已使用上面的正确值创建公共 DNS 记录。
+								您可能需要等待传播时间。请咨询您的 DNS 提供商的文档或支持以获取帮助。
+								您的浏览器/客户端必须设置 TLS ServerName 指示（大多数都会设置）。
 							</p>
 							<p>
-								<b>Example subdomains that could work:</b> <code>caddydemo.example.net</code>, <code>caddydemo.example.com.au</code>
+								<b>可能有效的示例子域名：</b> <code>caddydemo.example.net</code>、<code>caddydemo.example.com.au</code>
 							</p>
 							<p>
-								Caddy is capable of serving TLS for any domains and IPs. This demo is intentionally restricted.
+								Caddy 能够为任何域名和 IP 提供 TLS。此演示故意受限。
 							</p>
 						</div>
 					</div>
@@ -310,15 +310,15 @@
 			<section class="diagonal up light gray feature">
 				<div class="wrapper">
 
-					<h2 id="your-own-pki">Deploy your own PKI with Caddy</h2>
+					<h2 id="your-own-pki">使用 Caddy 部署您自己的 PKI</h2>
 					<p>
-						Not only is Caddy the industry leader in certificate automation, it also sports a fully-featured PKI suite for your own fully-automated internal PKI and private CAs.
+						Caddy 不仅是证书自动化的行业领导者，还拥有功能齐全的 PKI 套件，用于您自己的全自动内部 PKI 和私有 CA。
 					</p>
 					<!-- <p>
-						Caddy will serve your localhost and internal sites over HTTPS using its own CA. And you can create your own CA to issue certs across your infrastructure. It has a built-in ACME server, powered by Smallstep, to automate your private PKI reliably at scale.
+						Caddy 将使用其自己的 CA 通过 HTTPS 提供您的 localhost 和内部站点。您可以创建自己的 CA 以在其基础架构中颁发证书。它内置由 Smallstep 驱动的 ACME 服务器，可在大规模上可靠地自动化您的私有 PKI。
 					</p> -->
 					<p>
-						Powered by open source <a href="https://smallstep.com/certificates/">Smallstep libraries</a>, Caddy becomes a self-managing certificate authority.
+						由开源 <a href="https://smallstep.com/certificates/">Smallstep 库</a> 提供支持，Caddy 成为自管理的证书颁发机构。
 					</p>
 					
 
@@ -329,9 +329,9 @@
 							</div>
 						</div>
 						<div>
-							<h3 class="purple">Internal and localhost certificates</h3>
+							<h3 class="purple">内部和 localhost 证书</h3>
 							<p>
-								If you configure sites with local or internal addresses, Caddy will serve them over HTTPS using a locally-trusted certificate authority with short-lived, auto-renewing certificates. It even offers to install your unique root into your local trust stores for you.
+								如果您配置了本地或内部地址的站点，Caddy 将使用本地受信任的证书颁发机构通过 HTTPS 提供它们，证书有效期短且自动续期。它甚至主动为您将您的唯一根证书安装到您的本地信任存储中。
 							</p>
 							<a href="https://smallstep.com" title="Powered by Smallstep"><img src="/resources/images/sponsors/smallstep.svg" alt="Smallstep" class="smallstep"></a>
 						</div>
@@ -339,12 +339,12 @@
 
 					<div class="asides">
 						<div>
-							<h3 class="blue">Make and use your own CAs</h3>
+							<h3 class="blue">创建并使用您自己的 CA</h3>
 							<p>
-								Caddy lets you define as many CAs as you need. Root and intermediate keys are generated automatically, and intermediates are renewed before they expire.
+								Caddy 让您定义所需数量的 CA。根和中间密钥会自动生成，中间证书会在过期前续期。
 							</p>
 							<p>
-								Deploy an instance to act as an ACME server. Then other Caddy instances can use it for their certificates.
+								部署一个实例作为 ACME 服务器。然后其他 Caddy 实例可以为其证书使用它。
 							</p>
 						</div>
 						<div>
@@ -361,31 +361,31 @@
 							</div>
 						</div>
 						<div>
-							<h3 class="green">Keep certificates renewed</h3>
+							<h3 class="green">确保证书续期</h3>
 							<p>
-								Caddy is more than just a web server. For example, this config is all it takes to obtain and renew certificates for a set of domain names.
+								Caddy 不仅仅是一个 Web 服务器。例如，此配置是获取和续期一组域名证书所需的全部内容。
 							</p>
 							<p>
-								Additional config can be written to wire up certificate maintenance events, which can then be used to integrate with external scripts and tooling.
+								额外配置可以编写为连接证书维护事件，然后可用于与外部脚本和工具集成。
 							</p>
 							<!-- <p>
-								Caddy 2 is a <a href="/docs/extending-caddy">highly extensible</a>, self-hosted platform on which you can build, configure, and deploy long-running services ("apps").
+								Caddy 2 是一个<a href="/docs/extending-caddy">高度可扩展的</a>、自托管平台，您可以在其上构建、配置和部署长期运行的服务（"应用"）。
 							</p>
 							<p>
-								Caddy ships with apps for an <a href="/docs/modules/http">HTTPS server</a> (static files, reverse proxying, load balancing, etc.), <a href="/docs/modules/tls">TLS certificate manager</a>, and <a href="/docs/modules/pki">fully-managed internal PKI</a>. Caddy apps collaborate to make complex infrastructure just work with fewer moving parts.
+								Caddy 附带了用于<a href="/docs/modules/http">HTTPS 服务器</a>（静态文件、反向代理、负载均衡等）、<a href="/docs/modules/tls">TLS 证书管理器</a>和<a href="/docs/modules/pki">全管理内部 PKI</a>的应用。Caddy 应用协作使复杂的基础架构只需更少的移动部件即可正常工作。
 							</p>
 							<p>
-								<b>For example, the config shown here keeps your TLS certificates renewed for other programs to use;</b> no external tools or HTTP daemon required!
+								<b>例如，此处显示的配置可为其他程序使用而保持您的 TLS 证书续期；</b>无需外部工具或 HTTP 守护进程！
 							</p>
 							<p>
-								Providing a unified configuration, on-line <a href="/docs/api">config API</a>, and <a href="/docs/json">automatic documentation</a> for all apps, Caddy is nearly infinitely extensible. Thanks to its unique <a href="/docs/architecture">modular architecture</a>, we can offer unlimited features without bloating the code base.
+								提供统一的配置、在线<a href="/docs/api">配置 API</a>以及所有应用的<a href="/docs/json">自动文档</a>，Caddy 几乎是无限可扩展的。凭借其独特的<a href="/docs/architecture">模块化架构</a>，我们可以提供无限的功能而不会使代码库膨胀。
 							</p> -->
 						</div>
 					</div>
 
 					<!-- <div class="action-buttons">
-						<a href="/download" class="button primary">Download</a>
-						<a href="/docs/" class="button secondary">Docs<sh></sh></a>
+						<a href="/download" class="button primary">下载</a>
+						<a href="/docs/" class="button secondary">文档<sh></sh></a>
 					</div> -->
 
 					
@@ -394,15 +394,15 @@
 
 			<section class="light feature">
 				<div class="wrapper">
-					<h2 id="experts-recommend">Recommended by experts</h2>
+					<h2 id="experts-recommend">专家推荐</h2>
 					<p>
-						Academic and industry experts recommend Caddy, which has been cited in peer-reviewed journals for its security defaults, best practices, and its uniquely advanced feature set.
+						学术和行业专家推荐 Caddy，它已被同行评审期刊引用，因其安全默认值、最佳实践以及其独特的高级功能集。
 					</p>
 					<div class="cols experts">
 						<div class="col">
 							<a href="https://doi.org/10.1145/3319535.3363192"><img src="/resources/images/cites/aas.png" class="cite"></a>
 							<p>
-								"Servers running Caddy exhibit nearly ubiquitous HTTPS deployment and use modern TLS configurations. ... We hope to see other popular server software follow Caddy's lead."
+								"运行 Caddy 的服务器展现出几乎普遍的 HTTPS 部署，并使用现代 TLS 配置。... 我们希望看到其他流行的服务器软件效仿 Caddy 的做法。"
 							</p>
 							<p class="cite">
 								&mdash;<b>Josh Aas, Richard Barnes, Benton Case, Zakir Durumeric, Peter Eckersley, Alan Flores-López, J. Alex Halderman, Jacob Hoffman-Andrews, James Kasten, Eric Rescorla, Seth Schoen, and Brad Warren.</b> 2019. <i>Let's Encrypt: An Automated Certificate Authority to Encrypt the Entire Web.</i> In Proceedings of the 2019 ACM SIGSAC Conference on Computer and Communications Security (CCS '19). Association for Computing Machinery, New York, NY, USA, 2473–2487. <a href="https://doi.org/10.1145/3319535.3363192">https://doi.org/10.1145/3319535.3363192</a>
@@ -411,7 +411,7 @@
 						<div class="col">
 							<a href="https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/krombholz"><img src="/resources/images/cites/krombholz.png" class="cite"></a>
 							<p>
-								"TLS must be enabled by default ... and the Caddy web server is a good and usable example."
+								"TLS 必须默认启用...而 Caddy Web 服务器是一个良好且可用的示例。"
 							</p>
 							<p class="cite">
 								&mdash;<b>Katharina Krombholz, Wilfried Mayer, Martin Schmiedecker, and Edgar Weippl.</b> 2017. <i>"I Have No Idea What I'm Doing" - On the Usability of Deploying HTTPS.</i> In 26th USENIX Security Symposium (USENIX Security 17), USENIX Association, Vancouver, BC, 1339-1356. Retrieved from <a href="https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/krombholz">https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/krombholz</a>
@@ -420,7 +420,7 @@
 						<div class="col">
 							<a href="https://doi.org/10.1145/2987443.2987480"><img src="/resources/images/cites/springall.png" class="cite"></a>
 							<p>
-								"No popular server software does [session ticket key rotation], with the exception of Caddy."
+								"没有流行的服务器软件执行 [会话密钥轮换]，除了 Caddy。"
 							</p>
 							<p class="cite">
 								&mdash;<b>Drew Springall, Zakir Durumeric, and J. Alex Halderman.</b> 2016. <i>Measuring the Security Harm of TLS Crypto Shortcuts.</i> In Proceedings of the 2016 Internet Measurement Conference (IMC '16), Association for Computing Machinery, Santa Monica, California, USA, 33-47. <a href="https://doi.org/10.1145/2987443.2987480">https://doi.org/10.1145/2987443.2987480</a>
@@ -432,30 +432,30 @@
 
 			<section class="diagonal down dark feature">
 				<div class="wrapper">
-					<h2 id="reverse-proxy">A forward-thinking reverse proxy</h2>
+					<h2 id="reverse-proxy">面向未来的反向代理</h2>
 					<p>
-						Caddy's proxy was designed to be as forward-compatible as possible and has major batteries included: load balancing, active and passive health checks, dynamic upstreams, retries, pluggable transports, and of course, best-in-class TLS security.
+						Caddy 的代理旨在尽可能向前兼容，并具备主要功能：负载均衡、主动和被动健康检查、动态上游、重试、可插拔传输，当然还有最一流的 TLS 安全性。
 					</p>
 
 
 					<div class="asides asides-40-60">
 						<div class="spacing">
 							<div class="rollover" data-rollover="rollover-php">
-								<h3 class="green">Proxy HTTP, FastCGI, WebSockets, and more</h3>
+								<h3 class="green">代理 HTTP、FastCGI、WebSockets 等</h3>
 								<p>
-									Capable of proxying HTTP and HTTPS, but also WebSockets, gRPC, FastCGI (usually PHP), and more! The underlying transport module is extensible for any custom way to generate an HTTP response.
+									能够代理 HTTP 和 HTTPS，还能代理 WebSockets、gRPC、FastCGI（通常是 PHP）等！底层传输模块可插拔，支持任何自定义方式来生成 HTTP 响应。
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-dynamic-backends">
-								<h3 class="purple">Dynamic backends</h3>
+								<h3 class="purple">动态后端</h3>
 								<p>
-									Provide Caddy with a static list of backends or enable a module to retrieve backends dynamically during each request: ideal for rapidly changing environments. Caddy flows with your infrastructure!
+									为 Caddy 提供静态后端列表或启用模块以在每次请求期间动态检索后端：非常适合快速变化的环境。Caddy 跟随您的基础架构！
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-ha">
-								<h3 class="blue">High availability</h3>
+								<h3 class="blue">高可用性</h3>
 								<p>
-									Caddy comes with a whole suite of high availability (HA) features: advanced health checking, graceful (hitless) config changes, circuit breaking, load limiting, on-line retries, and more. The best part? It's all free. No enterprise-level paywalls.
+									Caddy 自带一整套高可用性（HA）功能：高级健康检查、优雅（无中断）配置更改、电路断开、负载均衡限制、在线重试等。最棒的部分？全都是免费的。没有企业级付费墙。
 								</p>
 							</div>
 						</div>
@@ -469,12 +469,12 @@
 					<div class="cols">
 						<div class="col">
 							<div class="sponsorship-primer">
-								<h3>software <b>assurance</b></h3>
+								<h3>软件<b>保障</b></h3>
 								<p>
-									Without sponsorships, Caddy could stop being developed at any time.
-									With sponsorships, you gain peace of mind knowing that the project will continue to be developed, along with tangible benefits like private support and training.
+									没有赞助，Caddy 可能随时停止开发。
+									有了赞助，您可以高枕无忧，项目将继续开发，并获得私人支持和培训等切实利益。
 								</p>
-								<a href="/sponsor" class="button purple">See sponsorships</a>
+								<a href="/sponsor" class="button purple">查看赞助信息</a>
 							</div>
 						</div>
 						<div class="col">
@@ -482,7 +482,7 @@
 								<img src="/resources/images/sponsors/stripe.svg" class="experience-logo">
 								<div class="experience-content">
 									<div class="experience-quote">
-										"With its extensible architecture and on-line config API, Caddy powers many of Stripe's internal systems."
+										"凭借其可扩展架构和在线配置 API，Caddy 为 Stripe 的许多内部系统提供动力。"
 									</div>
 									<!-- <div class="experience-credit">
 										<img src="https://preview.tabler.io/static/avatars/002m.jpg" class="experience-picture">
@@ -497,36 +497,36 @@
 					</div>
 
 
-					<h2 id="file-server">Production-grade static file server</h2>
+					<h2 id="file-server">生产级静态文件服务器</h2>
 					<p>
-						Serving static files is a tried-and-true method of delivering sites to numerous clients efficiently. Caddy has a robust file server that can be combined with other middleware features for the ultimate effortless website.
+						提供静态文件是一种经过验证和考验的方法，可高效地向众多客户端提供站点。Caddy 拥有强大的文件服务器，可与其他中间件功能结合，打造终极免维护网站。
 					</p>
 
 
 					<div class="asides asides-40-60">
 						<div class="spacing">
 							<div class="rollover" data-rollover="rollover-compress">
-								<h3 class="blue">Compression</h3>
+								<h3 class="blue">压缩</h3>
 								<p>
-									Caddy can compress files on-the-fly or serve precompressed files for extra performance. Caddy is also the first web server to support Zstandard encoding.
+									Caddy 可以即时压缩文件或提供预压缩文件以获得额外性能。Caddy 也是第一个支持 Zstandard 编码的 Web 服务器。
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-vfs">
-								<h3 class="green">Virtual file systems</h3>
+								<h3 class="green">虚拟文件系统</h3>
 								<p>
-									Serve your static site from anything: the local file system, remote cloud storage, a database, or even embedded in the server binary!
+									从任何地方提供您的静态站点：本地文件系统、远程云存储、数据库，甚至嵌入到服务器二进制文件中！
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-range">
-								<h3 class="yellow">Range requests, Etags, and more</h3>
+								<h3 class="yellow">范围请求、Etags 等</h3>
 								<p>
-									Unlike many ad-hoc file servers intended for temporary local development, Caddy fully supports Range requests, Etags, and a full production feature set.
+									与许多用于临时本地开发的手动文件服务器不同，Caddy 完全支持范围请求、Etags 以及完整的生产级功能集。
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-browse">
-								<h3 class="purple">Directory file browser</h3>
+								<h3 class="purple">目录文件浏览器</h3>
 								<p>
-									If a directory without an index file is requested, Caddy can show an elegant file browser with breadcrumb nav, file size visualizations, filetype icons, and a grid view.
+									如果请求没有索引文件的目录，Caddy 可以显示优雅的文件浏览器，带有面包屑导航、文件大小可视化、文件类型图标和网格视图。
 								</p>
 							</div>
 						</div>
@@ -550,9 +550,9 @@
 
 			<section class="light feature">
 				<div class="wrapper">
-					<h2 id="flexible-config">Flexible configuration compatible with any workflow</h2>
+					<h2 id="flexible-config">灵活配置，兼容任何工作流</h2>
 					<p>
-						Configure your server your way. Caddy's native configuration format is JSON, and with Caddy's config adapters, you can use any config format you prefer. All configuration is posted through a RESTful admin API, and Caddy's CLI helps you work with config files easily.
+						按您喜欢的方式配置服务器。Caddy 的原生配置格式是 JSON，通过 Caddy 的配置适配器，您可以使用任何喜欢的配置格式。所有配置都通过 RESTful 管理 API 发布，Caddy 的 CLI 帮助您轻松处理配置文件。
 					</p>
 
 	
@@ -573,21 +573,21 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 							</div>
 						</div>
 						<div>
-							<h3>JSON config API</h3>
+							<h3>JSON 配置 API</h3>
 							<p>
-								Caddy's native config format is JSON, giving you incredible power and flexibility for automated, large-scale deployments.
+								Caddy 的原生配置格式是 JSON，为您的自动化大规模部署提供强大功能和灵活性。
 							<p>
-								Make dynamic config changes through an <a href="/docs/api">intuitive, programmable REST API</a> that offers ACID guarantees. It is also <b>safely scoped</b>, meaning that the URI path restricts changes, making it impossible to accidentally alter other parts of your config.
+								通过<a href="/docs/api">直观的、可编程的 REST API</a>进行动态配置更改，该 API 提供 ACID 保证。它也是<b>安全限定范围</b>的，意味着 URI 路径限制更改，使您不可能意外修改配置的其余部分。
 							</p>
 							<!-- <ul>
-								<li><b>Atomic:</b> Multiple changes in a single request are treated as a single unit; any failed change aborts all the other changes.</li>
-								<li><b>Consistent:</b> No invalid configurations can be loaded; your server will never break if a problem is detected at config load.</li>
-								<li><b>Isolated:</b> No config changes rely on another. (It helps that HTTP is a stateless protocol!)</li>
-								<li><b>Durable:</b> Caddy automatically persists the current, valid configuration to disk and can safely resume it after a power cycle if the <code>--resume</code> flag is used.</li>
+								<li><b>原子性：</b>单个请求中的多个更改被视为单个单元；任何更改失败都会中止其他所有更改。</li>
+								<li><b>一致性：</b>无法加载无效配置；如果在配置加载时检测到问题，您的服务器不会崩溃。</li>
+								<li><b>隔离：</b>配置更改互不依赖。（HTTP 是无状态协议，这有帮助！）</li>
+								<li><b>持久性：</b>Caddy 自动将当前有效配置持久化到磁盘，如果使用了 <code>--resume</code> 标志，断电后还可以安全恢复。</li>
 							</ul> -->
-							<!-- <a href="/docs/api-tutorial" class="cyan button">API <b>tutorial</b></a>
+							<!-- <a href="/docs/api-tutorial" class="cyan button">API <b>教程</b></a>
 							&nbsp;
-							<a href="/docs/api" class="gray button">API <b>reference</b></a> -->
+							<a href="/docs/api" class="gray button">API <b>参考</b></a> -->
 						</div>
 					</div>
 
@@ -596,13 +596,13 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 						<div>
 							<h3>Caddyfile</h3>
 							<p>
-								Although JSON offers ultimate control, most people prefer to use a <a href="/docs/caddyfile">Caddyfile</a> because it lets you get a production-ready site up and running in just a few hand-written lines. It's not uncommon for Caddyfiles to be <a href="https://twitter.com/bwesterb/status/1708903488426512668">just ~15-25% the size of a less-capable nginx config</a>.
+								尽管 JSON 提供最终控制，但大多数人更喜欢使用<a href="/docs/caddyfile">Caddyfile</a>，因为它可以让您只需几行手写代码就能启动并运行生产就绪站点。Caddyfile 的长度往往只是<b>能力不足的 nginx 配置的 15-25%</b>也就不足为奇了。
 							</p>
 						</div>
 						<div>
 							<div class="display right light">
 								{{ markdown (include "/includes/examples/website-caddyfile.md") }}
-								<div class="caption">Actual config used by this site.</div>
+								<div class="caption">本站点使用的实际配置。</div>
 							</div>
 						</div>
 					</div>
@@ -617,17 +617,17 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 							</div>
 						</div>
 						<div>
-							<h3>Config adapters</h3>
+							<h3>配置适配器</h3>
 							<p>
-								Power Caddy with anything, even NGINX config files!
+								用任何配置驱动 Caddy，甚至 NGINX 配置文件！
 							</p>
 							<p>
-								With first-class support for <a href="/docs/config-adapters">config adaptation</a>, you can configure your web server with your favorite format: YAML, TOML, CUE, NGINX, HCL, Dhall, JSON with comments, or even a MySQL database... or anything else. The Caddyfile is a built-in config adapter.
+								通过一流的<a href="/docs/config-adapters">配置适配</a>支持，您可以使用最喜欢的格式配置 Web 服务器：YAML、TOML、CUE、NGINX、HCL、Dhall、带注释的 JSON，甚至 MySQL 数据库……或任何其他格式。Caddyfile 是内置的配置适配器。
 							</p>
 							<!-- <p>
-								Fewer moving parts means fewer failures, lower costs, and less sunk time.
+								更少的移动部件意味着更少的故障、更低的成本和更少的时间投入。
 							</p> -->
-							<!-- <a href="/docs/config-adapters" class="gray button">Config adapters</a> -->
+							<!-- <a href="/docs/config-adapters" class="gray button">配置适配器</a> -->
 						</div>
 					</div>
 				</div>
@@ -637,30 +637,30 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 
 			<section class="diagonal up light gray feature">
 				<div class="wrapper">
-					<h2 id="extensibility">Unparalleled extensibility</h2>
+					<h2 id="extensibility">无与伦比的可扩展性</h2>
 					<p>
-						Caddy is the only server in the world with its novel, modular architecture. At its core, Caddy is a configuration manager that runs apps like an HTTP server, internal certificate authority, TLS certificate manager, process supervisor, and more.
+						Caddy 是世界上唯一拥有其新颖模块化架构的服务器。在其核心，Caddy 是一个配置管理器，运行应用如 HTTP 服务器、内部证书颁发机构、TLS 证书管理器、进程监控器等。
 					</p>
 					<p>
-						And because of its unique design, we can offer unlimited features without bloating the code base. Only compile in what you need.
+						由于其独特的设计，我们可以提供无限功能而不会使代码库膨胀。只需编译您需要的部分。
 					</p>
 					<div class="cols">
 						<div class="col">
-							<h3 class="green"><a href="https://i.giphy.com/media/xUA7ba9aksCuKR9dgA/giphy.webp" target="_blank" title="Important visualization">Unlimited power</a></h3>
+							<h3 class="green"><a href="https://i.giphy.com/media/xUA7ba9aksCuKR9dgA/giphy.webp" target="_blank" title="重要可视化">无限力量</a></h3>
 							<p>
-								Nearly every part of the config that "does something" is pluggable. Caddy offers unlimited capabilities in such a lean package.
+								配置中几乎每个"做某事"的部分都是可插拔的。Caddy 在如此精简的包中提供无限能力。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="purple">Native CPU performance</h3>
+							<h3 class="purple">原生 CPU 性能</h3>
 							<p>
-								No RPC calls or flimsy dependency management. Plugins are compiled into the static binary, making successful deployments certain and runtimes blazing fast.
+								无需 RPC 调用或脆弱的依赖管理。插件编译到静态二进制文件中，使成功部署成为可能，运行速度飞快。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="blue">Easy to develop</h3>
+							<h3 class="blue">易于开发</h3>
 							<p>
-								Writing Caddy plugins is as easy as writing a Go package. It's a comfortable and familiar process for any Go programmer.
+								编写 Caddy 插件就像编写 Go 包一样简单。对任何 Go 程序员来说，这是一个舒适且熟悉的过程。
 							</p>
 						</div>
 					</div>
@@ -673,16 +673,16 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 					<div class="asides">
 						<div>
 							<div class="left">
-								<h2 id="extensibility">4x faster PHP apps</h2>
+								<h2 id="extensibility">PHP 应用速度快 4 倍</h2>
 								<p>
-									With <a href="https://frankenphp.dev">FrankenPHP</a>, Caddy acts as a PHP application server that delivers PHP pages about <a href="https://blog.laravel.com/octane-frankenphp">4x faster</a> than Swoole or RoadRunner: no need for php-fpm (FastCGI).
+									通过 <a href="https://frankenphp.dev">FrankenPHP</a>，Caddy 作为 PHP 应用服务器提供 PHP 页面，比 Swoole 或 RoadRunner <a href="https://blog.laravel.com/octane-frankenphp">快约 4 倍</a>：无需 php-fpm（FastCGI）。
 								</p>
 								<p>
-									Deploy your PHP application as a single static binary without needing to install PHP and php-fpm separately. Caddy with FrankenPHP is all you need for high-performing PHP apps!
+									将您的 PHP 应用部署为单个静态二进制文件，无需单独安装 PHP 和 php-fpm。Caddy with FrankenPHP 是您高性能 PHP 应用所需的全部！
 								</p>
 								<a href="https://frankenphp.dev" title="FrankenPHP"><img src="/resources/images/frankenphp-logo.svg" alt="FrankenPHP - Modern PHP app server" class="franken-logo"></a>
 								<p class="endnote">
-									Benchmarks compare total response times using worker mode with Octane. FrankenPHP runs in-process with the server, so it's generally faster than FPM/mod_php in most cases. PHP execution is not accelerated.
+									基准测试使用工作模式比较总响应时间。FrankenPHP 在服务器内进程运行，因此在大多数情况下通常比 FPM/mod_php 更快。未加速 PHP 执行。
 								</p>
 							</div>
 						</div>
@@ -697,10 +697,10 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 						</div>
 						<div>
 							<p>
-								Serving your PHP app is as simple as this Caddyfile. The PHP interpreter is completely embedded within the Caddy binary and your application files will be served from the current working directory. No need for php-fpm or separate PHP installs!
+								提供您的 PHP 应用就像这个 Caddyfile 一样简单。PHP 解释器完全嵌入 Caddy 二进制文件中，您的应用文件将从当前工作目录提供。无需 php-fpm 或单独 PHP 安装！
 							</p>
 							<p>
-								<a href="https://frankenphp.dev" class="franken button">Learn more</a>
+								<a href="https://frankenphp.dev" class="franken button">了解更多</a>
 							</p>
 						</div>
 					</div>
@@ -710,30 +710,30 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 
 			<section class="diagonal down light feature">
 				<div class="wrapper">
-					<h2 id="gold-standard">The <span class="gold">gold standard</span> web server</h2>
+					<h2 id="gold-standard"><span class="gold">黄金标准</span>Web 服务器</h2>
 					<p>
-						Caddy has the most robust TLS stack on the market. With stronger memory safety guarantees than OpenSSL (Apache &amp; NGINX) and more advanced certificate automation logic than any other server or utility, Caddy keeps your sites online through problems when other servers... won't.
+						Caddy 拥有市场上最强大的 TLS 堆栈。与 OpenSSL（Apache &amp; NGINX）相比具有更强的内存安全保障，比其他任何服务器或实用程序具有更先进的证书自动化逻辑，Caddy 在您其他服务器...不工作的情况下保持您的站点在线。
 					</p>
 					<p>
-						Caddy was the first server to fully automate public certificate management&mdash;so we've been doing this longer than anyone. With more than 50 million certificates under management, Caddy has set the gold standard for other servers to live up to.
+						Caddy 是第一个完全自动化公共证书管理的服务器——所以我们比任何人都做得久。在管理的 5000 多万张证书中，Caddy 已为其他服务器树立了黄金标准。
 					</p>
 					<div class="cols">
 						<div class="col">
-							<h3 class="green">OCSP stapling saves the day</h3>
+							<h3 class="green">OCSP stapling 挽救局面</h3>
 							<p>
-								Caddy automatically staples OCSP responses and caches them to weather outages. In 2018, many popular sites went down for users of mainstream browsers because crucial OCSP infrastructure had an extended outage. Only Caddy staples and caches OCSP responses by default, so all Caddy sites were unaffected.
+								Caddy 自动 staple OCSP 响应并将其缓存以应对中断。2018 年，许多知名站点在主流浏览器用户中中断，因为关键 OCSP 基础设施长时间中断。只有 Caddy 默认 staple 和缓存 OCSP 响应，因此所有 Caddy 站点不受影响。
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="purple">On guard against revocation</h3>
+							<h3 class="purple">警惕吊销</h3>
 							<p>
-								In 2020, a mass certificate revocation event left many sysadmins scrambling to renew their certificates ahead of schedule. Caddy automatically renews certificates that get revoked, and all Caddy sites were unaffected. (This was before ARI existed.)
+								2020 年，大规模证书吊销事件使许多系统管理员急于提前续期他们的证书。Caddy 自动续期被吊销的证书，所有 Caddy 站点不受影响。（这发生在 ARI 存在之前。）
 							</p>
 						</div>
 						<div class="col">
-							<h3 class="blue">Stands tall during audits</h3>
+							<h3 class="blue">在审计中保持高位</h3>
 							<p>
-								Companies have deployed Caddy in front of their site just hours before important audits&mdash;potentially saving their compliance status&mdash;because of Caddy's safe defaults and "batteries included" approach.
+								公司已在重要审计前几小时在站点前部署 Caddy——可能挽救他们的合规状态——因为 Caddy 的安全默认值和"电池 included"方法。
 							</p>
 						</div>
 					</div>
@@ -742,9 +742,9 @@ $ curl localhost:2019/config/ | jq<div class="blinking"></div></code>
 
 			<section class="light gray feature">
 				<div class="wrapper">
-					<h2>Take everyone's word for it</h2>
+					<h2>听听大家的说法</h2>
 					<p>
-						We're biased. But Caddy is widely relied upon and praised by a diverse global user base because of its ease of use, secure defaults, powerful feature set, and business-changing cost reductions.
+						我们有偏见。但 Caddy 被广泛依赖和赞扬，因为易用、安全默认值、强大的功能集和改变业务的成本降低。
 					</p>
 					<div class="testimonials-container">
 						<div class="testimonials">

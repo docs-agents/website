@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Download Caddy</title>
+		<title>下载 Caddy</title>
 		{{import "/old/includes/head.html"}}
 		{{template "head"}}
 		<link rel="stylesheet" href="/old/resources/css/download.css{{template "cacheBust"}}">
@@ -14,19 +14,19 @@
 			<header>
 				<div id="logo-container">
 					<a href="/"><img src="/old/resources/images/caddy-logo.svg" id="logo" alt="Caddy"></a>
-					<div id="zerossl-project">a <a href="https://zerossl.com"><img src="/old/resources/images/zerossl-logo.svg" id="zerossl-logo"></a> project</div>
+					<div id="zerossl-project">一个 <a href="https://zerossl.com"><img src="/old/resources/images/zerossl-logo.svg" id="zerossl-logo"></a> 项目</div>
 				</div>
 				{{include "/old/includes/header-nav.html"}}
 			</header>
 
 			<!-- <div class="notice">
-				⚠️ <b>Due to <a href="https://github.com/golang/go/issues/56494">multiple</a> outstanding <a href="https://github.com/golang/go/issues/53905">bugs</a> in the <code>go</code> command, we are aware that some downloads may hang or fail.</b> In the meantime, you can download Caddy from <b><a href="https://github.com/caddyserver/caddy/releases">the latest release on GitHub</a></b>, or use <b><a href="https://github.com/caddyserver/xcaddy">xcaddy</a></b> for custom builds. (Remember, this download page comes with no guarantees or SLAs.) Sorry for the inconvenience.
+				⚠️ <b>由于 <a href="https://github.com/golang/go/issues/56494">多个</a> <a href="https://github.com/golang/go/issues/53905">问题</a> 在 <code>go</code> 命令中尚未解决，我们知晓一些下载可能会挂起或失败。</b> 同时，您可以从 <b><a href="https://github.com/caddyserver/caddy/releases">GitHub 上的最新发布</a></b> 下载 Caddy，或使用 <b><a href="https://github.com/caddyserver/xcaddy">xcaddy</a></b> 构建自定义版本。（请记住，此下载页面不提供任何保证或服务级别协议。）抱歉给您带来不便。
 			</div> -->
 
 			<div class="download-bar">
 				<div>
 					<div>
-						<b>Platform:</b>
+						<b>平台：</b>
 						<select size="1" id="platform" selected="linux-amd64">
 							<option value="dragonfly-amd64">Dragonfly amd64</option>
 							<option value="freebsd-amd64">FreeBSD amd64</option>
@@ -61,36 +61,36 @@
 				</div>
 				<div>
 					<div>
-						<b>Standard features:</b> <span title="All official Caddy builds come with standard plugins">&#9745;&#65039;</span>
+						<b>标准功能：</b> <span title="所有官方 Caddy 构建都包含标准插件">&#9745;&#65039;</span>
 					</div>
 				</div>
 				<div>
 					<div>
-						<b>Extra features:</b> <span id="package-count">0</span>
+						<b>额外功能：</b> <span id="package-count">0</span>
 					</div>
 				</div>
 				<div class="download-button-container">
-					<a href="/api/download" class="blue button" id="download">Download</a>
-					or
+					<a href="/api/download" class="blue button" id="download">下载</a>
+					或
 					<a id="railway-link" href="https://railway.com/deploy/caddy?referralCode=YOPtw9&utm_medium=integration&utm_source=template&utm_campaign=generic" target="_blank">
 						<img src="https://railway.com/button.svg">
 					</a>
 				</div>
 			</div>
 
-			<input type="search" id="filter" placeholder="Filter packages and modules...">
+			<input type="search" id="filter" placeholder="筛选包和模块...">
 
 			<div class="text-center">
-				<span class="warning">⚠️ Only choose plugins you need and trust</span>
+				<span class="warning">⚠️ 仅选择您需要的且可信的插件</span>
 			</div>
 			<div class="text-center" id="darwin-warning">
-				<span class="warning">⚠️ Run the following against the downloaded binary:
+				<span class="warning">⚠️ 对下载的二进制文件运行以下命令：
 					<code>xattr -d com.apple.quarantine </code>
 				</span>
 			</div>
 
 			<div id="optional-packages">
-				<!-- Populated by JavaScript -->
+				<!-- 由 JavaScript 填充 -->
 			</div>
 		</div>
 

@@ -4,13 +4,13 @@ title: vars (Caddyfile directive)
 
 # vars
 
-Sets one or more variables to a particular value, to be used later in the request handling chain.
+设置一个或多个变量为特定值，以便在请求处理链中后续使用。
 
-The primary way to access variables is with placeholders, which have the form `{vars.variable_name}`, or with the [`vars`](/docs/caddyfile/matchers#vars) and [`vars_regexp`](/docs/caddyfile/matchers#vars_regexp) request matchers.
+访问变量的主要方式是通过占位符，其形式为 `{vars.variable_name}`，或者使用 [`vars`](/docs/caddyfile/matchers#vars) 和 [`vars_regexp`](/docs/caddyfile/matchers#vars_regexp) 请求匹配器。
 
-You may use variables with the [`templates`](templates) directive using the `placeholder` function, for example: `{{ "{{placeholder \"http.vars.variable_name\"}}" }}`
+您可以使用 `placeholder` 函数在 [`templates`](templates) 指令中使用变量，例如：`{{ "{{placeholder \"http.vars.variable_name\"}}" }}`
 
-As a special case, it's possible to override the variable named `http.auth.user.id`, which is stored in the replacer, to update the `user_id` field in [access logs](log).
+作为一种特殊情况，可以覆盖存储在替换器中的名为 `http.auth.user.id` 的变量，以更新 [访问日志](log) 中的 `user_id` 字段。
 
 
 ## Syntax
@@ -22,15 +22,15 @@ vars [<matcher>] [<name> <value>] {
 }
 ```
 
-- **&lt;name&gt;** is the variable name to set.
+- **&lt;name&gt;** 是要设置的变量名。
 
-- **&lt;value&gt;** is the value of the variable.
+- **&lt;value&gt;** 是变量的值。
 
-  The value will be type converted if possible; `true` and `false` will be converted to boolean types, and numeric values will be converted to integer or float accordingly. To avoid this conversion and keep them as strings, you may wrap them with [quotes](/docs/caddyfile/concepts#tokens-and-quotes).
+  如果可能，值将进行类型转换；`true` 和 `false` 将转换为布尔类型，数值将相应地转换为整数或浮点数。若要避免此转换并保持为字符串，您可以使用 [引号](/docs/caddyfile/concepts#tokens-and-quotes) 包裹它们。
 
 ## Examples
 
-To set a single variable, the value being conditional based on the request path, then responding with the value:
+设置单个变量，其值根据请求路径条件设置，然后用该值进行响应：
 
 ```caddy
 example.com {
@@ -41,20 +41,20 @@ example.com {
 }
 ```
 
-To set multiple variables, each converted to the appropriate scalar type:
+设置多个变量，每个变量转换为适当的标量类型：
 
 ```caddy-d
 vars {
-	# boolean
+	# 布尔值
 	abc true
 
-	# integer
+	# 整数
 	def 1
 
-	# float
+	# 浮点数
 	ghi 2.3
 
-	# string
+	# 字符串
 	jkl "example"
 }
 ```

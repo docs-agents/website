@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Log In - Caddy</title>
+		<title>登录 - Caddy</title>
 		{{import "/old/includes/account/head.html"}}
 		{{template "account-head"}}
 		<script src="/old/resources/js/account/login.js{{template "cacheBust"}}"></script>
@@ -12,13 +12,13 @@
 				<a href="/"><img src="/old/resources/images/caddy-lock.png" alt="Caddy Portal" class="logo"></a>
 			</section>
 			<section>
-				<h1>Log In</h1>
-				or <a href="/account/create">create account</a>
+				<h1>登录</h1>
+				或 <a href="/account/create">创建账户</a>
 				<div class="form-fields">
-					<input type="email" name="email" id="email" placeholder="Email address" required>
-					<input type="password" name="password" placeholder="Password" required>
-					<button type="submit" id="submit" class="blue">Log In</button>
-					<a href="/account/reset-password">Reset password</a>
+					<input type="email" name="email" id="email" placeholder="邮箱地址" required>
+					<input type="password" name="password" placeholder="密码" required>
+					<button type="submit" id="submit" class="blue">登录</button>
+					<a href="/account/reset-password">重置密码</a>
 				</div>
 			</section>
 		</form>

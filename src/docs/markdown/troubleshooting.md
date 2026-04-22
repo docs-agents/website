@@ -1,86 +1,86 @@
-Troubleshooting Strategies
-=====================
+问题排查策略
+===
 
-This page presents a general, methodical framework for fixing on your own most kinds of problems you might encounter when using Caddy _without the use of AI_. We recommend similar steps when asking for help in our forums. In many cases, you can answer your own question or fix your own problems by applying some critical thinking.
-
-
-What do you know?
------------------
-
-You may not know what the problem is, what is causing it, or how to fix it, so let's start with some fundamental things you surely do know:
-
-### What you expect
-
-Say this out loud, or in your head, or write/type it. Be clear and specific so that there's no doubt or room for ambiguity. You might even explain to yourself _why_ that's what you expect.
-
-"It should work" is not a good expectation.
-
-"I expect a 301 redirect when I make a request to this URI" is much better.
+本文介绍了一个通用的、系统化的框架，用于在不借助 AI 的情况下自行解决使用 Caddy 时可能遇到的大多数问题。当我们建议在论坛上寻求帮助时，也推荐采用类似的步骤。在许多情况下，通过运用批判性思维，你可以自己找到答案或解决问题。
 
 
-### Current behavior
+你知道什么？
+---
 
-Observe what is happening. What _exactly_ is happening, and how does it contrast with your expectation? Synthesize what you do know.
+你可能不知道问题是什么、是什么导致了它，或者如何修复它，那么让我们从一些你肯定知道的基本事项开始：
 
-"It doesn't work" is unhelpful and lazy; avoid this phrase everywhere except perhaps as a shorthand descriptor for a specific behavior that has already been documented in detail.
+### 你的期望
 
-"Instead of a 301 response, I'm getting a 200 response, although I do see the `Server: Caddy` header," is much better since it compares and contrasts what you know with what you expect, and it synthesizes other known information, which tells us that the request is at least reaching a Caddy instance.
+大声说出来，或在脑海中默念，或者写下来。要清晰具体，以便没有歧义或模糊空间。你甚至可以向自己解释_为什么_这是你的期望。
 
+"它应该能工作"不是一个好的期望。
 
-### Logs
-
-What is in Caddy's logs? By default, these are written to the terminal that started the process. If running "detached" like as a system service, you may have to get the logs from elsewhere.
-
-Note that HTTP request logs ("access logs") are different from process logs, and need to be explicitly enabled in your config.
-
-You may also want to enable DEBUG-level logging if you haven't already.
-
-But either way, one of the first things you should do is look at the logs. _All of them._ Message context matters, so a single log line in isolation is seldom useful. Collect more than you think you need and preserve it through the troubleshooting process.
-
-Are there any hints in the logs?
+"我期望在向此 URI 发出请求时获得 301 重定向"要好得多。
 
 
-Recognize and doubt assumptions
--------------------------------
+### 当前行为
 
-Before going any further, we must emphasize how crucial it is to criticize what you assume. We all make assumptions based on what we're used to and what we expect. "Be mindful of your assumptions, and great will be your power." (&mdash;Yoda, or something.)
+观察正在发生什么。_究竟_发生了什么，它与你的期望有何对比？综合你已知的信息。
 
-For example, a common assumption is that after recompiling Caddy, running `caddy` will cause the new code to run. This is only true if your compiled binary replaced the one in your `$PATH`. Instead, `./caddy` is usually the proper invocation.
+"它不工作"是无益且懒惰的；除了作为已详细记录的特定行为的简略描述外，请避免使用这个短语。
 
-Assumptions layer on as your deployment or configuration grows more complex. For example, deploying in Docker involves rebuilding an image and running it, which multiplies the assumptions you might make.
-
-Many questions and bug reports end up being issues with external system and network configurations, not Caddy itself. For example, if you can't connect to your Caddy instance, but Caddy is clearly running, you probably assume it's not DNS. Hint: it's almost always DNS.
-
-Even just assuming that you reloaded a config, but you really didn't, is a common mistake. Strive to be rigorous about your process. Verify at every level.
+"我没有得到 301 响应，而是得到了 200 响应，尽管我确实看到了 `Server: Caddy` 头"，这要好得多，因为它比较和对比了你已知和你期望的内容，并综合了其他已知信息，这表明请求至少已到达 Caddy 实例。
 
 
-Reproduce the behavior
-----------------------
+### 日志
 
-This is a key step that often causes problems to fix themselves: make the problem happen again.
+Caddy 的日志中有什么？默认情况下，这些日志写入到启动进程的终端。如果以"分离"模式运行，例如作为系统服务，你可能需要从其他地方获取日志。
 
-Specifically, make it happen again _in the most minimal way possible_. Eliminate unnecessary config, deployment steps, environmental factors, etc., until the problem goes away.
+请注意，HTTP 请求日志（"访问日志"）与进程日志不同，并且需要在配置中显式启用。
 
-A common strategy is to eliminate just one thing at a time, and retry, until the problem disappears. Then that thing you removed is likely the cause, or&mdash;and this is a good place to doubt assumptions&mdash;some combination of the last thing and what you removed before it are the cause. Verify by adding in the first things to be removed. Narrow it down.
+如果你尚未启用，可能还需要启用 DEBUG 级别的日志记录。
 
-Another idea is to eliminate about half of everything at each iteration, and once the problem goes away, eliminate just half of that half, and so on. This is like a binary search and can be quicker.
+但无论如何，你首先要做的之一就是查看日志。_全部日志。_消息上下文很重要，所以孤立的单条日志记录很少有用。收集比你认为需要的更多的内容，并在问题排查过程中保存它们。
 
-Alternatively, instead of elimination, you could invert these strategies and incrementally build your config or scenario from the ground-up, retrying each time, until the problem appears.
-
-Often, this process alone will identify the problem and the fix might become obvious. If not, you can at least write down the minimal steps to reproduce the problem.
+日志中是否有任何提示？
 
 
-Explore behaviors
------------------
+识别并质疑假设
+---
 
-With the steps known to reproduce the problem, you are well-situated to diagnose a cause. This involves tinkering and, if you're savvy, reading the code.
+在继续之前，我们必须强调批评你所假设的内容有多么关键。我们都会根据习惯和期望做出假设。"留心你的假设，你将获得强大的力量。"（&mdash;尤达大师，或者类似的话。）
 
-If you cannot explain why the problem is occuring, vary the behavior. Make a small change and try again. For example, if your relevant config involves a regular expression, change/simplify the expression&mdash;or remove it entirely&mdash;and see if you do _something_ to get the behavior you are looking for. Even if it's not what you want, at least you know it's a problem with the regular expression or the config.
+例如，一个常见的假设是，在重新编译 Caddy 后，运行 `caddy` 会导致新代码运行。只有当你的编译二进制文件替换了 `$PATH` 中的那个时，这才是正确的。相反，`./caddy` 通常是正确的调用方式。
 
-As you explore, notice patterns of what works and what doesn't. This should lead you down the path to a solution.
+随着你的部署或配置变得复杂，假设会层层叠加。例如，在 Docker 中部署涉及重新构建镜像并运行它，这会乘以你可能做出的假设数量。
 
-If you find a solution, then you can decide if it should be a bug or not. Sometimes it's not obvious whether it's a bug; it's okay to post an issue with your experiments and get maintainer feedback either way.
+许多疑问和错误报告最终都是外部系统和网络配置的问题，而不是 Caddy 本身的问题。例如，如果你无法连接到你的 Caddy 实例，但 Caddy 显然正在运行，你可能假设不是 DNS 的问题。提示：几乎总是 DNS 的问题。
 
-And if it's not a bug, congrats! You solved a problem and learned at least something in the process.
+甚至只是假设你已经重新加载了配置，但实际上并没有，这也是一个常见的错误。努力让你的过程严谨。在每个层面都进行验证。
 
-Consider posting about your experience [in the forum](https://caddy.community) to help others who may encounter the same problem.
+
+复现该行为
+---
+
+这是一个关键步骤，通常会让问题自行解决：让问题再次发生。
+
+具体来说，以最_可能小的方式_让它再次发生。消除不必要的配置、部署步骤、环境因素等，直到问题消失。
+
+一个常见的策略是一次只消除一件事，然后重试，直到问题消失。那么你移除的那件事很可能是原因，或者&mdash;这是一个质疑假设的好地方&mdash;最后一件事和你之前移除的事情的某种组合是原因。通过重新添加首先被移除的事情来验证。缩小范围。
+
+另一个想法是在每次迭代中消除大约一半的内容，一旦问题消失，就再消除那一半的一半，依此类推。这就像二分搜索，可能会更快。
+
+或者，你可以通过消除，反转这些策略，从基础逐步构建你的配置或场景，每次都重试，直到问题出现。
+
+通常，仅这个过程就会识别出问题，修复方法可能变得显而易见。如果没有，你至少可以写下复现问题的最小步骤。
+
+
+探索行为
+---
+
+有了可复现问题的步骤，你就处于诊断原因的有利位置。这涉及尝试，如果你有远见，还可以阅读代码。
+
+如果你无法解释问题为什么会发生，请改变行为。进行小改动并再次尝试。例如，如果你的相关配置涉及正则表达式，改变/简化表达式&mdash;或者完全移除它&mdash;然后看看你是否能_做点什么_来获得你想要的行为。即使它不是你想要的内容，至少你知道这是正则表达式或配置的问题。
+
+在你探索的过程中，注意哪些有效哪些无效的模式。这应该能引导你走向解决方案。
+
+如果你找到了解决方案，那么你可以决定是否应该将其作为错误报告。有时这不明显是否是错误；没关系，带着你的实验结果发布一个问题并获得维护者的反馈。
+
+如果不是错误，恭喜！你解决了一个问题，并在此过程中至少学到了一些东西。
+
+考虑在 [论坛](https://caddy.community) 中发布你的经验，以帮助可能遇到相同问题的其他人。

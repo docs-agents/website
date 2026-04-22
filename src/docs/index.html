@@ -12,11 +12,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{{$title}} &mdash; Caddy Documentation</title>
+		<title>{{$title}} &mdash; Caddy 文档</title>
 		{{import "/includes/head.html"}}
 		{{template "head" .}}
-		<meta property="og:title" content="{{$title}} - Caddy Documentation">
-		<meta name="twitter:title" value="{{$title}} - Caddy Documentation">
+		<meta property="og:title" content="{{$title}} - Caddy 文档">
+		<meta name="twitter:title" value="{{$title}} - Caddy 文档">
 
 		<link rel="stylesheet" href="/resources/css/docs.css{{template "cacheBust"}}">
 
@@ -47,24 +47,24 @@
 							<path d="M4 12l16 0"></path>
 							<path d="M4 18l16 0"></path>
 						</svg>
-						Pages
+						页面
 					</div>
 					<div id="docs-menu-container">
 						<ul>
-							<li class="heading">Get Caddy</li>
-							<li><a href="/docs/install">Install</a></li>
-							<li><a href="/docs/build">Build from source</a></li>
+							<li class="heading">获取 Caddy</li>
+							<li><a href="/docs/install">安装</a></li>
+							<li><a href="/docs/build">从源码构建</a></li>
 						</ul>
 						<ul>
-							<li class="heading">Tutorials</li>
-							<li><a href="/docs/getting-started">Getting Started</a></li>
+							<li class="heading">教程</li>
+							<li><a href="/docs/getting-started">入门指南</a></li>
 							<li>
-								<a href="/docs/quick-starts">Quick-starts</a>
+								<a href="/docs/quick-starts">快速开始</a>
 								<ul>
-									<li><a href="/docs/quick-starts/api">Using the API</a></li>
-									<li><a href="/docs/quick-starts/caddyfile">Using a Caddyfile</a></li>
-									<li><a href="/docs/quick-starts/static-files">Static files</a></li>
-									<li><a href="/docs/quick-starts/reverse-proxy">Reverse proxy</a></li>
+									<li><a href="/docs/quick-starts/api">使用 API</a></li>
+									<li><a href="/docs/quick-starts/caddyfile">使用 Caddyfile</a></li>
+									<li><a href="/docs/quick-starts/static-files">静态文件</a></li>
+									<li><a href="/docs/quick-starts/reverse-proxy">反向代理</a></li>
 									<li><a href="/docs/quick-starts/https">HTTPS</a></li>
 									<li><a href="/docs/quick-starts/railway">Railway</a></li>
 								</ul>
@@ -73,46 +73,46 @@
 							<li><a href="/docs/caddyfile-tutorial">Caddyfile</a></li>
 						</ul>
 						<ul>
-							<li class="heading">Reference</li>
-							<li><a href="/docs/command-line">Command Line</a></li>
+							<li class="heading">参考</li>
+							<li><a href="/docs/command-line">命令行</a></li>
 							<li><a href="/docs/api">API</a></li>
 							<li>
 								<a href="/docs/caddyfile">Caddyfile</a>
 								<ul>
-									<li><a href="/docs/caddyfile/concepts">Concepts</a></li>
-									<li><a href="/docs/caddyfile/options">Global options</a></li>
-									<li><a href="/docs/caddyfile/directives">Directives</a></li>
-									<li><a href="/docs/caddyfile/matchers">Request matchers</a></li>
-									<li><a href="/docs/caddyfile/response-matchers">Response matchers</a></li>
-									<li><a href="/docs/caddyfile/patterns">Common patterns</a></li>
+									<li><a href="/docs/caddyfile/concepts">概念</a></li>
+									<li><a href="/docs/caddyfile/options">全局选项</a></li>
+									<li><a href="/docs/caddyfile/directives">指令</a></li>
+									<li><a href="/docs/caddyfile/matchers">请求匹配器</a></li>
+									<li><a href="/docs/caddyfile/response-matchers">响应匹配器</a></li>
+									<li><a href="/docs/caddyfile/patterns">常用模式</a></li>
 								</ul>
 							</li>
-							<li><a href="/docs/modules">Modules</a></li>
-							<li><a href="/docs/json">JSON Config Structure</a></li>
-							<li><a href="/docs/automatic-https">Automatic HTTPS</a></li>
+							<li><a href="/docs/modules">模块</a></li>
+							<li><a href="/docs/json">JSON 配置结构</a></li>
+							<li><a href="/docs/automatic-https">自动 HTTPS</a></li>
 						</ul>
 						<ul>
-							<li class="heading">Articles</li>
-							<li><a href="/docs/architecture">Caddy Architecture</a></li>
-							<li><a href="/docs/conventions">Conventions</a></li>
-							<li><a href="/docs/config-adapters">Config Adapters</a></li>
-							<li><a href="/docs/running">Keep Caddy Running</a></li>
-							<li><a href="/docs/logging">How Logging Works</a></li>
-							<li><a href="/docs/metrics">Monitoring Caddy</a></li>
-							<li><a href="/docs/profiling">Profiling Caddy</a></li>
-							<li><a href="/docs/signature-verification">Verifying Asset Signatures</a></li>
-							<li><a href="/docs/troubleshooting">Troubleshooting Strategies</a></li>
+							<li class="heading">文章</li>
+							<li><a href="/docs/architecture">Caddy 架构</a></li>
+							<li><a href="/docs/conventions">约定</a></li>
+							<li><a href="/docs/config-adapters">配置适配器</a></li>
+							<li><a href="/docs/running">保持 Caddy 运行</a></li>
+							<li><a href="/docs/logging">日志工作原理</a></li>
+							<li><a href="/docs/metrics">监控 Caddy</a></li>
+							<li><a href="/docs/profiling">Caddy 性能分析</a></li>
+							<li><a href="/docs/signature-verification">验证资产签名</a></li>
+							<li><a href="/docs/troubleshooting">故障排除策略</a></li>
 					
-							<li class="heading">Developers</li>
+							<li class="heading">开发者</li>
 							<li>
-								<a href="/docs/extending-caddy">Extending Caddy</a>
+								<a href="/docs/extending-caddy">扩展 Caddy</a>
 								<ul>
-									<li><a href="/docs/extending-caddy/caddyfile">Caddyfile Support</a></li>
-									<li><a href="/docs/extending-caddy/config-adapters">Config Adapters</a></li>
-									<li><a href="/docs/extending-caddy/placeholders">Placeholders</a></li>
+									<li><a href="/docs/extending-caddy/caddyfile">Caddyfile 支持</a></li>
+									<li><a href="/docs/extending-caddy/config-adapters">配置适配器</a></li>
+									<li><a href="/docs/extending-caddy/placeholders">占位符</a></li>
 								</ul>
 							</li>
-							<li><a href="/docs/extending-caddy/namespaces">Module Namespaces</a></li>
+							<li><a href="/docs/extending-caddy/namespaces">模块命名空间</a></li>
 						</ul>
 
 						<!-- <ul>

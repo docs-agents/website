@@ -1,23 +1,23 @@
 ---
-title: basic_auth (Caddyfile directive)
+title: basic_auth（Caddyfile 指令）
 ---
 
 # basic_auth
 
-Enables HTTP Basic Authentication, which can be used to protect directories and files with a username and hashed password.
+启用 HTTP 基本认证，可用于使用用户名和哈希密码保护目录和文件。
 
-**Note that basic auth is not secure over plain HTTP.** Use discretion when deciding what to protect with HTTP Basic Authentication.
+**请注意，基本认证在纯 HTTP 上不安全。** 在决定用什么进行基本认证保护时请自行斟酌。
 
-When a user requests a resource that is protected, the browser will prompt the user for a username and password if they have not already supplied one. If the proper credentials are present in the Authorization header, the server will grant access to the resource. If the header is missing or the credentials are incorrect, the server will respond with HTTP 401 Unauthorized.
+当用户请求受保护的资源时，如果尚未提供用户名和密码，浏览器将提示用户输入。如果 Authorization 头中存在正确的凭据，服务器将授予对该资源的访问权限。如果头信息缺失或凭据不正确，服务器将返回 HTTP 401 未授权响应。
 
-Caddy configuration does not accept plaintext passwords; you MUST hash them before putting them into the configuration. The [`caddy hash-password`](/docs/command-line#caddy-hash-password) command can help with this.
+Caddy 配置不接受明文密码；在将其放入配置之前，您**必须**先对其进行哈希处理。[`caddy hash-password`](/docs/command-line#caddy-hash-password) 命令可以帮助您完成此操作。
 
-After a successful authentication, the `{http.auth.user.id}` placeholder will be available, which contains the authenticated username.
+成功认证后，将可使用 `{http.auth.user.id}` 占位符，其中包含已认证的用户名。
 
-Prior to v2.8.0, this directive was named `basicauth`, but was renamed for consistency with other directives.
+在 v2.8.0 之前，此指令名为 `basicauth`，但为与其他指令保持一致而进行了重命名。
 
 
-## Syntax
+## 语法
 
 ```caddy-d
 basic_auth [<matcher>] [<hash_algorithm> [<realm>]] {
@@ -26,18 +26,18 @@ basic_auth [<matcher>] [<hash_algorithm> [<realm>]] {
 }
 ```
 
-- **&lt;hash_algorithm&gt;** specifies the password hashing algorithm (or key derivation function) used for the hashes in this configuration. Available options include `argon2id`, the default is `bcrypt`.
+- **&lt;hash_algorithm&gt;** 指定用于此配置中哈希的密码哈希算法（或密钥推导函数）。可用选项包括 `argon2id`，默认为 `bcrypt`。
 
-- **&lt;realm&gt;** is a custom realm name.
+- **&lt;realm&gt;** 是自定义的realm名称。
 
-- **&lt;username&gt;** is a username or user ID.
+- **&lt;username&gt;** 是用户名或用户 ID。
 
-- **&lt;hashed_password&gt;** is the password hash.
+- **&lt;hashed_password&gt;** 是密码哈希值。
 
 
-## Examples
+## 示例
 
-Require authentication for all requests to `example.com`:
+要求对 `example.com` 的所有请求进行身份验证：
 
 ```caddy
 example.com {
@@ -49,7 +49,7 @@ example.com {
 }
 ```
 
-Protect files in `/secret/` so only `Bob` can access them (and anyone can see other paths):
+保护 `/secret/` 中的文件，使只有 `Bob` 能够访问（其他人可以查看其他路径）：
 
 ```caddy
 example.com {
@@ -64,7 +64,7 @@ example.com {
 }
 ```
 
-`argon2id` example
+`argon2id` 示例
 
 ```caddy
 example.com {

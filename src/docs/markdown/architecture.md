@@ -2,49 +2,48 @@
 title: Architecture
 ---
 
-Architecture
+架构
 ============
 
-Caddy is a single, self-contained, static binary with zero external dependencies because it's written in Go. These values comprise important parts of the project's vision because they simplify deployment and reduce tedious troubleshooting in production environments.
+Caddy 是一个单一的、自包含的静态二进制文件，没有任何外部依赖，因为它用 Go 编写。这些价值观构成了项目愿景的重要组成部分，因为它们简化了部署并减少了生产环境中繁琐的问题排查。
 
-If there's no dynamic linking, then how can it be extended? Caddy sports a novel plugin architecture that expands its capabilities far beyond that of any other web server, even those with external (dynamically-linked) dependencies.
+如果没有动态链接，那么如何扩展它呢？Caddy 拥有一个新颖的插件架构，将其功能扩展到远超任何其他 Web 服务器的范围，即使是那些具有外部（动态链接）依赖的服务器也不例外。
 
-Our philosophy of "fewer moving parts" ultimately results in more reliable, more manageable, less expensive sites&mdash;especially at scale. This semi-technical document describes how we achieve that goal through software engineering.
-
-
-## Overview
-
-Caddy consists of a command, core library, and modules.
-
-The **command** provides the [command line interface](/docs/command-line) you are hopefully familiar with. It's how you launch the process from your operating system. The amount of code and logic here is fairly minimal, and has only what is needed to bootstrap the core in the user's desired way. We intentionally avoid using flags and environment variables for configuration except as they pertain to bootstrapping config.
+我们"更少移动部件"的理念最终带来了更可靠、更易管理、成本更低的网站——尤其是在大规模场景下。这份半技术文档描述了如何通过软件工程实现这一目标。
 
 
-<aside class="tip">
+## 概览
 
-Modules can add subcommands to the command line interface! For instance, that's where the [`caddy file-server`](/docs/command-line#caddy-file-server) command comes from. These added commands may have any flags or use any environment variables they want, even though the core Caddy commands minimize their use.
+Caddy 由命令、核心库和模块组成。
 
-</aside>
-
-
-The **[core library](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc)**, or "core" of Caddy, primarily manages configuration. It can [`Run()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Run) a new configuration or [`Stop()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Stop) a running config. It also provides various utilities, types, and values for modules to use.
-
-**Modules** do everything else. Many modules come built into Caddy, which are called the _standard modules_. These are determined to be the most useful to the most users.
+**命令**提供了您 hopefully 熟悉的 [命令行界面](/docs/command-line)。这是您从操作系统启动进程的方式。此处的代码和逻辑相当精简，仅包含以用户首选方式引导核心所需的内容。我们有意避免使用标志和环境变量进行配置，除非它们与引导配置相关。
 
 
 <aside class="tip">
 
-Sometimes the terms *module*, *plugin*, and *extension* get used interchangeably, and usually that's OK. Technically, all modules are plugins, but not all plugins are modules. Modules are specifically a kind of plugin that extends Caddy's [config structure](/docs/json/).
+模块可以为命令行界面添加子命令！例如，[`caddy file-server`](/docs/command-line#caddy-file-server) 命令就来自这里。这些添加的命令可能拥有任何标志或使用任何环境变量，即使核心 Caddy 命令尽量限制它们的使用。
+
+</aside>
+
+
+**[核心库](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc)**，或称 Caddy 的"核心"，主要管理配置。它可以 [`Run()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Run) 新配置或 [`Stop()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Stop) 运行中的配置。它还为模块提供各种工具、类型和值。
+
+**模块**处理其他所有事情。许多模块内置于 Caddy 中，称为_标准模块_。这些被认为是对最多用户最有用的模块。
+
+
+<aside class="tip">
+
+有时术语*模块*、*插件*和*扩展*会被交替使用，通常这没有问题。技术上，所有模块都是插件，但并非所有插件都是模块。模块具体来说是一种扩展 Caddy [配置结构](/docs/json/) 的插件。
 
 </aside>
 
 
 
+## Caddy 核心
 
-## Caddy core
+在其核心层面，Caddy 仅加载初始配置（"config"），或者如果没有配置，则打开一个 socket 以接受后续的新配置。
 
-At its core, Caddy merely loads an initial configuration ("config") or, if there isn't one, opens a socket to accept new configuration later on.
-
-A [Caddy configuration](/docs/json/) is a JSON document, with some fields at its top level:
+[Caddy 配置](/docs/json/) 是一个 JSON 文档，其顶层包含一些字段：
 
 ```json
 {
@@ -55,103 +54,102 @@ A [Caddy configuration](/docs/json/) is a JSON document, with some fields at its
 }
 ```
 
-The core of Caddy knows how to work with some of these fields natively: 
+Caddy 核心知道如何原生处理这些字段中的一些：
 
-- [`admin`](/docs/json/admin/) so it can set up the [admin API](/docs/api) and manage the process
-- [`logging`](/docs/json/logging/) so it can [emit logs](/docs/logging)
+- [`admin`](/docs/json/admin/) 以便设置 [管理 API](/docs/api) 并管理进程
+- [`logging`](/docs/json/logging/) 以便 [输出日志](/docs/logging)
 
-But other top-level fields (like [`apps`](/docs/json/apps/)) are opaque to the core of Caddy. In fact, all Caddy knows to do with the bytes in `apps` is deserialize them into an interface type that it can call two methods on:
+但其他顶层字段（如 [`apps`](/docs/json/apps/)）对 Caddy 核心来说是透明的。事实上，Caddy 对 `apps` 中的字节所做的所有事情就是将其反序列化为接口类型，然后可以在其上调用两个方法：
 
 1. `Start()`
 2. `Stop()`
 
-... and that's it. It calls `Start()` on each app when a config is loaded, and `Stop()` on each app when a config is unloaded.
+……仅此而已。当配置加载时，它调用每个应用的 `Start()`，当配置卸载时，调用每个应用的 `Stop()`。
 
-When an app module is started, it initiates the app's module lifecycle.
-
-
-<aside class="tip">
-
-If you are a programmer who is building Caddy modules, you can find analogous information in our [Extending Caddy](/docs/extending-caddy) guide, but with more focus on code.
-
-</aside>
-
-
-## Module lifecycle
-
-There are two kinds of modules: _host modules_ and _guest modules_.
-
-**Host modules** (or "parent" modules) are those that load other modules.
-
-**Guest modules** (or "child" modules) are those that get loaded. All modules are guest modules -- even app modules.
-
-Modules get loaded, are provisioned and validated, get used, then are cleaned up, in this sequence:
-
-1. Loaded
-2. Provisioned and validated
-3. Used
-4. Cleaned up
-
-Caddy kicks off the module lifecycle when a config is loaded first by initializing all the configured app modules. From there, it's turtles all the way down as each app module takes it the rest of the way.
-
-### Load phase
-
-Loading a module involves deserializing its JSON bytes into a typed value in memory. That's... basically it. It's just decoding JSON into a value.
-
-### Provision phase
-
-This phase is where most of the setup work goes. All modules get a chance to provision themselves after being loaded.
-
-Since any properties from the JSON encoding will already have been decoded, only additional setup needs to take place here. The most common task during provisioning is setting up guest modules. In other words, provisioning a host module also results in provisioning its guest modules, all the way down.
-
-You can get a sense for this by [traversing Caddy's JSON structure in our docs](/docs/json/). Anywhere you see `{•••}` is where guest modules may be used; and as you click into one, you can continue exploring all the way down until there are no more guest modules.
-
-Other common provisioning tasks are setting up internal values that will be used during the module's lifetime, or standardizing inputs. For example, the [`http.matchers.remote_ip`](/docs/modules/http.matchers.remote_ip) module uses the provisioning phase to parse CIDR values out of the string inputs it received from the JSON. That way, it doesn't have to do this during every HTTP request, and is more efficient as a result.
-
-Validation also can take place in the provision phase. If a module's resulting config is invalid, an error can be returned here which aborts the entire config load process.
-
-### Use phase
-
-Once a guest module is provisioned and validated, it can be used by its host module. What exactly this means is up to each host module.
-
-Each module has an ID, which consists of a namespace and a name in that namespace. For example, [`http.handlers.reverse_proxy`](/docs/modules/http.handlers.reverse_proxy) is an HTTP handler because it is in the `http.handlers` namespace, and its name is `reverse_proxy`. All modules in the `http.handlers` namespace satisfy the same interface, known to the host module. Thus, the `http` app knows how to load and use these kinds of modules.
-
-### Cleanup phase
-
-When it is time for a config to be stopped, all modules get unloaded. If a module allocated any resources that should be freed, it has an opportunity to do so in the cleanup phase.
-
-
-## Plugging in
-
-A module -- or any Caddy plugin -- gets "plugged in" to Caddy by adding an `import` for the module's package. By importing the package, [the module registers itself](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#RegisterModule) with the Caddy core, so when the Caddy process starts, it knows each module by name. It can even associate between module values and names, and vice-versa.
+当应用模块启动时，它启动该应用模块的生命周期。
 
 
 <aside class="tip">
 
-Plugins can be added without modifying the Caddy code base at all. There are instructions [in the readme](https://github.com/caddyserver/caddy/#with-version-information-andor-plugins) for doing this!
+如果您是构建 Caddy 模块的程序员，可以在我们的 [扩展 Caddy](/docs/extending-caddy) 指南中找到类似信息，但更侧重于代码。
 
 </aside>
 
 
-## Managing configuration
+## 模块生命周期
 
-Changing a running server's active configuration (often called a "reload") can be tricky with the high levels of concurrency and thousands of parameters that servers require. Caddy solves this problem elegantly using a design that has many benefits:
+有两种模块：_宿主模块_和_ guest 模块_。
 
-- No interruption to running services
-- Granular config changes are possible
-- Only one lock required (in the background)
-- All reloads are atomic, consistent, isolated, and mostly durable ("ACID")
-- Minimal global state
+**宿主模块**（或"父"模块）是那些加载其他模块的模块。
 
-You can [watch a video about the design of Caddy 2 here](https://www.youtube.com/watch?v=EhJO8giOqQs).
+**Guest 模块**（或"子"模块）是那些被加载的模块。所有模块都是 guest 模块——包括应用模块。
 
-A config reload works by provisioning the new modules, and if all succeed, the old ones are cleaned up. For a brief period, two configs are operational at the same time.
+模块的加载、配置和验证、使用、然后清理的序列如下：
 
-Each configuration is associated with a [context](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Context) which holds all the module state, so most state never escapes the scope of a config. This is good news for correctness, performance, and simplicity!
+1. 加载
+2. 配置和验证
+3. 使用
+4. 清理
 
-However, sometimes truly global state is necessary. For example, the reverse proxy may keep track of the health of its upstreams; since there is only one of each upstream globally, it would be bad if it forgot about them every time a minor config change was made. Fortunately, Caddy [provides facilities](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#UsagePool) similar to a language runtime's garbage collector to keep global state tidy.
+Caddy 在配置加载时首先初始化所有配置的应用模块，从而启动模块生命周期。从那里开始，就像套娃一样，每个应用模块将其余部分完成到底。
 
-One obvious approach to on-line config updates is to synchronize access to every single config parameter, even in hot paths. This is unbelievably bad in terms of performance and complexity&mdash;especially at scale&mdash;so Caddy does not use this approach.
+### 加载阶段
 
-Instead, configs are treated as immutable, atomic units: either the whole thing is replaced, or nothing gets changed. The [admin API endpoints](/docs/api)&mdash;which permit granular changes by traversing into the structure&mdash;mutate only an in-memory representation of the config, from which a whole new config document is generated and loaded. This approach has vast benefits in terms of simplicity, performance, and consistency. Since there is only one lock, it is easy for Caddy to process rapid reloads.
+加载模块涉及将其 JSON 字节反序列化为内存中的类型化值。那就是……基本上就是这样。只是将 JSON 解码为值。
 
+### 配置阶段
+
+这是大多数设置工作进行的阶段。所有模块在加载后都有机会进行自我配置。
+
+由于 JSON 编码的任何属性将已经被解码，因此只需要在此处进行额外的设置。配置期间最常见的任务是设置 guest 模块。换句话说，配置宿主模块也会导致配置其 guest 模块，一直向下。
+
+您可以通过 [在文档中遍历 Caddy 的 JSON 结构](/docs/json/) 来了解这一点。任何您看到 `{•••}` 的地方都可能是 guest 模块被使用的地方；当您点击进入时，您可以继续深入探索，直到没有更多 guest 模块为止。
+
+其他常见的配置任务包括设置将在模块生命周期内使用的内部值，或标准化输入。例如，[`http.matchers.remote_ip`](/docs/modules/http.matchers.remote_ip) 模块使用配置阶段来从它从 JSON 接收的字符串输入中解析 CIDR 值。这样，它就不必在每次 HTTP 请求时这样做，因此效率更高。
+
+验证也可以在配置阶段进行。如果模块的最终配置无效，可以在此处返回错误，从而中止整个配置加载过程。
+
+### 使用阶段
+
+一旦 guest 模块被配置和验证，它就可以被其宿主模块使用。这具体意味着什么取决于每个宿主模块。
+
+每个模块都有一个 ID，由命名空间和该命名空间中的名称组成。例如，[`http.handlers.reverse_proxy`](/docs/modules/http.handlers.reverse_proxy) 是一个 HTTP 处理器，因为它位于 `http.handlers` 命名空间中，其名称为 `reverse_proxy`。`http.handlers` 命名空间中的所有模块都满足相同的接口，由宿主模块已知。因此，`http` 应用知道如何加载和使用这些类型的模块。
+
+### 清理阶段
+
+当需要停止配置时，所有模块都会被卸载。如果模块分配了任何应该释放的资源，它有机会在清理阶段这样做。
+
+
+## 插件接入
+
+模块——或任何 Caddy 插件——通过为模块的包添加 `import` 来"接入" Caddy。通过导入包，[模块自行注册](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#RegisterModule) 到 Caddy 核心，因此当 Caddy 进程启动时，它知道每个模块的名称。它甚至可以关联模块值和名称，反之亦然。
+
+
+<aside class="tip">
+
+插件可以在不修改 Caddy 代码库的情况下添加。在 [自述文件](https://github.com/caddyserver/caddy/#with-version-information-andor-plugins) 中有相关说明！
+
+</aside>
+
+
+## 管理配置
+
+更改运行中服务器的活动配置（通常称为"重载"）对于服务器所需的并发水平和数千个参数来说可能是棘手的。Caddy 使用一种设计优雅地解决了这个问题，该设计具有许多优势：
+
+- 不中断运行中的服务
+- 可以进行细粒度的配置更改
+- 只需一个锁（在后台）
+- 所有重载都是原子、一致、隔离且大部分持久的（"ACID"）
+- 最小全局状态
+
+您可以 [在此观看关于 Caddy 2 设计的视频](https://www.youtube.com/watch?v=EhJO8giOqQs)。
+
+配置重载通过配置新模块工作，如果全部成功，则清理旧模块。在一段时间内，两个配置同时运行。
+
+每个配置都与一个 [上下文](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Context) 相关联，该上下文保存所有模块状态，因此大多数状态永远不会脱离配置的范围。这对正确性、性能和简易性来说是个好消息！
+
+然而，有时真正的全局状态是必要的。例如，反向代理可能会跟踪其上游的健康状况；由于每个上游在全球只有一个，如果每次进行小的配置更改时都忘记它们，那将是很糟糕的。幸运的是，Caddy [提供设施](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#UsagePool) 类似于语言运行时的垃圾回收器来保持全局状态整洁。
+
+对在线配置更新的一种明显方法是同步访问每个配置参数，即使在热路径中也是如此。这在性能和复杂性方面极其糟糕——尤其是在大规模场景下——因此 Caddy 不使用这种方法。
+
+相反，配置被视为不可变的原子单元：要么整个替换，要么什么都不改变。[管理 API 端点](/docs/api)——允许通过遍历结构进行细粒度更改——仅突变配置的内存表示，从中生成并加载整个新配置文档。这种方法在简易性、性能和一致性方面具有巨大优势。由于只有一个锁，Caddy 可以轻松处理快速重载。

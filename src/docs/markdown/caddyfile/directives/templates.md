@@ -4,10 +4,10 @@ title: templates (Caddyfile directive)
 
 # templates
 
-Executes the response body as a [template](/docs/modules/http.handlers.templates) document. Templates provide functional primitives for making simple dynamic pages. Features include HTTP subrequests, HTML file includes, Markdown rendering, JSON parsing, basic data structures, randomness, time, and more.
+将响应主体作为 [template](/docs/modules/http.handlers.templates) 文档执行。Templates 提供了用于构建简单动态页面的功能性原语。功能包括 HTTP 子请求、HTML 文件包含、Markdown 渲染、JSON 解析、基本数据结构、随机性、时间处理等。
 
 
-## Syntax
+## 语法
 
 ```caddy-d
 templates [<matcher>] {
@@ -22,31 +22,31 @@ templates [<matcher>] {
 }
 ```
 
-- **mime** are the MIME types the templates middleware will act on; any responses that do not have a qualifying `Content-Type` will not be evaluated as templates.
+- **mime** 是 templates 中间件将作用的 MIME 类型；任何没有合格 `Content-Type` 的响应都不会作为模板进行评估。
 
-  Default: `text/html text/plain`.
+  默认值：`text/html text/plain`。
 
-- **between** are the opening and closing delimiters for template actions. You can change them if they interfere with the rest of your document.
+- **between** 是模板操作的开闭分隔符。如果它们干扰了文档的其他部分，可以更改它们。
 
-  Default: `{{printf "{{ }}"}}`.
+  默认值：`{{printf "{{ }}"}}`。
 
-- **root** is the site root, when using functions that access the file system.
+- **root** 是站点根目录，当使用访问文件系统的函数时。
 
-  Defaults to the site root set by the [`root`](root) directive, or the current working directory if not set.
+  默认为由 [`root`](root) 指令设置的站点根目录，如果未设置，则为当前工作目录。
 
-- **extensions** allows you to register custom template functions provided by modules in the `http.handlers.templates.functions.*` namespace.
+- **extensions** 允许您注册由 `http.handlers.templates.functions.*` 命名空间中的模块提供的自定义模板函数。
 
-  Each subdirective inside the block corresponds to a module name. These modules can add custom functions to the template function map, typically used to implement reusable components. This feature is primarily intended for plugins.
+  块内的每个子指令对应一个模块名称。这些模块可以向模板函数映射添加自定义函数，通常用于实现可重用的组件。此功能主要用于插件。
 
-Documentation for the built-in template functions can be found in [templates module](/docs/modules/http.handlers.templates#docs).
+内置模板函数的文档可在 [templates module](/docs/modules/http.handlers.templates#docs) 中找到。
 
 
 
-## Examples
+## 示例
 
-For a complete example of a site using templates to serve markdown, take a look at the source for [this very website](https://github.com/caddyserver/website)! Specifically, take a look at the [`Caddyfile`](https://github.com/caddyserver/website/blob/master/Caddyfile) and [`src/docs/index.html`](https://github.com/caddyserver/website/blob/master/src/docs/index.html).
+要查看使用模板提供 Markdown 的站点的完整示例，请查看 [本网站](https://github.com/caddyserver/website) 的源码！具体来说，请查看 [`Caddyfile`](https://github.com/caddyserver/website/blob/master/Caddyfile) 和 [`src/docs/index.html`](https://github.com/caddyserver/website/blob/master/src/docs/index.html)。
 
-Enable templates for a static site:
+为静态站点启用模板：
 
 ```caddy
 example.com {
@@ -56,7 +56,7 @@ example.com {
 }
 ```
 
-To serve a simple static response using a template, make sure to set `Content-Type`:
+要使用模板提供简单的静态响应，请确保设置 `Content-Type`：
 
 ```caddy
 example.com {
@@ -66,14 +66,14 @@ example.com {
 }
 ```
 
-Using a template extension (plugin):
+使用模板扩展（插件）：
 
 ```caddy
 example.com {
 	root /srv
 	templates {
 		extensions {
-			# Requires the caddy-hitcounter plugin:
+			# 需要 caddy-hitcounter 插件：
 			# https://github.com/mholt/caddy-hitcounter
 			hitCounter {
 				style bright_green

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>All features of the Caddy Web Server</title>
+		<title>Caddy Web 服务器的所有功能</title>
 		{{import "/includes/head.html"}}
 		{{template "head" .}}
 		<link rel="stylesheet" href="/resources/css/marketing.css{{template "cacheBust"}}">
@@ -14,9 +14,9 @@
 			<div class="wrapper">
 				<div class="hero-content">
 					<h1>
-						All features
+						所有功能
 						<div class="subheading">
-							You might want to sit down for this.
+							您可能需要坐下来阅读。
 						</div>
 					</h1>
 				</div>
@@ -28,93 +28,93 @@
 			<section class="diagonal up feature">
 				<div class="wrapper">
 					<div class="legend">
-						Features in <span class="nonstandard">this color</span> are provided by optional plugins.
+						<span class="nonstandard">本页面列出的</span> 功能由可选插件提供。
 					</div>
 
 					<h2>
-						Overview
+						概述
 					</h2>
 					<p>
-						Caddy is essentially a configuration management system that can run various apps like an HTTP server, TLS certificate manager, PKI facilities, and more. It can be extended with plugins known as config modules.
+						Caddy 本质上是一个配置管理系统，可以运行各种应用程序，如 HTTP 服务器、TLS 证书管理器、PKI 工具等。它可以通过称为配置模块的插件进行扩展。
 					</p>
 					<p>
-						Caddy sports a flexible and powerful HTTP reverse proxy, on-line configuration API, and a robust, production-ready static file server, and serves all sites over HTTPS by default with automagic TLS certificates.
+						Caddy 拥有灵活强大的 HTTP 反向代理、在线配置 API 以及健壮、生产就绪的静态文件服务器，并默认通过 HTTPS 为所有站点提供服务，使用自动化的 TLS 证书。
 					</p>
 
-					<h3 class="green">Overall program technical specifications</h3>
+					<h3 class="green">整体程序技术规范</h3>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Language</h4>
+							<h4>语言</h4>
 							<div class="benefits">
-								The language choice is crucial for a web server. Language impacts development speed and ease, performance, testing, deployment complexity, ecosystem reliability, dependencies, tooling, error handling and reliability, and much, much more. Go offers strong advantages in all these areas, allowing for rapid development, robust production performance, and high scalability.
+								语言选择对于 Web 服务器至关重要。语言影响开发速度和简易性、性能、测试、部署复杂度、生态系统可靠性、依赖关系、工具、错误处理和可靠性等许多方面。Go 在所有这些领域都提供了显著优势，支持快速开发、稳健的生产性能和高度可扩展性。
 							</div>
 							<div class="detail">
 								Go
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Memory safety guarantees</h4>
+							<h4>内存安全保证</h4>
 							<div class="benefits">
-								Most servers (NGINX, Apache, HAProxy, etc.) and their dependencies are written in C, which are vulnerable to catastrophic memory safety bugs (such as buffer overflows) like Heartbleed. Go programs like Caddy are impervious to a whole class of security vulnerabilities.
+								大多数服务器（NGINX、Apache、HAProxy 等）及其依赖项都是用 C 语言编写的，容易受到致命内存安全错误（如缓冲区溢出）的影响，例如 Heartbleed。像 Caddy 这样的 Go 程序可以免受整个一类安全漏洞的影响。
 							</div>
 							<div class="detail">
-								Strong
+								强
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Build artifacts</h4>
+							<h4>构建产物</h4>
 							<div class="benefits">
-								Caddy compiles directly to native CPU instructions. There is no interpreter required; and many instructions are architecture-optimized. Static binaries are also <a href="https://www.phoronix.com/news/Glibc-LD-Nasty-Root-Bug">more secure</a> because there is no dynamic linking.
+								Caddy 直接编译为原生 CPU 指令。不需要解释器；许多指令经过架构优化。静态二进制文件也<a href="https://www.phoronix.com/news/Glibc-LD-Nasty-Root-Bug">更安全</a>，因为没有动态链接。
 							</div>
 							<div class="detail">
-								Platform-native static binary
+								平台原生静态二进制文件
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Runtime dependencies</h4>
+							<h4>运行时依赖</h4>
 							<div class="benefits">
-								Caddy is statically compiled. Dynamically-linked applications can easily break in production and <a href="https://www.qualys.com/2023/10/03/cve-2023-4911/looney-tunables-local-privilege-escalation-glibc-ld-so.txt">may be less secure</a> as shared executable resources are loaded from various places around the system. Generally, Caddy binaries do not necessarily require external libraries &mdash; not even libc.
+								Caddy 是静态编译的。动态链接的应用程序在生产环境中容易崩溃，并且<a href="https://www.qualys.com/2023/10/03/cve-2023-4911/looney-tunables-local-privilege-escalation-glibc-ld-so.txt">可能安全性较低</a>，因为共享可执行资源从系统的各个位置加载。通常，Caddy 二进制文件不一定需要外部库 — 甚至不需要 libc。
 							</div>
 							<div class="detail">
-								None
+								无
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Compile time</h4>
+							<h4>编译时间</h4>
 							<div class="benefits">
-								On consumer hardware, standard Caddy builds compile in just a few seconds. This is crucial for rapid iteration, plugin development, and low-cost deployments. Other servers written in C/C++ can take several minutes.
+								在消费级硬件上，标准 Caddy 构建只需几秒钟即可编译完成。这对于快速迭代、插件开发和低成本部署至关重要。其他用 C/C++ 编写的服务器可能需要几分钟。
 							</div>
 							<div class="detail">
-								~30 seconds cold build,<br>~2 seconds hot
+								~30 秒冷编译，<br>~2 秒热编译
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Deployment environments</h4>
+							<h4>部署环境</h4>
 							<div class="benefits">
-								Caddy can go practically anywhere and be deployed a variety of ways. In general, upgrading is as simple as replacing the binary.
+								Caddy 实际上可以部署在任何地方，并可以通过多种方式部署。通常，升级只需替换二进制文件即可。
 							</div>
 							<ul class="detail">
-								<li>Command line interface</li>
-								<li>System service</li>
-								<li>Containers</li>
+								<li>命令行界面</li>
+								<li>系统服务</li>
+								<li>容器</li>
 								<li>Kubernetes</li>
-								<li>Embedded</li>
+								<li>嵌入式</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Supply chain and releases</h4>
+							<h4>供应链和发布</h4>
 							<div class="benefits">
-								Go modules verify the integrity of our dependencies and we cryptographically sign our release artifacts so you know what you can trust.
+								Go 模块验证我们依赖项的完整性，我们对发布产物进行加密签名，让您了解可信任的内容。
 							</div>
 							<div class="detail">
-								Cryptographically verified
+								加密验证
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Operating systems</h4>
+							<h4>操作系统</h4>
 							<div class="benefits">
-								Caddy runs on every major platform for which Go compiles.
+								Caddy 在 Go 编译的每个主要平台上运行。
 							</div>
 							<ul class="detail">
 								<li>Linux</li>
@@ -127,9 +127,9 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Microarchitectures</h4>
+							<h4>微架构</h4>
 							<div class="benefits">
-								Run Caddy with native code on numerous CPU platforms.
+								在众多 CPU 平台上以原生代码运行 Caddy。
 							</div>
 							<ul class="detail">
 								<li>x86 (i386, i686)</li>
@@ -141,15 +141,15 @@
 								<li>PPC64[LE]</li>
 								<li>RISCV64</li>
 								<li>S390X</li>
-								<li>Apple Silicon (Apple ARM; M1, M2, etc.)</li>
+								<li>Apple Silicon (Apple ARM; M1, M2, 等)</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Regular expression engine</h4>
+							<h4>正则表达式引擎</h4>
 							<div class="benefits">
-								Caddy's regular expression language is <a href="https://swtch.com/~rsc/regexp/regexp1.html">based on the Thompson NFA and has numerous performance improvements over PCRE</a> used by other web servers. It guarantees the runtime cost increases linearly instead of exponentially. This is ideal when evaluating untrusted input.
+								Caddy 的正则表达式语言<a href="https://swtch.com/~rsc/regexp/regexp1.html">基于 Thompson NFA，与其他 Web 服务器使用的 PCRE 相比具有 Numerous 性能改进</a>。它保证运行时成本线性增加而不是指数增加。这在评估不可信输入时是理想的。
 								<p>
-									<a href="https://github.com/google/re2/wiki/Syntax">RE2 Syntax</a>
+									<a href="https://github.com/google/re2/wiki/Syntax">RE2 语法</a>
 								</p>
 							</div>
 							<div class="detail">
@@ -157,83 +157,83 @@
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Concurrency model</h4>
+							<h4>并发模型</h4>
 							<div class="benefits">
-								Go's runtime optimizes scheduled CPU time in smarter ways than the operating system can using lightweight user-space threads called goroutines. Caddy utilizes all CPU cores and easily handles hundreds of thousands of requests per second.
+								Go 运行时使用称为 goroutine 的轻量级用户空间线程，比操作系统使用更智能的方式优化计划的 CPU 时间。Caddy 利用所有 CPU 核心，轻松处理每秒数十万个请求。
 							</div>
 							<div class="detail">
 								Goroutines (epoll + kqueue)
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Plugin model</h4>
+							<h4>插件模型</h4>
 							<div class="benefits">
-								Caddy can be extended by compile-time plugins, which compile as native code, in a way that cannot be broken during deployments or by system upgrades. With no IPC or RPC calls, Caddy extensions perform equally well with native code.
+								Caddy 可以通过编译时插件进行扩展，这些插件编译为原生代码，在部署或系统升级过程中不会中断。无需 IPC 或 RPC 调用，Caddy 扩展的性能与原生代码同样出色。
 							</div>
 							<div class="detail">
-								Compile-time static
+								编译时静态
 							</div>
 						</div>
 					</div>
 
-					<h3 class="purple">High-level capabilities</h3>
+					<h3 class="purple">高级功能</h3>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Configuration changes</h4>
+							<h4>配置变更</h4>
 							<div class="benefits">
-								With zero-downtime graceful reloads, Caddy's configuration can be changed while it is running. It's programmable/scriptable for powerful automation.
+								通过零停机优雅重载，Caddy 的配置可以在运行时更改。它支持可编程/脚本化以实现强大的自动化。
 							</div>
 							<ul class="detail">
 								<li>RESTful HTTP API</li>
-								<li>Config files</li>
-								<li>Secure remote access</li>
-								<!-- <li>Optimistic concurrency</li> -->
+								<li>配置文件</li>
+								<li>安全远程访问</li>
+								<!-- <li>乐观并发</li> -->
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>App modules</h4>
+							<h4>应用模块</h4>
 							<div class="benefits">
-								Top-level configuration structures are called app modules, or Caddy apps. They provide the bulk of Caddy's functionality. Anyone can write app modules, and Caddy comes with several standard apps built-in.
+								顶层配置结构称为应用模块或 Caddy 应用。它们提供 Caddy 的大部分功能。任何人都可以编写应用模块，Caddy 内置了几个标准应用。
 							</div>
 							<ul class="detail">
 								<li>HTTP</li>
 								<li>TLS</li>
 								<li>PKI</li>
-								<li>Events</li>
-								<li class="nonstandard">Raw TCP & UDP</li>
+								<li>事件</li>
+								<li class="nonstandard">原始 TCP 和 UDP</li>
 								<li class="nonstandard">SSH</li>
 								<li class="nonstandard">PHP</li>
-								<li class="nonstandard">Dynamic DNS</li>
-								<li class="nonstandard">Security</li>
-								<li class="nonstandard">Process supervision</li>
-								<li class="nonstandard">Profiling</li>
+								<li class="nonstandard">动态 DNS</li>
+								<li class="nonstandard">安全</li>
+								<li class="nonstandard">进程管理</li>
+								<li class="nonstandard">性能分析</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Logs</h4>
+							<h4>日志</h4>
 							<div class="benefits">
-								All Caddy modules use Caddy's centralized logging facilities. Caddy's logging can be configured as to format, verbosity, output, and more.
+								所有 Caddy 模块都使用 Caddy 的集中式日志设施。Caddy 的日志可以配置格式、详细程度、输出等。
 							</div>
 							<ul class="detail">
-								<li>Leveled</li>
-								<li>Structured</li>
-								<li>High efficiency, zero-allocation</li>
-								<li>Extensible</li>
-								<li>Delete, filter, redact, and censor fields</li>
-								<li>IP masking</li>
-								<li>Hash values</li>
-								<li>Regex replacement</li>
+								<li>分级</li>
+								<li>结构化</li>
+								<li>高效，零分配</li>
+								<li>可扩展</li>
+								<li>删除、过滤、编辑和审查字段</li>
+								<li>IP 屏蔽</li>
+								<li>哈希值</li>
+								<li>正则表达式替换</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Storage</h4>
+							<h4>存储</h4>
 							<div class="benefits">
-								Assets and state, including certificates and OCSP staples, are stored in configurable storage backends. In fact, multiple instances of Caddy configured with the same storage are considered part of a cluster and can coordinate automatically.
+								资产和状态（包括证书和 OCSP  staple）存储在可配置的存储后端中。实际上，配置相同存储的多个 Caddy 实例被视为集群的一部分，可以自动协调。
 							</div>
 							<ul class="detail">
-								<li>File system</li>
-								<li>Embedded (in-memory)</li>
+								<li>文件系统</li>
+								<li>嵌入式 (in-memory)</li>
 								<li class="nonstandard">Postgres</li>
 								<li class="nonstandard">Redis</li>
 								<li class="nonstandard">Vault</li>
@@ -252,110 +252,110 @@
 			<section class="diagonal down gray feature">
 				<div class="wrapper">
 					<h2>
-						Command line interface
+						命令行界面
 					</h2>
 					<p>
 						Caddy's CLI is not only useful&mdash;it's <i>helpful</i>. While most server CLIs merely run the process and reload config, Caddy's CLI goes the extra lightyear to help make administering your modern web server a breeze.
 					</p>
 					<p>
-						Plugins can register their own subcommands to extend Caddy's CLI. 
+						插件可以注册自己的子命令来扩展 Caddy 的 CLI。 
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Command help</h4>
+							<h4>命令帮助</h4>
 							<div class="benefits">
-								If you misspell a command or flag, miss an argument, or don't know the subcommand, help text is automatically printed. You can also access overall command help or subcommand help with <code>caddy help</code> or <code>-h</code>.
+								如果您拼写错误命令或标志、漏掉参数或不知道子命令，帮助文本会自动打印。您还可以通过 <code>caddy help</code> 或 <code>-h</code> 访问整体命令帮助或子命令帮助。
 							</div>
 							<div class="detail">
-								Built-in, automatic (<code>man</code> pages can also be generated)
+								内置，自动（也可以生成 <code>man</code> 页面）
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Admin API wrappers</h4>
+							<h4>Admin API 封装</h4>
 							<div class="benefits">
-								Several subcommands use administration API endpoints for use with the CLI to help you perform common tasks like loading config from files or stopping the server.
+								多个子命令使用管理 API 端点与 CLI 配合，帮助您执行常见任务，如从文件加载配置或停止服务器。
 							</div>
 							<ul class="detail">
-								<li>Adapt config to JSON</li>
-								<li>Start the server, optionally with config</li>
-								<li>Gracefully reload configuration</li>
-								<li>Stop the server</li>
+								<li>将配置适配为 JSON</li>
+								<li>启动服务器，可选带配置</li>
+								<li>优雅重载配置</li>
+								<li>停止服务器</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Binary utilities</h4>
+							<h4>二进制工具</h4>
 							<div class="benefits">
-								Since custom builds of Caddy are so common, several commands exist to help you manage and get detailed information about your build.
+								由于 Caddy 的自定义构建非常普遍，因此存在一些命令帮助您管理和获取关于构建的详细信息。
 							</div>
 							<ul class="detail">
-								<li>Detailed build metadata</li>
-								<li>List installed config modules</li>
-								<li>List dependencies</li>
-								<li>Add and remove plugin packages</li>
-								<li>Print the version</li>
-								<li>Upgrade the Caddy binary</li>
+								<li>详细的构建元数据</li>
+								<li>列出已安装的配置模块</li>
+								<li>列出依赖</li>
+								<li>添加和删除插件包</li>
+								<li>打印版本</li>
+								<li>升级 Caddy 二进制文件</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Configuration utilities</h4>
+							<h4>配置工具</h4>
 							<div class="benefits">
-								If you choose to use configuration files, Caddy's CLI helps you manage them.
+								如果您选择使用配置文件，Caddy 的 CLI 帮助您管理它们。
 							</div>
 							<ul class="detail">
-								<li>Format Caddyfile</li>
-								<li>Validate configuration</li>
-								<li>List dependencies</li>
-								<li>Add and remove plugin packages</li>
-								<li>Print the version</li>
+								<li>格式化 Caddyfile</li>
+								<li>验证配置</li>
+								<li>列出依赖</li>
+								<li>添加和删除插件包</li>
+								<li>打印版本</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Module utilities</h4>
+							<h4>模块工具</h4>
 							<div class="benefits">
-								Modules may register their own subcommands to provide common functionality that can be utilized without a config document.
+								模块可以注册自己的子命令以提供无需配置文件即可使用的常用功能。
 							</div>
 							<ul class="detail">
-								<li>Static file server</li>
-								<li>HTTP reverse proxy</li>
-								<li>Static HTTP responses (templateable)</li>
-								<li>Storage import/export (backup/restore)</li>
-								<li>Hash password for use with HTTP basic auth</li>
-								<li>Export file browse template</li>
+								<li>静态文件服务器</li>
+								<li>HTTP 反向代理</li>
+								<li>静态 HTTP 响应（可模板化）</li>
+								<li>存储 import/export (backup/restore)</li>
+								<li>为 HTTP 基本认证生成密码哈希</li>
+								<li>导出文件浏览模板</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Integration utilities</h4>
+							<h4>集成工具</h4>
 							<div class="benefits">
-								Several subcommands can help you integrate Caddy into your shell environment.
+								多个子命令可以帮助您将 Caddy 集成到您的 shell 环境中。
 							</div>
 							<ul class="detail">
-								<li>Generate shell completion script</li>
-								<li>Print the environment</li>
-								<li>Generate <code>man</code> pages</li>
-								<li>Install Caddy-managed root CA into trust stores</li>
-								<li>Remove Caddy-managed root CA from trust stores</li>
+								<li>生成 shell 补全脚本</li>
+								<li>打印环境</li>
+								<li>生成 <code>man</code> 页面</li>
+								<li>将 Caddy 管理的根 CA 安装到信任存储中</li>
+								<li>从信任存储中移除 Caddy 管理的根 CA</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>System signals</h4>
+							<h4>系统信号</h4>
 							<div class="benefits">
-								Caddy has support for common operating system signals/interrupts, with subtle differences in behavior for each one.
+								Caddy 支持常见的操作系统信号/中断，每个信号的行为有细微差异。
 								<p>
-									<a href="/docs/command-line#signals">Signal documentation</a>
+									<a href="/docs/command-line#signals">信号文档</a>
 								</p>
 							</div>
 							<ul class="detail">
-								<li>INT (graceful stop)</li>
-								<li>USR1 (reload configuration, if loaded via config file)</li>
+								<li>INT（优雅停止）</li>
+								<li>USR1（重载配置，如果是通过配置文件加载的）</li>
 								<li>QUIT</li>
 								<li>TERM</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Exit codes</h4>
+							<h4>退出码</h4>
 							<div class="benefits">
-								Whether Caddy exits successfully or with an error, the <a href="/docs/command-line#exit-codes">exit code</a> can give a hint to your process supervisor or script how to handle that.
+								无论 Caddy 是成功退出还是出错，<a href="/docs/command-line#exit-codes">退出码</a>都可以提示您的进程监控器或脚本如何处理。
 							</div>
 						</div>
 					</div>
@@ -367,28 +367,28 @@
 			<section class="feature">
 				<div class="wrapper">
 					<h2>
-						Configuration
+						配置
 					</h2>
 					<p>
-						We've designed Caddy so that its configuration not only provides access to features, but <i>it IS a feature</i> in and of itself.
+						我们设计 Caddy 时，使其配置不仅提供对功能的访问，而且<b>它本身就是一个功能</b>。
 					</p>
 					<p>
-						No more quibbling over which config file format is the best: use whatever you want! Caddy's <a href="/docs/config-adapters">config adapters</a> allow you to use whatever config format you prefer.
+						不再纠结于哪种配置文件格式最好：使用你喜欢的任何格式！Caddy 的 <a href="/docs/config-adapters">配置适配器</a>允许你使用任何喜欢的配置格式。
 					</p>
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Native config format</h4>
+							<h4>原生配置格式</h4>
 							<div class="benefits">
-								Caddy's native configuration format is ubiquitous: it has tooling in nearly every operating system, platform, programming language, and API ecosystem. Almost all other formats can be translated down into JSON, which balances human readability and programmability. You'll find it a powerful ally of your web server.
+								Caddy 的原生配置格式无处不在：它几乎在每个操作系统、平台、编程语言和 API 生态系统中都有工具支持。几乎所有其他格式都可以转换为 JSON，平衡了人类可读性和可编程性。你会发现它是 Web 服务器的强大盟友。
 							</div>
 							<div class="detail">
 								JSON
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Config adapters</h4>
+							<h4>配置适配器</h4>
 							<div class="benefits">
-								You can always write your config in another format and with config adapters, Caddy will implicitly translate it into JSON for you so you can work with what you like.
+								你可以始终用其他格式编写配置，通过配置适配器，Caddy 会将其隐式转换为 JSON，让你使用喜欢的格式。
 							</div>
 							<ul class="detail">
 								<li>Caddyfile</li>
@@ -404,30 +404,30 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Human-friendly config</h4>
+							<h4>用户友好的配置</h4>
 							<div class="benefits">
-								The Caddyfile is most users' favorite way to write their web server config by hand because its syntax is forgiving while also being designed with a structure that makes it easy to read and write. It is translated to JSON automatically.
+								Caddyfile 是大多数用户最喜欢的手写 Web 服务器配置的方式，因为它的语法宽容，同时设计有易于读写和的结构。它会自动转换为 JSON。
 							</div>
 							<div class="detail">
 								Caddyfile
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Export</h4>
+							<h4>导出</h4>
 							<div class="benefits">
-								Caddy's administration API allows you to have runtime access to the current configuration in JSON format with a simple GET request.
+								Caddy 的管理 API 允许你通过简单的 GET 请求在运行时以 JSON 格式访问当前配置。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Config API</h4>
+							<h4>配置 API</h4>
 							<div class="benefits">
-								Caddy receives its configuration through an API endpoint, which can accept JSON or any other format it has a config adapter for.
+								Caddy 通过 API 端点接收配置，该端点可以接受 JSON 或任何其他它有配置适配器的格式。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Config files</h4>
+							<h4>配置文件</h4>
 							<div class="benefits">
-								If you prefer normal shell commands for managing configuration, Caddy's CLI wraps the API endpoints for you.
+								如果你更喜欢使用普通 shell 命令管理配置，Caddy 的 CLI 为你封装了 API 端点。
 							</div>
 						</div>
 					</div>
@@ -441,58 +441,58 @@
 			<section class="diagonal up dark feature">
 				<div class="wrapper">
 					<h2 id="automatic-https">
-						Automatic HTTPS
+						自动 HTTPS
 					</h2>
 					<p>
-						Our flagship feature, powered by <a href="https://github.com/caddyserver/certmagic">CertMagic</a>. Caddy is the first and only major server that enables HTTPS by default, and automatically procures and renews certificates for all your sites.
+						我们的旗舰功能，由 <a href="https://github.com/caddyserver/certmagic">CertMagic</a> 驱动。Caddy 是第一个也是唯一一个默认启用 HTTPS 的主要服务器，并自动获取和续订所有站点的证书。
 					</p>
 					<p>
-						Fully-native, integrated auto-HTTPS is far superior to any solution that requires external tooling or cron jobs. Caddy's certificate maintenance is the best in the industry because it is more robust, reliable, and scalable than any other solution. Caddy simplifies your infrastructure instead of complexifying it.
+						完全原生、集成的自动 HTTPS 远胜于任何需要外部工具或 cron 任务的解决方案。Caddy 的证书维护是业界最好的，因为它比其他任何解决方案都更健壮、可靠和可扩展。Caddy 简化了你的基础设施而不是使其复杂化。
 					</p>
 					<p>
 						Sure, you can try deploying 100,000 sites with Certbot and a cron job&mdash;but if that doesn't fall over by itself, the web server will. Only Caddy is designed to massively scale TLS certificates both horizontally and vertically.
 					</p>
 					<p>
-						Never manually generate a CSR again. Never click a link in an email to download a certificate. Never (mis)configure your web server to use them. Never miss reminders to renew your certificates, one-by-one, every few months before they expire. You won't even have to think about certificates or TLS.
+						再也不用手动生成 CSR。再也不用点击电子邮件中的链接下载证书。再也不用（错误）配置 Web 服务器来使用它们。再也不用错过证书续订提醒，每隔几个月逐个续订过期证书。你甚至不用考虑证书或 TLS。
 					</p>
 					<p>
-						It's truly automagic.
+						这真是自动化魔法。
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Compliance</h4>
+							<h4>合规性</h4>
 							<div class="benefits">
-								Caddy's TLS <i>defaults</i> are secure without any additional configuration, and passes compliance tests across various industries.
+								Caddy 的 TLS <i>默认值</i>在没有额外配置的情况下就是安全的，并通过各行各业的合规性测试。
 							</div>
 							<ul class="detail">
-								<li>PCI DSS compliant</li>
-								<li>NIST compliant</li>
-								<li>HIPAA compliant</li>
-								<li>Industry best practices</li>
+								<li>PCI DSS 合规</li>
+								<li>NIST 合规</li>
+								<li>HIPAA 合规</li>
+								<li>行业最佳实践</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>On-Demand TLS</h4>
+							<h4>按需 TLS</h4>
 							<div class="benefits">
-								Serving domains that aren't yours? Or have lots of them? No problem! With just a few lines of config, On-Demand TLS gets certificates dynamically during TLS handshakes, scaling your deployments to tens of thousands of certs. This functionality is exclusive to Caddy.
+								Serving domains that aren't yours? Or have lots of them? No problem! With just a few lines of config, 按需 TLS gets certificates dynamically during TLS handshakes, scaling your deployments to tens of thousands of certs. This functionality is exclusive to Caddy.
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Certificate issuers</h4>
+							<h4>证书颁发者</h4>
 							<div class="benefits">
-								Get certificates from any issuing authority in a way compatible with them. Certificate issuers take a CSR and return a certificate resource. Most sites will simply use ACME to get certificates. But Caddy can also issue its own self-signed certificates for internal use, testing, or development. Caddy's issuer sources are pluggable, so Caddy can automate certificates from any issuer modules.
+								Get certificates from any issuing authority in a way compatible with them. 证书颁发者 take a CSR and return a certificate resource. Most sites will simply use ACME to get certificates. But Caddy can also issue its own self-signed certificates for internal use, testing, or development. Caddy's issuer sources are pluggable, so Caddy can automate certificates from any issuer modules.
 							</div>
 							<ul class="detail">
 								<li>ACME</li>
-								<li>Internal (self-signed)</li>
-								<li class="nonstandard">Microsoft Active Directory Certificate Services</li>
+								<li>内部（自签名）</li>
+								<li class="nonstandard">Microsoft 主动 Directory 证书服务</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Certificate managers</h4>
+							<h4>证书管理器</h4>
 							<div class="benefits">
-								Unlike issuers, which take a CSR and return a certificate that Caddy has to manage, certificate managers are modules that can return always-valid certificates on-demand; that is, they are managing the certificates for us. Caddy can get interface with HTTP endpoints or Tailscale to get certificates in this manner, with other ways available through plugins.
+								与颁发者不同（颁发者接收 CSR 并返回 Caddy 必须管理的证书），证书管理器是可以按需返回始终有效证书的模块；也就是说，它们为我们管理证书。Caddy 可以通过 HTTP 端点或 Tailscale 接口以这种方式获取证书，其他方法可通过插件获得。
 							</div>
 							<ul class="detail">
 								<li>HTTP</li>
@@ -500,60 +500,60 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Cluster coordination</h4>
+							<h4>集群协调</h4>
 							<div class="benefits">
-								Across all Caddy instances configured with the same storage, Caddy automatically coordinates and shares resources across the cluster. This includes certificate operations and the certificates themselves, OCSP staples, and session ticket keys. This results in reduced latency for your clients and higher scalability.
+								在所有配置相同存储的 Caddy 实例之间，Caddy 自动协调和共享集群资源。这包括证书操作和证书本身、OCSP staple 和会话票证密钥。这减少了客户端的延迟并提高了可扩展性。
 							</div>
 							<ul class="detail">
-								<li>Obtaining &amp; renewing certificates</li>
-								<li>Loading existing certificates</li>
-								<li>OCSP staples</li>
-								<li>Session ticket keys (STEKs)</li>
+								<li>获取和续订证书</li>
+								<li>加载现有证书</li>
+								<li>OCSP staple</li>
+								<li>会话票证密钥 (STEKs)</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Redirect HTTP to HTTPS</h4>
+							<h4>将 HTTP 重定向到 HTTPS</h4>
 							<div class="benefits">
-								By default, HTTP requests will be redirected to HTTPS.
+								默认情况下，HTTP 请求将重定向到 HTTPS。
 							</div>
 							<div class="detail">
-								Automatic redirects
+								自动重定向
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4>OCSP</h4>
 							<div class="benefits">
-								OCSP indicates when certificates are revoked. Servers should staple OCSP responses to certificates to provide clients with better security and privacy. Caddy is the first and only server to do this automatically and by default. It also caches responses to weather OCSP responder outages, and shares them across its cluster. This can all be disabled if needed.
+								OCSP 指示证书何时被吊销。服务器应将 OCSP 响应 staple 到证书上，为客户端提供更好的安全性和隐私性。Caddy 是第一个也是唯一一个默认自动执行此操作的服务器。它还缓存响应以应对 OCSP 响应器故障，并在集群中共享。如果需要，所有这些都可以通过禁用。
 							</div>
 							<div class="detail">
-								Automatic OCSP stapling with caching
+								带缓存的自动 OCSP staple
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Must-Staple</h4>
+							<h4>必须 staple</h4>
 							<div class="benefits">
-								Caddy can obtain certificates that force OCSP stapling if the CA supports it. This may grant a higher degree of security in the case of revocation.
+								如果 CA 支持，Caddy 可以获取强制 OCSP staple 的证书。这在吊销情况下可能提供更高程度的安全性。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Revocation handling</h4>
+							<h4>吊销处理</h4>
 							<div class="benefits">
-								Revoked certificates automatically get replaced. Because Caddy staples and refreshes OCSP responses, it can detect if your certificate has been revoked, and if so, it will replace it with a fresh certificate.
+								吊销的证书会自动替换。因为 Caddy staple 并刷新 OCSP 响应，它可以检测你的证书是否被吊销，如果是，它将用新证书替换它。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Session ticket hardening</h4>
+							<h4>会话票证加固</h4>
 							<div class="benefits">
-								TLS connections are pointless if an attacker steals the key to encrypt session tickets. Caddy has been <a href="https://jhalderm.com/pub/papers/forward-secrecy-imc16.pdf">academically cited</a> as the only server to rotate these keys regularly to limit attack windows.
+								如果攻击者窃取加密会话票证的密钥，TLS 连接就毫无意义。Caddy 已被 <a href="https://jhalderm.com/pub/papers/forward-secrecy-imc16.pdf">学术引用</a>为唯一定期轮换这些密钥以限制攻击窗口的服务器。
 							</div>
 							<div class="detail">
-								Automatic STEK rotation
+								自动 STEK 轮换
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Key types</h4>
+							<h4>密钥类型</h4>
 							<div class="benefits">
-								You can customize the type of key used for your certificates.
+								你可以自定义用于证书的密钥类型。
 							</div>
 							<ul class="detail">
 								<li>Ed25519</li>
@@ -564,28 +564,28 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Certificate lifetimes</h4>
+							<h4>证书生命周期</h4>
 							<div class="benefits">
-								<p>Most ACME clients assume 90-day certificates, or don't expect certificates shorter than 7 days. Caddy can successfully manage certificates with lifetimes on the order of hours and minutes.</p>
-								<p>Instead of hard-coding a certain age before renewing, Caddy computes the age relative to the lifespan of each certificate, called a Renewal Window Ratio. By default, Caddy renews certificates after 2/3 of their usable lifetime. This ratio works for most validity periods, but can be adjusted.</p>
+								<p>大多数 ACME 客户端假设为 90 天证书，或不期望短于 7 天的证书。Caddy 可以成功管理生命周期为数小时和分钟的证书。</p>
+								<p>Caddy 不是在续订前硬编码某个年龄，而是计算相对于每个证书生命周期的年龄，称为续订窗口比率。默认情况下，Caddy 在证书可用生命周期的 2/3 后续订。此比率适用于大多数有效期，但可调整。</p>
 							</div>
 							<div class="detail">
-								Any lifetime
+								任何生命周期
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Intelligent error handling</h4>
+							<h4>智能错误处理</h4>
 							<div class="benefits">
-								If Caddy can't get a certificate, errors are logged and Caddy will backoff exponentially and retry as long as needed until it succeeds (typically up to 30 days but could be longer). Caddy makes every reasonable effort to keep your certificate renewed.
+								如果 Caddy 无法获取证书，错误将被记录，Caddy 将指数退避并按需重试直到成功（通常最多 30 天，但可能更长）。Caddy 尽一切合理努力保持证书续订。
 							</div>
 							<div class="detail">
-								Exponential backoff
+								指数退避
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Built-in throttling</h4>
+							<h4>内置节流</h4>
 							<div class="benefits">
-								Caddy conforms to best practices and doesn't blast CAs with requests for certificates; instead, each order is carefully timed to avoid overwhelming CA servers.
+								Caddy 符合最佳实践，不会向 CA 大量发送证书请求；相反，每个订单都精心计时以避免淹没 CA 服务器。
 							</div>
 						</div>
 					</div>
@@ -593,17 +593,17 @@
 					<h3 class="purple" id="automatic-https-acme">ACME</h3>
 
 					<p>
-						Caddy's ACME client is best-in-class, with higher reliability and more production experience than any other integrated ACME client available today. Caddy has been using ACME since before the public availability of Let's Encrypt, and Caddy works with any ACME-compatible CA.
+						Caddy 的 ACME 客户端是同类中最好的，具有比今天任何其他可用的集成 ACME 客户端更高的可靠性和更多生产经验。Caddy 自 Let's Encrypt 公开发布之前就使用 ACME，Caddy 与任何兼容 ACME 的 CA 一起工作。
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Compatibility</h4>
+							<h4>兼容性</h4>
 							<div class="benefits">
-								Some ACME clients are only tested with Let's Encrypt. Caddy is guaranteed compatible with all ACME-capable CAs.
+								一些 ACME 客户端仅用 Let's Encrypt 测试。Caddy 保证与所有支持 ACME 的 CA 兼容。
 							</div>
 							<div class="detail">
-								All RFC 8555-compliant certificate authorities, such as:
+								所有符合 RFC 8555 的证书颁发机构，例如：
 								<ul>
 									<li>Let's Encrypt</li>
 									<li>ZeroSSL</li>
@@ -617,24 +617,24 @@
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Test endpoints</h4>
+							<h4>测试端点</h4>
 							<div class="benefits">
-								By default, Caddy will fall back to a CA's test or staging endpoint (if there is one) after a failed attempt at getting a certificate to avoid hitting CA-enforced production rate limits. This could also be an ACME server you set up solely for the purpose of validating DNS configurations.
+								默认情况下，在获取证书失败后，Caddy 将回退到 CA 的测试或暂存端点（如果有），以避免触发 CA 强制的生产速率限制。这也可能是你专门用于验证 DNS 配置而设置的 ACME 服务器。
 							</div>
 							<div class="detail">
-								Let's Encrypt (others configurable)
+								Let's Encrypt（其他可配置）
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>External account binding</h4>
+							<h4>外部账户绑定</h4>
 							<div class="benefits">
-								Optionally configure External Account Binding (EAB) to enable Caddy to work with CAs that require you to have a separate account with them.
+								可选配置外部账户绑定 (EAB) 以启用 Caddy 与要求你有单独账户的 CA 一起工作。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Challenge types</h4>
+							<h4>挑战类型</h4>
 							<div class="benefits">
-								Caddy supports all major ACME challenge types for Web PKI and can also be extended to support others.
+								Caddy 支持 Web PKI 的所有主要 ACME 挑战类型，也可以扩展支持其他类型。
 							</div>
 							<ul class="detail">
 								<li>HTTP-01</li>
@@ -643,25 +643,25 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Alternate challenge ports</h4>
+							<h4>备用挑战端口</h4>
 							<div class="benefits">
-								While certain ACME challenges must use the standardized ports 80 and 443, Caddy supports listening for these on alternate ports if you are forwarding them through a router.
+								虽然某些 ACME 挑战必须使用标准化端口 80 和 443，但如果你通过路由器转发，Caddy 支持在备用端口监听这些。
 							</div>
 							<ul class="detail">
-								<li>HTTP (default 80)</li>
-								<li>TLS-ALPN (default 443)</li>
+								<li>HTTP（默认 80）</li>
+								<li>TLS-ALPN（默认 443）</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Smart challenge selection</h4>
+							<h4>智能挑战选择</h4>
 							<div class="benefits">
-								Caddy learns what challenge types are most likely to succeed and tries those first. For example, if port 80 is blocked, it will learn to prefer the TLS-ALPN challenge which does not use port 80.
+								Caddy 学习哪些挑战类型最可能成功并首先尝试这些。例如，如果端口 80 被阻止，它将学习偏好不使用端口 80 的 TLS-ALPN 挑战。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>DNS challenge integrations</h4>
+							<h4>DNS 挑战集成</h4>
 							<div class="benefits">
-								The DNS challenge is the only one that does not require the CA being able to access your server. Solve the DNS challenge with integrations for dozens of DNS providers via <a href="https://github.com/libdns">libdns</a>. <b>This list is incomplete;</b> <a href="https://github.com/caddy-dns">see the full list of DNS providers</a>.
+								DNS 挑战是唯一不需要 CA 能够访问你的服务器的挑战。通过 <a href="https://github.com/libdns">libdns</a> 与数十个 DNS 提供商的集成解决 DNS 挑战。<b>此列表不完整；</b> <a href="https://github.com/caddy-dns">查看完整的 DNS 提供商列表</a>。
 							</div>
 							<ul class="detail">
 								<li class="nonstandard">ACME-DNS</li>
@@ -677,9 +677,9 @@
 								<li class="nonstandard">Google Cloud DNS</li>
 								<li class="nonstandard">Hetzner</li>
 								<li class="nonstandard">Linode</li>
-								<li class="nonstandard">Name.com</li>
-								<li class="nonstandard">Namecheap</li>
-								<li class="nonstandard">Namesilo</li>
+								<li class="nonstandard">名称.com</li>
+								<li class="nonstandard">名称cheap</li>
+								<li class="nonstandard">名称silo</li>
 								<li class="nonstandard">Netlify</li>
 								<li class="nonstandard">OVH</li>
 								<li class="nonstandard">Porkbun</li>
@@ -689,33 +689,33 @@
 								<li class="nonstandard">Scaleway</li>
 								<li class="nonstandard">Vercel</li>
 								<li class="nonstandard">Vultr</li>
-								<li><a href="https://github.com/caddy-dns">See all...</a></li>
+								<li><a href="https://github.com/caddy-dns">查看全部...</a></li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Trusted CA certificates</h4>
+							<h4>受信任的 CA 证书</h4>
 							<div class="benefits">
-								Optionally configure root certificates you trust when interacting with your CA of choice; this is helpful for internal PKI where trust is established without public CAs.
+								与选择的 CA 交互时，可选配置你信任的根证书；这对于在没有公共 CA 的情况下建立信任的内部 PKI 很有帮助。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Preferred chains</h4>
+							<h4>首选链</h4>
 							<div class="benefits">
-								When the CA offers multiple certificate chains, Caddy gives you the ability to customize which one to download and use.
+								当 CA 提供多个证书链时，Caddy 让你能够自定义下载和使用哪一个。
 							</div>
 							<ul class="detail">
-								<li>Smallest</li>
-								<li>CommonName of root</li>
-								<li>CommonName of any</li>
+								<li>最小</li>
+								<li>根 Common名称</li>
+								<li>任意 Common名称</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Renewal scheduling</h4>
+							<h4>续订调度</h4>
 							<div class="benefits">
-								Caddy chooses conservative timeframes to renew certificates, and also takes guidance from the ACME CA if it provides ACME Renewal Information (ARI).
+								Caddy 选择保守的时间段续订证书，如果 ACME CA 提供 ACME 续订信息 (ARI)，也接受其指导。
 							</div>
 							<ul class="detail">
-								<li>Internal</li>
+								<li>内部</li>
 								<li>ARI</li>
 							</ul>
 						</div>
@@ -731,211 +731,211 @@
 			<section class="diagonal down feature">
 				<div class="wrapper">
 					<h2>
-						HTTP server
+						HTTP 服务器
 					</h2>
 					<p>
-						Caddy's HTTP server is one-of-a-kind: powerful, extensible, efficient, and modern.
+						Caddy's HTTP 服务器 is one-of-a-kind: powerful, extensible, efficient, and modern.
 					</p>
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>HTTP versions</h4>
+							<h4>HTTP 版本</h4>
 							<div class="benefits">
-								Caddy's HTTP server supports all major versions of HTTP and enables them by default (except H2C which is insecure, but available). You can customize exactly which versions you want to serve.
+								Caddy's HTTP 服务器 supports all major versions of HTTP and enables them by default (except H2C which is insecure, but available). You can customize exactly which versions you want to serve.
 							</div>
 							<ul class="detail">
 								<li>HTTP/1.1</li>
 								<li>HTTP/2</li>
-								<li>HTTP/2 over cleartext (H2C)</li>
+								<li>明文传输的 HTTP/2 (H2C)</li>
 								<li>HTTP/3</li>
 							</ul>
 						</div>
 						<div class="feature-row">
 							<h4>HTTPS</h4>
 							<div class="benefits">
-								Caddy's flagship feature is enabling HTTPS automatically and by default. You can control how it works or disable aspects: HTTP redirects, certificate management, certain hostnames, etc.
+								Caddy 的旗舰功能是默认自动启用 HTTPS。你可以控制其工作方式或禁用某些方面：HTTP 重定向、证书管理、某些主机名等。
 							</div>
 							<div class="detail">
-								Automatic
+								自动
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Listen interfaces</h4>
+							<h4>监听接口</h4>
 							<div class="benefits">
-								Each HTTP server can bind to one or more sockets and network interfaces. For ports, you can specify specific host interface or all interfaces with just a port. All varieties of unix sockets are also supported.
+								Each HTTP 服务器 can bind to one or more sockets and network interfaces. For ports, you can specify specific host interface or all interfaces with just a port. All varieties of unix sockets are also supported.
 							</div>
 							<ul class="detail">
 								<li>TCP</li>
 								<li>UDP</li>
-								<li>Unix sockets</li>
+								<li>Unix 套接字</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Listener wrappers</h4>
+							<h4>监听器包装器</h4>
 							<div class="benefits">
-								Listeners can be wrapped by modules that operate at the connection-accept level.
+								监听器可以被在连接接受级别运行的模块包装。
 							</div>
 							<ul class="detail">
-								<li>Redirect HTTP on HTTPS port</li>
-								<li>PROXY protocol</li>
+								<li>在 HTTPS 端口重定向 HTTP</li>
+								<li>PROXY 协议</li>
 								<li class="nonstandard">Tailscale</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Timeouts</h4>
+							<h4>超时</h4>
 							<div class="benefits">
-								Setting timeouts is an important defensive measure for production environments, but must be tuned carefully to accommodate legitimate slow clients with large downloads or uploads.
+								设置超时是生产环境中的重要防御措施，但必须仔细调整以适应具有大量下载或上传的合法慢客户端。
 							</div>
 							<ul class="detail">
-								<li>Read timeout</li>
-								<li>Read HTTP header timeout</li>
-								<li>Write timeout</li>
-								<li>Idle timeout</li>
-								<li>TCP keepalive interval</li>
+								<li>读取超时</li>
+								<li>读取 HTTP 头超时</li>
+								<li>写入超时</li>
+								<li>空闲超时</li>
+								<li>TCP 保活间隔</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Full duplex communication</h4>
+							<h4>全双工通信</h4>
 							<div class="benefits">
-								Concurrent reading and writing of HTTP/1 is not supported by all clients, but can be enabled for certain clients and applications that require it.
+								并非所有客户端都支持 HTTP/1 的并发读写，但可以为需要它的特定客户端和应用程序启用。
 							</div>
 							<ul class="detail">
-								<li>Configurable for HTTP/1</li>
-								<li>Default for HTTP/2</li>
+								<li>HTTP/1 可配置</li>
+								<li>HTTP/2 默认</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Error handling</h4>
+							<h4>错误处理</h4>
 							<div class="benefits">
-								Caddy gives you full control over handling errors to give you clients the best/desired experience.
+								Caddy 让你完全控制错误处理，为客户提供最佳/期望的体验。
 							</div>
 							<div class="detail">
-								Custom error routes
+								自定义错误路由
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>TLS termination</h4>
+							<h4>TLS 终止</h4>
 							<div class="benefits">
-								Terminate TLS (formerly "SSL") with sensible defaults that you can customize to give you fine-grained control over TLS handshakes. You can assign policies to clients based on various factors such as ServerName (SNI) or remote IP.
+								用合理的默认值终止 TLS（以前称为"SSL"），你可以自定义以对 TLS 握手进行细粒度控制。你可以根据 Server名称 (SNI) 或远程 IP 等各种因素为客户端分配策略。
 							</div>
 							<ul class="detail">
 								<li>TLS 1.2</li>
 								<li>TLS 1.3</li>
-								<li>Client authentication (TLS mutual auth; mTLS)</li>
-								<li>Client auth modes: request, require, verify if given, require and verify</li>
-								<li>Cipher suites</li>
-								<li>Curves</li>
+								<li>客户端认证（TLS 双向认证；mTLS）</li>
+								<li>客户端认证模式：request、require、verify if given、require and verify</li>
+								<li>密码套件</li>
+								<li>曲线</li>
 								<li>ALPN</li>
-								<li>Limit protocol versions</li>
-								<li>Default SNI</li>
-								<li>Fallback SNI</li>
+								<li>限制协议版本</li>
+								<li>默认 SNI</li>
+								<li>回退 SNI</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Cross-site security</h4>
+							<h4>跨站点安全</h4>
 							<div class="benefits">
-								Caddy often serves multiple sites on the same socket, so Caddy automatically enables protections to keep your sites safe if any of them have TLS client auth enabled.
+								Caddy 通常在同一个套接字上服务多个站点，因此如果任何站点启用了 TLS 客户端认证，Caddy 会自动启用保护以确保你的站点安全。
 							</div>
 							<div class="detail">
-								Verification that TLS ServerName and HTTP Host header match
+								验证 TLS Server名称 和 HTTP 主机 头匹配
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Access logs</h4>
+							<h4>访问日志</h4>
 							<div class="benefits">
-								Enable zero-allocation, structured access logs for the ultimate understanding of client requests and responses. Customize using Caddy's built-in logging configuration or the use of third-party modules.
+								启用零分配、结构化访问日志以全面了解客户端请求和响应。使用 Caddy 的内置日志配置或第三方模块进行自定义。
 							</div>
 							<ul class="detail">
-								<li>More useful than Common Log Format (CLF)</li>
-								<li>Request headers (except sensitive fields)</li>
-								<li>Response headers</li>
-								<li>Remote IP</li>
-								<li>Latency</li>
+								<li>比通用日志格式 (CLF) 更有用</li>
+								<li>请求头（除敏感字段外）</li>
+								<li>响应头</li>
+								<li>远程 IP</li>
+								<li>延迟</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Observability</h4>
+							<h4>可观测性</h4>
 							<div class="benefits">
-								Your web server can be monitored using standards-compatible metrics.
+								你的 Web 服务器可以使用标准兼容的指标进行监控。
 							</div>
 							<div class="detail">
-								Prometheus metrics, open telemetry
+								Prometheus 指标，OpenTelemetry
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Request handling</h4>
+							<h4>请求处理</h4>
 							<div class="benefits">
-								The HTTP server handles requests using custom routes consisting of specific handlers in the order you define. A separate error route can be defined for custom error handling. You have a high degree of flexibility with HTTP handling. See below for available HTTP handler modules.
+								The HTTP 服务器 handles requests using custom routes consisting of specific handlers in the order you define. A separate error route can be defined for custom error handling. You have a high degree of flexibility with HTTP handling. See below for available HTTP handler modules.
 							</div>
 							<div class="detail">
-								Composable routes (and separate error handling routes)
+								可组合路由（和单独的错误处理路由）
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Request filters</h4>
+							<h4>请求过滤器</h4>
 							<div class="benefits">
-								Apply handlers to only certain requests using matchers, which classify requests based on various properties. Matchers are also used for filtering. They are extensible and pluggable, so there's no limit to how specific and custom your routes can be! Some matchers support regular expressions. All are quite fast. And matchers can be combined in sets so they can be joined with AND, OR, and NOT logic.
+								仅使用匹配器将处理程序应用于特定请求，匹配器根据各种属性对请求进行分类。匹配器也用于过滤。它们可扩展且可插拔，因此你的路由可以有多具体和自定义是有限度的！一些匹配器支持正则表达式。所有这些都很快。并且匹配器可以组合成集合，以便它们可以用 AND、OR 和 NOT 逻辑连接。
 							</div>
 							<ul class="detail">
-								<li>Host</li>
-								<li>Path </li>
-								<li>Method</li>
-								<li>Headers</li>
-								<li>Protocol</li>
-								<li>Remote IP</li>
-								<li>Arbitrary CEL expression</li>
-								<li>File (existence, size, modify date)</li>
-								<li>HTTP route variable</li>
-								<li>Logical NOT</li>
-								<li class="nonstandard">Geolocation</li>
-								<li class="nonstandard">Remote host</li>
+								<li>主机</li>
+								<li>路径 </li>
+								<li>方法</li>
+								<li>头</li>
+								<li>协议</li>
+								<li>远程 IP</li>
+								<li>任意 CEL 表达式</li>
+								<li>文件（存在性、大小、修改日期）</li>
+								<li>HTTP 路由变量</li>
+								<li>逻辑 NOT</li>
+								<li class="nonstandard">地理位置</li>
+								<li class="nonstandard">远程主机</li>
 							</ul>
 						</div>
 					</div>
 
-					<h3 class="blue">HTTP handlers</h3>
+					<h3 class="blue">HTTP 处理程序</h3>
 
 					<p>
-						Handlers are modules that can be composed together to handle incoming requests precisely the way you want. Handler modules are, like the rest of Caddy, extensible and pluggable. It is not really feasible for us to list all the handlers here.
+						处理程序是可以组合在一起以你想要的精确方式处理传入请求的模块。处理程序模块与 Caddy 的其他部分一样，可扩展且可插拔。我们在这里列出所有处理程序确实不可行。
 					</p>
 					<p>
-						In practice, handlers are paired with matchers which filter or classify requests based on various properties such as their path, headers, query string, method, and more. This allows you to selectively apply any and all of these handlers to certain requests.
+						实际上，处理程序与匹配器配对，匹配器根据各种属性（如路径、头、查询字符串、方法等）过滤或分类请求。这允许你有选择地将任何和所有这些处理程序应用于特定请求。
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>ACME server</h4>
+							<h4>ACME 服务器</h4>
 							<div class="benefits">
-								Right out of the box, Caddy ships with a production-ready ACME server, perfect for your internal PKI. Automate mTLS certificates inside your infrastructure with ease. Powered by <a href="https://smallstep.com">Smallstep</a> libraries.
+								Right out of the box, Caddy ships with a production-ready ACME 服务器, perfect for your internal PKI. Automate mTLS certificates inside your infrastructure with ease. Powered by <a href="https://smallstep.com">Smallstep</a> libraries.
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4 class="nonstandard">Authelia</h4>
 							<div class="benefits">
-								Secure routes with authentication using Authelia.
+								使用 Authelia 通过认证保护路由。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Authentication</h4>
+							<h4>认证</h4>
 							<div class="benefits">
-								Authenticate users with an extensible authentication module. Extended by auth providers, this handler returns an error if the user cannot be authenticated by any configured providers. HTTP basic auth is included standard, and unlike other servers, passwords are hashed when setting up basic auth (since it's essentially a password database), enhancing security.
+								使用可扩展的认证模块认证用户。由认证提供商扩展，如果用户无法通过任何配置的提供商认证，此处理程序返回错误。HTTP 基本认证是标准包含的，与其他服务器不同，设置基本认证时会哈希密码（因为它本质上是密码数据库），增强安全性。
 							</div>
 							<ul class="detail">
-								<li>HTTP Basic authentication</li>
+								<li>HTTP 基本认证</li>
 								<li class="nonstandard">JWT</li>
 								<li class="nonstandard">Discord</li>
-								<li class="nonstandard">Forms</li>
+								<li class="nonstandard">表单</li>
 								<li class="nonstandard">SAML</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">Advanced auth</h4>
+							<h4 class="nonstandard">高级认证</h4>
 							<div class="benefits">
-								With a full suite of authentication and authorization features, the caddy-security module provides a variety of robust auth solutions.
+								凭借完整的认证和授权功能套件，caddy-security 模块提供各种强大的认证解决方案。
 							</div>
 							<ul class="detail nonstandard">
-								<li>Form-based</li>
-								<li>Local</li>
-								<li>Basic</li>
+								<li>基于表单</li>
+								<li>本地</li>
+								<li>基本</li>
 								<li>LDAP</li>
 								<li>OpenID Connect</li>
 								<li>OAuth 2</li>
@@ -943,9 +943,9 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">Cache</h4>
+							<h4 class="nonstandard">缓存</h4>
 							<div class="benefits">
-								Easily enable caching to serve more clients and increase performance. This cache module is compliant with RFC 7234 and supports tag-based cache purge, distributed and local storage, key generation tweaking, and more. Multiple backends are supported!
+								轻松启用缓存以服务更多客户端并提高性能。此缓存模块符合 RFC 7234，支持基于标签的缓存清除、分布式和本地存储、密钥生成调整等。支持多种后端！
 							</div>
 							<ul class="detail nonstandard">
 								<li>Badger</li>
@@ -956,9 +956,9 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Encode</h4>
+							<h4>编码</h4>
 							<div class="benefits">
-								Compress, encode, or otherwise transform HTTP responses on-the-fly with pluggable encoding modules. Compressing responses is as easy as a single line of configuration, and encodings won't be applied to responses that are already in a compressed format or are too small to be worthwhile.
+								使用可插拔的编码模块即时压缩、编码或以其他方式转换 HTTP 响应。压缩响应就像一行配置一样简单，并且不会对已经是压缩格式或太小不值得的响应应用编码。
 							</div>
 							<ul class="detail">
 								<li>Gzip</li>
@@ -967,149 +967,149 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>File server</h4>
+							<h4>文件服务器</h4>
 							<div class="benefits">
-								A powerful, flexible, and efficient static file server that is described in detail below.
+								一个强大、灵活且高效的静态文件服务器，下文详细描述。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">Go package vanity paths</h4>
+							<h4 class="nonstandard">Go 包修饰路径</h4>
 							<div class="benefits">
-								A simple handler that implements vanity import paths for Go packages.
+								一个为 Go 包实现修饰导入路径的简单处理程序。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">gRPC-Web bridging</h4>
+							<h4 class="nonstandard">gRPC-Web 桥接</h4>
 							<div class="benefits">
-								Bridge/convert gRPC-Web requests to gRPC for your backend app.
+								将 gRPC-Web 请求桥接/转换为后端应用的 gRPC。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Header manipulation</h4>
+							<h4>头修改</h4>
 							<div class="benefits">
-								Modify HTTP request and response headers. Adding, setting, deleting, and replacing substrings in header fields is fast, but regular expressions are also supported for advanced use. Response header manipulations can be deferred until the very end when the response starts to be written, and can even be made conditional on response status code or header values.
+								修改 HTTP 请求和响应头。添加、设置、删除和替换头字段中的子串很快，但也支持正则表达式供高级使用。响应头修改可以延迟到响应开始写入的最后，甚至可以基于响应状态码或头值有条件地执行。
 							</div>
 							<ul class="detail">
-								<li>Add</li>
-								<li>Set (overwrite)</li>
-								<li>Delete</li>
-								<li>Substring replace</li>
+								<li>添加</li>
+								<li>设置（覆盖）</li>
+								<li>删除</li>
+								<li>子串替换</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">Image filtering</h4>
+							<h4 class="nonstandard">图像过滤</h4>
 							<div class="benefits">
-								Perform adjustments on images on-the-fly.
+								即时对图像进行调整。
 							</div>
 							<ul class="detail nonstandard">
-								<li>Crop</li>
-								<li>Fit</li>
-								<li>Flip</li>
-								<li>Resize</li>
-								<li>Rotate</li>
-								<li>Sharpen</li>
+								<li>裁剪</li>
+								<li>适应</li>
+								<li>翻转</li>
+								<li>调整大小</li>
+								<li>旋转</li>
+								<li>锐化</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Map</h4>
+							<h4>映射</h4>
 							<div class="benefits">
-								Assign variable/placeholder values based on input values; similar to a lookup table.
+								根据输入值分配变量/占位符值；类似于查找表。
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4 class="nonstandard">Mercure</h4>
 							<div class="benefits">
-								Make your Caddy instance a Mercure hub: an open, easy, fast, reliable and battery-efficient solution for real-time communications.
+								将你的 Caddy 实例变为 Mercure hub：一个开放、简单、快速、可靠且电池高效的实时通信解决方案。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Metrics</h4>
+							<h4>指标</h4>
 							<div class="benefits">
-								Expose a /metrics endpoint for use with Prometheus-compatible systems and other monitoring tools.
+								暴露 /metrics 端点供与 Prometheus 兼容的系统和其他监控工具使用。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>HTTP/2 server push</h4>
+							<h4>HTTP/2 服务器推送</h4>
 							<div class="benefits">
-								Proactively push resources to clients before they request it when HTTP/2 is used. (May be deprecated by browsers, but Caddy still has a valid implementation that is useful in certain applications.)
+								在 HTTP/2 使用时主动将资源推送到客户端，然后才被请求。（可能被浏览器弃用，但 Caddy 仍然有一个有效的实现，在某些应用中很有用。）
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4 class="nonstandard">Rate limiting</h4>
+							<h4 class="nonstandard">速率限制</h4>
 							<div class="benefits">
-								Advanced, enterprise-grade rate limiter implemented using a ring buffer and sliding window algorithm that scales massively based on zone keys. Configure a cluster of Caddy instances with the same storage to distribute rate limiting across your fleet. No memory bound required like with other enterprise servers.
+								使用环形缓冲区和滑动窗口算法实现的高级企业级速率限制器，根据区域键大规模扩展。配置具有相同存储的 Caddy 实例集群以在你的整个系统中分发速率限制。不像其他企业服务器那样需要内存绑定。
 							</div>
 							<ul class="nonstandard">
-								<li>Local or distributed</li>
-								<li>Multiple zones</li>
-								<li>Buffer pooling</li>
-								<li>Only 1 goroutine</li>
-								<li>Configurable O(Kn) memory management</li>
-								<li>State persisted through reloads</li>
-								<li>Sets Retry-After header</li>
-								<li>Optional jitter</li>
-								<li>Highly programmable</li>
+								<li>本地 or distributed</li>
+								<li>多个区域</li>
+								<li>缓冲池</li>
+								<li>仅 1 个 goroutine</li>
+								<li>可配置的 O(Kn) 内存管理</li>
+								<li>通过重载持久化状态</li>
+								<li>设置 Retry-After 头</li>
+								<li>可选抖动</li>
+								<li>高度可编程</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Request body controls</h4>
+							<h4>请求体控制</h4>
 							<div class="benefits">
-								Restrict the size of the request body by rejecting requests that are too large.
+								通过拒绝太大的请求来限制请求体大小。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Reverse proxy</h4>
+							<h4>反向代理</h4>
 							<div class="benefits">
-								Caddy has a world-class reverse proxy, described in detail in a section below.
+								Caddy 拥有一个世界级的反向代理，在下一节中详细描述。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Rewrite requests</h4>
+							<h4>重写请求</h4>
 							<div class="benefits">
-								Make internal changes to requests before continuing to process them. This is useful to accept requests that need to be changed to conform to an expectation later on. Various aspects of the request can be changed such as method and URI.
+								在继续处理请求之前对请求进行内部更改。这用于接受需要更改以符合后续期望的请求。请求的各种方面可以更改，如方法和 URI。
 							</div>
 							<ul class="detail">
-								<li>Method</li>
-								<li>URI (path, query string)</li>
-								<li>Strip path prefix or suffix</li>
-								<li>Regular expression support</li>
-								<li>Intelligent URL-encoding and forward-slash handling</li>
+								<li>方法</li>
+								<li>URI（路径、查询字符串）</li>
+								<li>剥离路径前缀或后缀</li>
+								<li>正则表达式支持</li>
+								<li>智能 URL 编码和正斜杠处理</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Static responses</h4>
+							<h4>静态响应</h4>
 							<div class="benefits">
-								Hard-code a static response into your config, with the ability to set the status code, header fields, and body. (This is often used to respond with HTTP redirects.) The connection may then be gracefully closed, or forcefully aborted if needed.
+								将静态响应硬编码到配置中，能够设置状态码、头字段和体。（这通常用于响应 HTTP 重定向。）然后可以优雅地关闭连接，或在需要时强制终止。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Subrouting</h4>
+							<h4>子路由</h4>
 							<div class="benefits">
-								Group handlers into a "subroute" to treat several handlers as one, making certain logic easier to reason about.
+								将处理程序分组到"子路由"中以将多个处理程序视为一个，使某些逻辑更容易推理。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Templates</h4>
+							<h4>模板</h4>
 							<div class="benefits">
-								Responses can be evaluated as templates, which give you the ability to turn proxied or static content into rich, dynamic content with variables, if statements, markdown rendering (with front matter support), and more.
+								响应可以作为模板进行评估，这使你将代理或静态内容转换为丰富的动态内容，具有变量、if 语句、markdown 渲染（支持 front matter）等。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Tracing</h4>
+							<h4>追踪</h4>
 							<div class="benefits">
-								Support for distributed tracing using OpenTelemetry.
+								支持使用 OpenTelemetry 进行分布式追踪。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Variables</h4>
+							<h4>变量</h4>
 							<div class="benefits">
-								Read and write variables that can be used internally as you process requests.
+								读写在你处理请求时内部可用的变量。
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4 class="nonstandard">WebDAV</h4>
 							<div class="benefits">
-								Become a WebDAV server with one or two lines of config. Compatible with most WebDAV clients.
+								用一两行配置成为 WebDAV 服务器。与大多数 WebDAV 客户端兼容。
 							</div>
 						</div>
 					</div>
@@ -1121,25 +1121,25 @@
 			<section class="diagonal up gray feature">
 				<div class="wrapper">
 					<h2>
-						Reverse proxy
+						反向代理
 					</h2>
 					<p>
-						Caddy has the most flexible general-purpose reverse proxy in the world, featuring advanced request and response handling, dynamic routing, health checking, load balancing, circuit breaking, and more.
+						Caddy 拥有世界上最灵活的多功能反向代理，具有先进的请求和响应处理、动态路由、健康检查、负载均衡、熔断等。
 					</p>
 					<p>
-						What makes Caddy's proxy unique is its design. Only the client-facing side of the proxy needs to be HTTP; the transport underlying the roundtrip with the backend can be fulfilled with any protocol!
+						Caddy 代理的独特之处在于其设计。代理仅面向客户端的一侧需要是 HTTP；与后端往返的基础传输可以通过任何协议完成！
 					</p>
 					<p>
-						Moreover, our proxy can be programmed with highly dynamic upstreams. That is, the available upstreams can change during in-flight requests! If no backends are available, Caddy can hold onto the request until one is.
+						此外，我们的代理可以通过高度动态的上游进行编程。也就是说，可用的上游可以在进行中的请求期间更改！如果没有可用的后端，Caddy 可以保留请求直到有一个可用。
 					</p>
 
-					<h3 class="blue">High-level proxy features</h3>
+					<h3 class="blue">高级代理功能</h3>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Transports</h4>
+							<h4>传输</h4>
 							<div class="benefits">
-								Transports are how Caddy gets the response from the backend. Caddy's proxy can be a front for protocols other than HTTP by using alternate transport modules. This allows Caddy to generate HTTP responses from backends that don't even speak HTTP!
+								传输 are how Caddy gets the response from the backend. Caddy's proxy can be a front for protocols other than HTTP by using alternate transport modules. This allows Caddy to generate HTTP responses from backends that don't even speak HTTP!
 							</div>
 							<ul class="detail">
 								<li>HTTP</li>
@@ -1148,248 +1148,248 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Load balancing</h4>
+							<h4>负载均衡</h4>
 							<div class="benefits">
-								Selecting upstreams is a crucial function of any modern reverse proxy. Caddy has a variety of built-in load balancing policies to choose from to suit any production services. Some policies are extremely fast and lightweight; others provide upstream affinity based on properties of the client or request; others strive for even distribution by counting connections or using randomness and weights.
+								选择上游是现代任何反向代理的关键功能。Caddy 有多种内置负载均衡策略可供选择，以适应任何生产服务。一些策略非常快速且轻量级；其他基于客户端或请求的属性提供上游亲和性；其他通过计算连接或使用随机性和权重努力实现均匀分布。
 							</div>
 							<ul class="detail">
-								<li>Random</li>
-								<li>Random Choose-N</li>
-								<li>Least connections</li>
-								<li>Round robin</li>
-								<li>Weighted round robin</li>
-								<li>First available</li>
-								<li>Remote IP hash</li>
-								<li>Client IP hash</li>
-								<li>URI hash</li>
-								<li>Query hash</li>
-								<li>Header hash</li>
-								<li>Cookie hash</li>
+								<li>随机</li>
+								<li>随机 Choose-N</li>
+								<li>最少连接</li>
+								<li>轮询</li>
+								<li>加权轮询</li>
+								<li>首个可用</li>
+								<li>远程 IP hash</li>
+								<li>客户端 IP 哈希</li>
+								<li>URI 哈希</li>
+								<li>查询哈希</li>
+								<li>头哈希</li>
+								<li>Cookie 哈希</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Circuit breaking</h4>
+							<h4>熔断</h4>
 							<div class="benefits">
-								A circuit breaker module can temporarily mark a backend as down before it actually goes down, to keep it up.
+								断路器模块可以在后端实际宕机之前暂时将其标记为宕机，以保持其运行。
 							</div>
 							<div class="detail nonstandard">
-								Latency-based
+								延迟-based
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Health checking</h4>
+							<h4>健康检查</h4>
 							<div class="benefits">
-								Health checks detect when upstreams are unavailable. Passive health checks infer status from actual requests. Active health checks work in the background, out-of-band of client requests.
+								健康检查检测上游何时不可用。被动健康检查从实际请求推断状态。主动健康检查在后台工作，带外于客户端请求。
 							</div>
 							<ul class="detail">
-								<li>Active</li>
-								<li>Passive</li>
+								<li>主动</li>
+								<li>被动</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Observability</h4>
+							<h4>可观测性</h4>
 							<div class="benefits">
-								The admin API exposes an endpoint to retrieve the traffic count and health status of the proxy upstreams.
+								管理 API 暴露一个端点以检索代理上游的流量计数和健康状态。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Upstream sources</h4>
+							<h4>上游源</h4>
 							<div class="benefits">
-								Caddy can get the list of upstreams in various ways. The most common is to write them into the configuration (static). Other ways are dynamic, by which a list of upstreams are returned for each request (these utilize configurable caching to enhance performance). 
+								Caddy 可以通过各种方式获取上游列表。最常见的是将它们写入配置（静态）。其他方式是动态的，即为每个请求返回上游列表（这些利用可配置缓存以提高性能）。 
 							</div>
 							<ul class="detail">
-								<li>Static</li>
-								<li>Dynamic: A records</li>
-								<li>Dynamic: SRV records</li>
-								<li>Dynamic: Multiple sources combined</li>
+								<li>静态</li>
+								<li>动态：A 记录</li>
+								<li>动态：SRV 记录</li>
+								<li>动态：多个源组合</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Retries</h4>
+							<h4>重试</h4>
 							<div class="benefits">
-								Requests can be retried until a backend is available to successfully handle the request. During this time, the list of upstreams may even be updated while the request is still pending!
+								请求可以重试直到有可用的后端成功处理请求。在此期间，上游列表甚至可以在请求仍待处理时更新！
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Streaming</h4>
+							<h4>流式传输</h4>
 							<div class="benefits">
-								Responses can be streamed directly to the client, or for better wire performance, buffered slightly and flushed periodically.
+								响应可以直接流式传输到客户端，或者为了更好的线路性能，稍作缓冲并定期刷新。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Trusted proxies</h4>
+							<h4>受信任的代理</h4>
 							<div class="benefits">
-								In order to use proxy-related headers like X-Forwarded-For, you can specify a list of IP ranges of proxies you trust. By default Caddy doesn't trust the clients.
+								为了使用 X-Forwarded-For 等代理相关头，你可以指定你信任的代理的 IP 范围列表。默认情况下 Caddy 不信任客户端。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Header manipulation</h4>
+							<h4>头修改</h4>
 							<div class="benefits">
-								Headers can be modified in the request going up to the backend and the response coming back down from the backend. This is similar to the general HTTP server's header handler, but this is applied while proxying.
+								头 can be modified in the request going up to the backend and the response coming back down from the backend. This is similar to the general HTTP 服务器's header handler, but this is applied while proxying.
 							</div>
 							<ul class="detail">
-								<li>Add</li>
-								<li>Set (overwrite)</li>
-								<li>Delete</li>
-								<li>Substring replace</li>
+								<li>添加</li>
+								<li>设置（覆盖）</li>
+								<li>删除</li>
+								<li>子串替换</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Buffering</h4>
+							<h4>缓冲</h4>
 							<div class="benefits">
-								The proxy can optionally read the entire body before flushing it. This uses more memory but can be required by some backend applications or clients in some cases.
+								代理可以选择在刷新之前读取整个体。这会使用更多内存，但在某些情况下某些后端应用或客户端可能需要。
 							</div>
 							<ul class="detail">
-								<li>Requests</li>
-								<li>Responses</li>
+								<li>请求</li>
+								<li>响应</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Request rewriting</h4>
+							<h4>请求重写</h4>
 							<div class="benefits">
-								Rewriting is a different concern from proxying and is normally handled separately, but sometimes you need to rewrite requests using information from the proxy like the chosen upstream. Caddy's proxy lets you do this.
+								重写是与代理不同的关注点，通常单独处理，但有时你需要使用来自代理的信息（如所选上游）重写请求。Caddy 的代理让你可以这样做。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Response interception</h4>
+							<h4>响应拦截</h4>
 							<div class="benefits">
-								By default, Caddy's proxy simply writes responses to the client. However, you can intercept the upstream's response and handle it in other ways. This includes matching only certain responses and invoking a custom handler chain you specify.
+								默认情况下，Caddy 的代理简单地将响应写入客户端。但是，你可以拦截上游的响应并以其他方式处理。这包括仅匹配某些响应并调用你指定的自定义处理程序链。
 							</div>
 						</div>
 					</div>
 
-					<h3 class="green">Active health checks</h3>
+					<h3 class="green">主动 health checks</h3>
 					<p>
-						Active health checks assume a backend is down by default until that is confirmed otherwise by a health check.
+						主动 health checks assume a backend is down by default until that is confirmed otherwise by a health check.
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>HTTP request parameters</h4>
+							<h4>HTTP 请求参数</h4>
 							<div class="benefits">
-								Active health checks are performed against an HTTP endpoint on the upstream. You can customize the parameters for these HTTP requests to work for you.
+								主动 health checks are performed against an HTTP endpoint on the upstream. You can customize the parameters for these HTTP requests to work for you.
 							</div>
 							<ul class="detail">
-								<li>Path &amp; query string</li>
-								<li>Port</li>
-								<li>Headers</li>
+								<li>路径 &amp; query string</li>
+								<li>端口</li>
+								<li>头</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Timing</h4>
+							<h4>定时</h4>
 							<div class="benefits">
-								You can customize the interval at which active health checks are performed.
+								你可以自定义执行主动健康检查的间隔。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Success criteria</h4>
+							<h4>成功标准</h4>
 							<div class="benefits">
-								Each active health check can be customized with a set of criteria to determine healthy or unhealthy status.
+								每个主动健康检查可以自定义一组标准以确定健康或不健康状态。
 							</div>
 							<ul class="detail">
-								<li>Response timeout</li>
-								<li>HTTP status code</li>
-								<li>Regular expression match on body</li>
+								<li>响应超时</li>
+								<li>HTTP 状态码</li>
+								<li>体上的正则表达式匹配</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Failure safety</h4>
+							<h4>故障安全</h4>
 							<div class="benefits">
-								Backends that are experiencing bugs and difficulties may sometimes respond with unexpectedly large response bodies. Caddy lets you limit this to preserve proxy resources.
+								遇到错误和困难的后端有时会响应意外大的响应体。Caddy 让你限制这一点以保留代理资源。
 							</div>
 							<div class="detail">
-								Limit response size
+								限制响应大小
 							</div>
 						</div>
 					</div>
 
-					<h3 class="purple">Passive health checks</h3>
+					<h3 class="purple">被动 health checks</h3>
 					<p>
-						Passive health checks assume a backend is up by default until failure criteria are met in the course of proxying requests.
+						被动 health checks assume a backend is up by default until failure criteria are met in the course of proxying requests.
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Failure criteria</h4>
+							<h4>故障标准</h4>
 							<div class="benefits">
-								All passive health checks count connection failures. In addition, you can set more criteria needed to deem a backend as healthy during a request.
+								所有被动健康检查都计算连接故障。此外，你可以设置更多在请求期间认为后端健康所需的标准。
 							</div>
 							<ul class="detail">
-								<li>Concurrent request limit exceeded</li>
-								<li>HTTP Status</li>
-								<li>Latency</li>
+								<li>并发请求限制超出</li>
+								<li>HTTP 状态</li>
+								<li>延迟</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Failure memory</h4>
+							<h4>故障记忆</h4>
 							<div class="benefits">
-								You can customize how long to remember failures and how many failures need to be in memory to consider a backend to be down.
+								你可以自定义记住故障的时间长度以及需要多少故障在内存中才认为后端宕机。
 							</div>
 						</div>
 					</div>
 
 
-					<h3 class="blue">HTTP transport</h3>
+					<h3 class="blue">HTTP 传输</h3>
 					<p>
-						This is the default transport module. It crafts a proxied HTTP request to obtain an HTTP response from the backend.
+						这是默认传输模块。它制作代理 HTTP 请求以从后端获取 HTTP 响应。
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>DNS resolvers</h4>
+							<h4>DNS 解析器</h4>
 							<div class="benefits">
-								The system resolvers are used by default, but you can specify custom DNS resolvers per proxy handler.
+								The system resolvers are used by default, but you can specify custom DNS 解析器 per proxy handler.
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4>TLS</h4>
 							<div class="benefits">
-								Caddy can be configured to support TLS (formerly known as SSL) to the upstream.
+								Caddy 可以配置为支持到上游的 TLS（以前称为 SSL）。
 							</div>
 							<ul class="detail">
-								<li>Custom root CA pool</li>
-								<li>Client authentication to backend</li>
-								<li>Custom handshake timeout</li>
-								<li>Server Name Indicator (SNI)</li>
-								<li>Renegotiation level</li>
-								<li>Exempt certain ports from TLS</li>
+								<li>自定义根 CA 池</li>
+								<li>到后端的客户端认证</li>
+								<li>自定义握手超时</li>
+								<li>服务器名称指示 (SNI)</li>
+								<li>重新协商级别</li>
+								<li>免除某些端口的 TLS</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Connection pooling</h4>
+							<h4>连接池</h4>
 							<div class="benefits">
-								Connections to backends are pooled for maximum efficiency and minimal latency.
+								到后端的连接被池化以实现最大效率和最小延迟。
 							</div>
 							<ul class="detail">
-								<li>HTTP Keep-Alive</li>
-								<li>Custom probe interval</li>
-								<li>Maximum idle connections (total and per-host)</li>
-								<li>Idle connection timeout</li>
+								<li>HTTP 保持连接</li>
+								<li>自定义探测间隔</li>
+								<li>最大空闲连接（总计和每主机）</li>
+								<li>空闲连接超时</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Compression</h4>
+							<h4>压缩</h4>
 							<div class="benefits">
-								Caddy can compress requests for the roundtrip with the backend.
+								Caddy 可以压缩与后端的往返请求。
 							</div>
 							<div class="detail">
 								Gzip
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Connection limit</h4>
+							<h4>连接限制</h4>
 							<div class="benefits">
-								You can limit the number of connections per host.
+								你可以限制每主机的连接数。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>PROXY Protocol</h4>
+							<h4>PROXY 协议</h4>
 							<div class="benefits">
-								The PROXY Protocol v1 and v2 are both supported when connecting to upstreams.
+								The PROXY 协议 v1 and v2 are both supported when connecting to upstreams.
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Timeouts</h4>
+							<h4>超时</h4>
 							<div class="benefits">
 								Various timeouts can be configured; some have sensible default values.
 							</div>
@@ -1403,19 +1403,19 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Custom buffer sizes</h4>
+							<h4>自定义缓冲区大小</h4>
 							<div class="benefits">
-								Tune the size of read/write buffers if you find that your application performs better with certain settings.
+								如果发现应用程序在某些设置下性能更好，可以调整读/写缓冲区的大小。
 							</div>
 							<ul class="detail">
-								<li>Read buffers</li>
-								<li>Write buffers</li>
+								<li>读缓冲区</li>
+								<li>写缓冲区</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>HTTP versions</h4>
+							<h4>HTTP 版本</h4>
 							<div class="benefits">
-								Caddy's proxy supports multiple HTTP versions with the backend. By default, HTTP/1.1 and HTTP/2 are supported.
+								Caddy's proxy supports multiple HTTP 版本 with the backend. By default, HTTP/1.1 and HTTP/2 are supported.
 							</div>
 							<ul class="detail">
 								<li>HTTP/1.1</li>
@@ -1425,38 +1425,38 @@
 						</div>
 					</div>
 
-					<h3 class="green">FastCGI transport</h3>
+					<h3 class="green">FastCGI 传输</h3>
 					<p>
-						FastCGI is typically used to serve PHP applications via php-fpm. FastCGI responders may require additional information about the script being run such as script name, path relative to root, etc., and Caddy's FastCGI transport takes care of all of that and makes it configurable.
+						FastCGI is typically used to serve PHP applications via php-fpm. FastCGI responders may require additional information about the script being run such as script name, path relative to root, etc., and Caddy's FastCGI 传输 takes care of all of that and makes it configurable.
 					</p>
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Highly efficient</h4>
+							<h4>高效</h4>
 							<div class="benefits">
-								Caddy's FastCGI client implementation has been optimized to rival the performance of memory-unsafe clients written in C, sometimes even surpassing their performance.
+								Caddy 的 FastCGI 客户端实现经过优化，可与用 C 编写的内存不安全客户端的性能相媲美，有时甚至超越它们的性能。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Path splitting</h4>
+							<h4>路径 splitting</h4>
 							<div class="benefits">
-								The path can be split, usually at the extension, to compute the proper PATH_INFO variable.
+								路径可以分割，通常在扩展名处，以计算正确的 PATH_INFO 变量。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Resolve root symlink</h4>
+							<h4>解析根符号链接</h4>
 							<div class="benefits">
-								Optionally require paths declared to symlinks to be updated if the symlink changes without php-fpm being restarted.
+								如果符号链接更改而 php-fpm 未重启，可选择要求声明到符号链接的路径更新。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Environment variables</h4>
+							<h4>环境变量</h4>
 							<div class="benefits">
-								Read from the parent environment, and also set custom environment variables for your CGI script.
+								从父环境读取，并为 CGI 脚本设置自定义环境变量。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Timeouts</h4>
+							<h4>超时</h4>
 							<div class="benefits">
 								Set timeouts to conserve resources.
 							</div>
@@ -1467,9 +1467,9 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Capture stderr</h4>
+							<h4>捕获 stderr</h4>
 							<div class="benefits">
-								Caddy can capture the output to stderr from the upstream and log them for visibility.
+								Caddy 可以捕获来自上游的 stderr 输出并记录它们以提高可见性。
 							</div>
 						</div>
 					</div>
@@ -1481,39 +1481,39 @@
 			<section class="feature">
 				<div class="wrapper">
 					<h2>
-						Static file server
+						静态文件服务器
 					</h2>
 					<p>
-						Caddy's file server is the premier way of serving static files for your website. 
+						Caddy 的文件服务器是为你的网站服务静态文件的首要方式。 
 					</p>
 					<p>
-						It's simple: specify a root directory from which to serve the files, then each request path is automatically appended to the root to get the full path of the file to serve.
+						很简单：指定要服务的文件根目录，然后每个请求路径自动附加到根目录以获取要服务的文件的完整路径。
 					</p>
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Kernel acceleration</h4>
+							<h4>内核加速</h4>
 							<div class="benefits">
-								Caddy bypasses user-space buffers whenever possible to speed up file downloads by a significant factor.
+								Caddy 尽可能绕过用户空间缓冲区以显著加快文件下载速度。
 							</div>
 							<div class="detail">
 								sendfile
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Virtual file systems</h4>
+							<h4>虚拟文件系统</h4>
 							<div class="benefits">
-								By default, Caddy serves files from a directory you specify on the local disk, but this file access is pluggable and can be replaced by any virtualized file system modules. This allows you to serve static files from any file store such as databases, cloud storage, or even assets embedded directly in the web server binary!
+								默认情况下，Caddy 从你在本地磁盘上指定的目录服务文件，但此文件访问是可插拔的，可以替换为任何虚拟化文件系统模块。这使你能够从任何文件存储（如数据库、云存储，甚至直接嵌入 Web 服务器二进制文件中的资产）服务静态文件！
 							</div>
 							<ul class="detail">
-								<li>Local disk</li>
-								<li class="nonstandard">Embedded assets</li>
+								<li>本地 disk</li>
+								<li class="nonstandard">嵌入式 assets</li>
 								<li class="nonstandard">Amazon AWS S3</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Precompressed files</h4>
+							<h4>预压缩文件</h4>
 							<div class="benefits">
-								If your deployment pipeline compresses site resources, Caddy can automatically detect them and serve them in their "precompressed" encoding for higher efficiency and greater throughput.
+								如果你的部署管道压缩站点资源，Caddy 可以自动检测它们并以它们的"预压缩"编码服务它们，以实现更高效率和更大吞吐量。
 							</div>
 							<ul class="detail">
 								<li>Brotli</li>
@@ -1522,54 +1522,54 @@
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Hide files and folders</h4>
+							<h4>隐藏文件和文件夹</h4>
 							<div class="benefits">
-								Increase your security posture by proactively hiding potentially-sensitive files and folders that do or could exist in your site root. You can specify individual file/folder paths, filenames regardless of their path, or glob matches to hide files/folders with a particular pattern.
+								通过主动隐藏可能存在或可能存在于你的站根中的潜在敏感文件和文件夹来提高你的安全态势。你可以指定单个文件/文件夹路径、无论路径如何的文件名或 glob 匹配来隐藏具有特定模式的文件/文件夹。
 							</div>
 							<div class="detail">
-								Exact paths, filenames, globular matching
+								精确路径、文件名、glob 匹配
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Index filenames</h4>
+							<h4>索引文件名</h4>
 							<div class="benefits">
-								Index files are files that are served if a directory is requested by the client. The filenames of index files to look for are customizable. Directory browsing can optionally be enabled if an index file is not found in a requested directory.
+								索引文件是客户端请求目录时服务的文件。要查找的索引文件的文件名是可自定义的。如果在请求的目录中找不到索引文件，可选择启用目录浏览。
 							</div>
 							<div class="detail">
-								index.html, index.txt (customizable)
+								index.html, index.txt（可自定义）
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Conditional requests</h4>
+							<h4>条件请求</h4>
 							<div class="benefits">
-								Etag, Last-Modified, and related headers are supported.
+								支持 Etag、Last-Modified 和相关头。
 							</div>
 							<ul class="detail">
 								<li>Etag</li>
 								<li>Last-Modified</li>
 								<li>If-Match</li>
-								<li>If-None-Match</li>
+								<li>If-无-Match</li>
 								<li>If-Modified-Since</li>
 								<li>If-Unmodified-Since</li>
 								<li>If-Range</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Range requests</h4>
+							<h4>范围请求</h4>
 							<div class="benefits">
-								Common for streaming large files and resuming downloads, clients requesting certain ranges of files will not be disappointed or surprised. Caddy properly handles HTTP requests with Range headers.
+								对于流式传输大文件和恢复下载很常见，请求某些文件范围的客户端不会失望或惊讶。Caddy 正确处理带有 Range 头的 HTTP 请求。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Canonical paths</h4>
+							<h4>规范路径</h4>
 							<div class="benefits">
-								In general, there are multiple URIs for a single file or directory. For example: /, /index.html, and /index.html/ represent the same resource. Caddy uses HTTP redirects to enforce path canonicalization (removing trailing slashes from files, and adding them for directories).
+								通常，单个文件或目录有多个 URI。例如：/、/index.html 和 /index.html/ 代表相同资源。Caddy 使用 HTTP 重定向来强制路径规范化（从文件中移除尾随斜杠，并为目录添加它们。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Pass-thru mode</h4>
+							<h4>直通模式</h4>
 							<div class="benefits">
-								Sometimes you only want to serve a file if it exists, otherwise continue with the next handler in the chain, rather than returning an error to the client.
+								有时你只希望如果文件存在才服务它，否则继续链中的下一个处理程序，而不是向客户端返回错误。
 							</div>
 						</div>
 					</div>
@@ -1578,9 +1578,9 @@
 
 					<div class="split">
 						<div>
-							<h3 class="blue">File browser</h3>
+							<h3 class="blue">文件浏览器</h3>
 							<p>
-								Caddy's file server comes alive through its modern file browser that looks attractive on mobile and desktop. It has more features and utility than any other standard HTTP file server!
+								Caddy 的文件服务器通过其在移动和桌面端看起来吸引人的现代文件浏览器活跃起来。它比其他任何标准 HTTP 文件服务器都有更多功能和实用性！
 							</p>
 						</div>
 						<picture>
@@ -1591,44 +1591,44 @@
 
 					<div class="feature-list">
 						<div class="feature-row">
-							<h4>Folder listings</h4>
+							<h4>文件夹列表</h4>
 							<div class="benefits">
-								Show the list of files in a folder when no index file (below) exists in that folder.
+								当该文件夹中不存在索引文件（如下）时，显示文件夹中的文件列表。
 							</div>
 							<div class="detail">
-								Exact paths, filenames, globular matching
+								精确路径、文件名、glob 匹配
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Day and night themes</h4>
+							<h4>日夜主题</h4>
 							<div class="benefits">
-								The color scheme automatically adjusts to match the system theme, whether it be light or dark, to avoid blinding you or being hard to read.
+								配色方案自动调整以匹配系统主题，无论是浅色还是深色，以避免使你目眩或难以阅读。
 								<picture>
 									<source srcset="/resources/images/file-browser/browse-themes-2.png" media="(prefers-color-scheme: dark)">
 									<img src="/resources/images/file-browser/browse-themes.png">
 								</picture>
 							</div>
 							<ul class="detail">
-								<li>Light mode</li>
-								<li>Dark mode</li>
+								<li>浅色模式</li>
+								<li>深色模式</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Sort by columns</h4>
+							<h4>按列排序</h4>
 							<div class="benefits">
-								Quickly distill information about each directory and find items faster with sticky column sorting.
+								通过粘性列排序快速提取有关每个目录的信息并更快地查找项目。
 							</div>
 							<ul class="detail">
-								<li>File/directory</li>
-								<li>Name</li>
-								<li>Size</li>
-								<li>Date modified</li>
+								<li>文件/目录</li>
+								<li>名称</li>
+								<li>大小</li>
+								<li>修改日期</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Filter</h4>
+							<h4>过滤</h4>
 							<div class="benefits">
-								Every page load automatically focuses the cursor on a search box, so you can start typing a filename and filter large listings instantly.
+								每次页面加载自动将光标聚焦在搜索框上，因此你可以开始输入文件名并立即过滤大型列表。
 								<picture>
 									<source srcset="/resources/images/file-browser/browse-search-dark.png" media="(prefers-color-scheme: dark)">
 									<img src="/resources/images/file-browser/browse-search-light.png">
@@ -1636,41 +1636,41 @@
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Layout</h4>
+							<h4>布局</h4>
 							<div class="benefits">
-								Files can be shown in different layouts depending on how you want to view the listing. For example, the grid view is great for galleries.
+								文件可以根据你想要查看列表的方式以不同的布局显示。例如，网格视图非常适合画廊。
 								<picture>
 									<source srcset="/resources/images/file-browser/browse-gallery-dark.png" media="(prefers-color-scheme: dark)">
 									<img src="/resources/images/file-browser/browse-gallery-light.png">
 								</picture>
 							</div>
 							<ul class="detail">
-								<li>List</li>
-								<li>Grid</li>
+								<li>列表</li>
+								<li>网格</li>
 							</ul>
 						</div>
 						<div class="feature-row">
-							<h4>Responsive design</h4>
+							<h4>响应式设计</h4>
 							<div class="benefits">
-								The page width fluidly adjusts to accommodate screens of all sizes. Links are sufficiently sized to be easily tappable on touchscreens while still being information-dense enough to be useful.
+								页面宽度流畅调整以适应所有尺寸的屏幕。链接大小足够，易于在触摸屏上点击，同时仍然信息密集到有用。
 							</div>
 						</div>
 						<div class="feature-row">
 							<h4>JSON API</h4>
 							<div class="benefits">
-								Requests with an <code>Accept-Encoding: application/json</code> header will be replied to with a JSON payload for programmatic or scripted access to your file listing.
+								请求带有 <code>Accept-Encoding: application/json</code> 头将以 JSON 负载响应，以通过编程或脚本方式访问你的文件列表。
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>Customizable listing template</h4>
+							<h4>可自定义列表模板</h4>
 							<div class="benefits">
-								If the default template isn't a good fit or you want to spice things up, customize the browse template to look and act any way you want!
+								如果默认模板不合适或你想加点变化，自定义浏览模板以你想要的任何外观和行为！
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>File size visualization</h4>
+							<h4>文件大小可视化</h4>
 							<div class="benefits">
-								File sizes are indicated by the length of the bar behind them, making it quick and easy to find outlier large and small files or to compare relative sizes at a glance.
+								文件大小由其后条的长度表示，使其快速轻松找到异常大和小文件或一眼比较相对大小。
 								<picture>
 									<source srcset="/resources/images/file-browser/browse-size-dark.png" media="(prefers-color-scheme: dark)">
 									<img src="/resources/images/file-browser/browse-size-light.png">
@@ -1678,9 +1678,9 @@
 							</div>
 						</div>
 						<div class="feature-row">
-							<h4>File type icons</h4>
+							<h4>文件类型图标</h4>
 							<div class="benefits">
-								The file server recognizes dozens of common file types and shows associated icons to make identification easier when scanning the page.
+								文件服务器识别数十种常见文件类型并显示相关图标，使在扫描页面时更容易识别。
 								<picture>
 									<source srcset="/resources/images/file-browser/icons-all-dark.png" media="(prefers-color-scheme: dark)">
 									<img src="/resources/images/file-browser/icons-all-light.png">
@@ -1712,7 +1712,7 @@
 							{{end}}
 						</div>
 						<p>
-							Caddy is a living project with a TON of features. This page is not yet a comprehensive list of all the features and benefits provided by Caddy because there's so many to mention. We welcome <a href="https://github.com/caddyserver/website">contributions</a> on GitHub!
+							Caddy 是一个拥有大量功能的活跃项目。此页面还不是 Caddy 提供的所有功能和益处的全面列表，因为有太多要提及。我们在 GitHub 上欢迎<a href="https://github.com/caddyserver/website">贡献</a>！
 						</p>
 					</div>
 					
@@ -1722,10 +1722,10 @@
 
 			<!--
 
-				TODO:
-					- Admin API (including debug endpoints)
-					- HTTP handlers
-					- PKI facilities
+				待办:
+					- 管理 API（包括调试端点）
+					- HTTP 处理程序
+					- PKI 设施
 					- 
 			-->
 

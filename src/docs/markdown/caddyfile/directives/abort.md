@@ -1,21 +1,20 @@
 ---
-title: abort (Caddyfile directive)
+title: abort (Caddyfile 指令)
 ---
 
 # abort
 
-Prevents any response to the client by immediately aborting the HTTP handler chain and closing the connection. Any concurrent, active HTTP streams on the same connection are interrupted.
+通过立即中止 HTTP 处理链并关闭连接，阻止向客户端发送任何响应。同一连接上的任何并发、活跃的 HTTP 流也会被中断。
 
-
-## Syntax
+## 语法
 
 ```caddy-d
 abort [<matcher>]
 ```
 
-## Examples
+## 示例
 
-Forcefully close a connection received for unknown domains when using a wildcard certificate:
+当使用通配符证书时，强制关闭针对未知域名的连接：
 
 ```caddy
 *.example.com {
@@ -25,9 +24,8 @@ Forcefully close a connection received for unknown domains when using a wildcard
     }
 
     handle {
-		# Unhandled domains fall through to here,
-		# but we don't want to accept their requests
+		# 未处理的域名会落到这里，
+		# 但我们不希望接受它们的请求
         abort
     }
 }
-```

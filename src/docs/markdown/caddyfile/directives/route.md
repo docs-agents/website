@@ -1,17 +1,16 @@
 ---
-title: route (Caddyfile directive)
+title: route（Caddyfile 指令）
 ---
 
 # route
 
-Evaluates a group of directives literally and as a single unit.
+按字面顺序作为一个整体来评估一组指令。
 
-Directives contained in a route block will not be [reordered internally](/docs/caddyfile/directives#directive-order). Only HTTP handler directives (directives which add handlers or middleware to the chain) can be used in a route block.
+位于 `route` 块内的指令将**不会**被[内部重排](/docs/caddyfile/directives#directive-order)。只有 HTTP 处理程序指令（即向链中添加处理程序或中间件的指令）可以在 `route` 块中使用。
 
-This directive is a special case in that its subdirectives are also regular directives.
+该指令是一个特例，因为它的子指令也是常规指令。
 
-
-## Syntax
+## 语法
 
 ```caddy-d
 route [<matcher>] {
@@ -19,23 +18,21 @@ route [<matcher>] {
 }
 ```
 
-- **<directives...>** is a list of directives or directive blocks, one per line, just like outside of a route block; except these directives will not be reordered. Only HTTP handler directives can be used.
+- **<directives...>** 是一系列指令或指令块，每行一个，就像在 `route` 块外部一样；不同之处在于这些指令不会被打乱顺序。只能使用 HTTP 处理程序指令。
 
+## 用途
 
+`route` 指令在某些高级用例或边缘情况下很有帮助，可以使你对 HTTP 处理程序链的某些部分拥有绝对控制权。
 
-## Utility
+由于 HTTP 中间件的评估顺序很重要，Caddyfile 通常会在解析后对指令进行重排，以简化使用；你无需担心输入的顺序。
 
-The `route` directive is helpful in certain advanced use cases or edge cases to take absolute control over parts of the HTTP handler chain.
+虽然[内置顺序](/docs/caddyfile/directives#directive-order)适用于大多数站点，但有时你可能需要手动控制整个站点或其中一部分的顺序。这正是 `route` 指令的用途。
 
-Because the order of HTTP middleware evaluation is significant, the Caddyfile will normally reorder directives after parsing to make the Caddyfile easier to use; you don't have to worry about what order you type things.
+为了说明这一点，考虑两个终止型处理程序：[`redir`](redir) 和 [`file_server`](file_server)。两者都会向客户端写入响应，并且不会调用链中的下一个处理程序，因此对于某个请求，只会执行其中一个。那么谁先执行？通常情况下，`redir` 先于 `file_server` 执行，因为通常你只希望在特定情况下发出重定向，而在一般情况下提供文件服务。
 
-While the [built-in order](/docs/caddyfile/directives#directive-order) is compatible with most sites, sometimes you need to take manual control over the order, either for the whole site or just a part of it. That's what the `route` directive is for.
+然而，有时第一个指令（`file_server`）可能比第二个指令（`redir`）具有更具体的匹配器。换句话说，你希望在一般情况下重定向，而只提供特定文件。
 
-To illustrate, consider the case of two terminating handlers: [`redir`](redir) and [`file_server`](file_server). Both write the response to the client and do not call the next handler in the chain, so only one of these will be executed for a certain request. So which comes first? Normally, `redir` is executed before `file_server` because usually you would want to issue a redirect only in specific cases and serve files in the general case.
-
-However, there may be occasions where the first directive (`file_server`) has a more specific matcher than the second (`redir`). In other words, you want to redirect in the general case, and serve only a specific file.
-
-So you might try a Caddyfile like this (but this will not work as expected!):
+因此，你可能会尝试这样写 Caddyfile（但这不会按预期工作！）：
 
 ```caddy
 example.com {
@@ -44,11 +41,11 @@ example.com {
 }
 ```
 
-The problem is that after the [directives are sorted](/docs/caddyfile/directives#sorting-algorithm), `redir` comes before `file_server`.
+问题在于，[指令排序](/docs/caddyfile/directives#sorting-algorithm)后，`redir` 会排在 `file_server` 之前。
 
-But in this case the matcher for `redir` (an implicit [`*`](/docs/caddyfile/matchers#wildcard-matchers)) is a superset of the matcher for `file_server` (`*` is a superset of `/specific.html`).
+但在本例中，`redir` 的匹配器（隐式的 [`*`](/docs/caddyfile/matchers#wildcard-matchers)）是 `file_server` 匹配器（`*` 是 `/specific.html` 的超集）的超集。
 
-Fortunately, the solution is easy: just wrap those two directives in a `route` block, to ensure that `file_server` is executed before `redir`:
+幸运的是，解决方案很简单：只需将这两个指令包裹在一个 `route` 块中，以确保 `file_server` 在 `redir` 之前执行：
 
 ```caddy
 example.com {
@@ -61,31 +58,27 @@ example.com {
 
 <aside class="tip">
 
-Another way to do this is to make the two matchers mutually exclusive, but this can quickly become complex if there are more than one or two conditions. With the `route` directive, the mutual exclusivity of the two handlers is implicit because they are both terminal handlers.
+另一种方法是使两个匹配器互斥，但如果存在多个条件，这很快就会变得复杂。使用 `route` 指令，两个处理程序的互斥性是隐式的，因为它们都是终止型处理程序。
 
 </aside>
 
-And now `file_server` will be chained in before `redir` because the order is taken literally.
+现在 `file_server` 将先于 `redir` 被链接到链中，因为顺序是逐字逐句采用的。
 
+## 类似指令
 
+还有其他指令可以包裹 HTTP 处理程序指令，但每种都有其用途，取决于你想要表达的行为：
 
-## Similar directives
+- [`handle`](handle) 像 `route` 一样包裹其他指令，但有两个区别：1) `handle` 块之间彼此互斥；2) `handle` 内的指令会正常地[重新排序](/docs/caddyfile/directives#directive-order)。
 
-There are other directives that can wrap HTTP handler directives, but each has its use depending on the behavior you want to convey:
+- [`handle_path`](handle_path) 与 `handle` 相同，但在运行其处理程序之前会从请求中剥离一个前缀。
 
-- [`handle`](handle) wraps other directives like `route` does, but with two distinctions: 1) handle blocks are mutually exclusive to each other, and 2) directives within a handle are [re-ordered](/docs/caddyfile/directives#directive-order) normally.
+- [`handle_errors`](handle_errors) 类似于 `handle`，但仅在 Caddy 处理请求时遇到错误时才会被调用。
 
-- [`handle_path`](handle_path) does the same as `handle`, but it strips a prefix from the request before running its handlers.
+## 示例
 
-- [`handle_errors`](handle_errors) is like `handle`, but is only invoked when Caddy encounters an error during request handling.
+按原样将 `/api` 的请求代理，并根据是否匹配磁盘上的文件重写所有其他请求；如果不匹配，则重写到 `/index.html`，然后提供该文件。
 
-
-
-## Examples
-
-Proxy requests to `/api` as-is, and rewrite all other requests based on whether they match a file on disk, otherwise `/index.html`. Then that file is served.
-
-Since [`try_files`](try_files) has a higher directive order than [`reverse_proxy`](reverse_proxy), then it would normally get sorted higher and run first; this would cause the API requests to all get rewritten to `/index.html` and fail to match `/api*`, so none of them would get proxied and instead would result in a `404` from [`file_server`](file_server). Wrapping it all in a `route` ensures that `reverse_proxy` always runs first, before the request is rewritten.
+由于 [`try_files`](try_files) 的指令顺序高于 [`reverse_proxy`](reverse_proxy)，正常情况下它会排得更前并且先运行；这将导致所有 API 请求都被重写为 `/index.html`，无法匹配 `/api*`，因此它们都不会被代理，反而会由 [`file_server`](file_server) 返回 `404` 错误。将其全部包裹在 `route` 中可以确保 `reverse_proxy` 总是在请求被重写之前运行。
 
 ```caddy
 example.com {
@@ -101,6 +94,6 @@ example.com {
 
 <aside class="tip">
 
-This is not the only solution to this problem. You could also use a pair of [`handle`](handle) blocks, with the first matching `/api*` to `reverse_proxy`, and the second acting as a fallback and serving the files. See [this example](/docs/caddyfile/patterns#single-page-apps-spas) of an SPA.
+这并不是解决此问题的唯一方法。你也可以使用一对 [`handle`](handle) 块，第一个匹配 `/api*` 并代理到 `reverse_proxy`，第二个作为后备并提供文件。请参阅[SPA 示例](/docs/caddyfile/patterns#single-page-apps-spas)。
 
 </aside>

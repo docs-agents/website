@@ -1,6 +1,6 @@
 <div id="json-docs-container" class="fullspan">
 	<div class="breadcrumbs">
-		<!--Populated by JS-->
+		<!--由JS填充-->
 	</div>
 	{{include "/includes/docs/renderbox.html"}}
 	{{include "/includes/docs/details.html"}}

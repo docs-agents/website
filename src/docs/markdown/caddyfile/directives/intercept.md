@@ -1,22 +1,22 @@
 ---
-title: intercept (Caddyfile directive)
+title: intercept（Caddyfile 指令）
 ---
 
 <script>
 ready(function() {
-	// Fix response matchers to render with the right color,
-	// and link to response matchers section
+	// 修正响应匹配器的颜色渲染，
+	// 并链接到响应匹配器章节
 	$$_('pre.chroma .k').forEach(item => {
 		if (item.innerText.includes('@')) {
 			let text = item.innerText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 			let url = '#' + item.innerText.replace(/_/g, "-");
 			item.classList.add('nd');
 			item.classList.remove('k');
-			item.innerHTML = `<a href="#response-matcher" style="color: inherit;" title="Response matcher">${text}</a>`;
+			item.innerHTML = `<a href="#response-matcher" style="color: inherit;" title="响应匹配器">${text}</a>`;
 		}
 	});
 
-	// Response matchers
+	// 响应匹配器
 	const nameMatchers = Array.from($$_('pre.chroma .nd')).filter(item => item.innerText.includes('@name'));
 	if (nameMatchers.length > 0) {
 		const first = nameMatchers[0];
@@ -41,51 +41,51 @@ ready(function() {
 		}
 	}
 
-	// We'll add links to all the subdirectives if a matching anchor tag is found on the page.
+	// 如果页面上找到匹配的锚标签，我们将为所有子指令添加链接。
 	addLinksToSubdirectives();
 });
 </script>
 
 # intercept
 
-A generalized abstraction of the [response interception](reverse_proxy#intercepting-responses) feature from the [`reverse_proxy` directive](reverse_proxy). This may be used with any handler that produces responses, including those from plugins like [FrankenPHP](https://frankenphp.dev/)'s `php_server`.
+这是 [`reverse_proxy` 指令](reverse_proxy) 中[响应拦截](reverse_proxy#intercepting-responses)功能的通用抽象。它可以与任何生成响应的处理器一起使用，包括来自插件（如 [FrankenPHP](https://frankenphp.dev/) 的 `php_server`）的处理器。
 
-This directive allows you to [match responses](/docs/caddyfile/response-matchers), and the first matching `handle_response` route or `replace_status` will be invoked. When invoked, the original response body is held back, giving the opportunity to that route to write a different response body, with a new status code or with any necessary response header manipulations. If the route does _not_ write a new response body, then original response body is written instead.
+该指令允许您[匹配响应](/docs/caddyfile/response-matchers)，并将调用第一个匹配的 `handle_response` 路由或 `replace_status`。当被调用时，原始响应体会被暂存，从而使该路由有机会写入不同的响应体，并附带新的状态码或任何必要的响应头操作。如果该路由**没有**写入新的响应体，则会写入原始响应体。
 
 
-## Syntax
+## 语法
 
 ```caddy-d
-intercept [<matcher>] {
+intercept [<匹配器>] {
 	@name {
-		status <code...>
-		header <field> [<value>]
+		status <状态码...>
+		header <字段> [<值>]
 	}
 
-	replace_status [<response_matcher>] <code>
+	replace_status [<响应匹配器>] <状态码>
 
-	handle_response [<response_matcher>] {
-		<directives...>
+	handle_response [<响应匹配器>] {
+		<指令...>
 	}
 }
 ```
 
-- **@name** is a named [response matcher](/docs/caddyfile/response-matchers) block. As long as each response matcher has a unique name, multiple matchers can be defined. A response can be matched on the status code and presence or value of a response header.
+- **@name** 是一个命名的[响应匹配器](/docs/caddyfile/response-matchers)块。只要每个响应匹配器拥有唯一名称，就可以定义多个匹配器。可以根据状态码以及响应头的存在或值来匹配响应。
 
-- **replace_status** <span id="replace_status"/> simply changes the status code of response when matched by the given matcher.
+- **replace_status** <span id="replace_status"/> 在匹配给定匹配器时，简单地将响应的状态码更改为指定的值。
 
-- **handle_response** <span id="handle_response"/> defines the route to execute when the original response is matched by the given response matcher. If a matcher is omitted, all responses are intercepted. When multiple `handle_response` blocks are defined, the first matching block will be applied. Inside the block, all other [directives](/docs/caddyfile/directives) can be used.
+- **handle_response** <span id="handle_response"/> 定义当原始响应被给定响应匹配器匹配时执行的路由。如果省略匹配器，则所有响应都会被拦截。当定义了多个 `handle_response` 块时，将应用第一个匹配的块。在块内部，可以使用所有其他[指令](/docs/caddyfile/directives)。
 
-Within `handle_response` routes, the following placeholders are available to pull information from the original response:
+在 `handle_response` 路由中，可以使用以下占位符来获取原始响应中的信息：
 
-- `{resp.status_code}` The status code of the original response.
+- `{resp.status_code}` 原始响应的状态码。
 
-- `{resp.header.*}` The headers from the original response.
+- `{resp.header.*}` 原始响应中的头部。
 
 
-## Examples
+## 示例
 
-When using [FrankenPHP](https://frankenphp.dev/)'s `php_server`, you can use `intercept` to implement `X-Accel-Redirect` support, serving static files as requested by the PHP app:
+当使用 [FrankenPHP](https://frankenphp.dev/) 的 `php_server` 时，您可以使用 `intercept` 来实现 `X-Accel-Redirect` 支持，按 PHP 应用请求提供静态文件：
 
 ```caddy
 localhost {
@@ -103,4 +103,3 @@ localhost {
 
 	php_server
 }
-```

@@ -1,20 +1,20 @@
 ---
-title: Upgrading to Caddy 2
+title: 升级至 Caddy 2
 ---
 
-Upgrade Guide
-=============
+升级指南
+=======
 
-Caddy 2 is a whole new code base, written from scratch, to improve on Caddy 1. Caddy 2 is not backwards-compatible with Caddy 1. But don't worry, for most basic setups, not much is different. This guide will help you transition as easily as possible.
+Caddy 2 是一个全新的代码库，从头编写，旨在改进 Caddy 1。Caddy 2 不向后兼容 Caddy 1。但别担心，对于大多数基本配置，差异并不大。本指南将帮助您尽可能轻松地完成过渡。
 
-This guide won't delve into the new features available -- which are really cool, by the way, you should [learn them](/docs/getting-started) -- the goal here is to just get you up and running on Caddy 2 quickly.
+本指南不会深入介绍新功能——其实它们非常酷，您应该[了解一下](/docs/getting-started)——这里的目标是让您快速上手 Caddy 2。
 
-- [High-order bits](#high-order-bits)
-- [Steps](#steps)
-- [HTTPS and ports](#https-and-ports)
-- [Command line](#command-line)
+- [重要提示](#重要提示)
+- [步骤](#步骤)
+- [HTTPS 与端口](#https-与端口)
+- [命令行](#命令行)
 - [Caddyfile](#caddyfile)
-	- [Primary changes](#primary-changes)
+	- [主要变化](#主要变化)
 	- [basicauth](#basicauth)
 	- [browse](#browse)
 	- [errors](#errors)
@@ -30,95 +30,79 @@ This guide won't delve into the new features available -- which are really cool,
 	- [status](#status)
 	- [templates](#templates)
 	- [tls](#tls)
-- [Service files](#service-files)
-- [Plugins](#plugins)
-- [Getting help](#getting-help)
+- [服务文件](#服务文件)
+- [插件](#插件)
+- [获取帮助](#获取帮助)
 
+## 重要提示
 
+- “Caddy 2” 仍简称为 `caddy`。我们可能会用“Caddy 2”来明确版本，以减少混乱。
+- 大多数用户只需替换 `caddy` 二进制文件和更新后的 `Caddyfile` 配置（测试通过后）。
+- 最好带着空杯心态进入 Caddy 2，不要沿用 Caddy 1 的假设。
+- 您可能无法在 v2 中完美复现 v1 的特定配置，通常这是有充分理由的。
+- 命令行不再用于服务器配置。
+- 环境变量不再需要用于配置。
+- 为 Caddy 2 提供配置的主要方式是通过其 [API](/docs/api)，但也可以使用 [`caddy` 命令](/docs/command-line)。
+- 您应该知道 Caddy 2 的原生配置语言是 [JSON](/docs/json/)，而 Caddyfile 只是一个[配置适配器](/docs/config-adapters)，为您转换成 JSON。非常定制/高级的用例可能需要 JSON，因为 Caddyfile 无法表达所有可能的配置。
+- Caddyfile 大致相同，但更强大；指令已经改变。
 
-## High-order bits
+## 步骤
 
-- "Caddy 2" is still just called `caddy`. We may use "Caddy 2" to clarify which version to make the transition less confusing.
-- Most users will simply need to replace their `caddy` binary and their updated `Caddyfile` config (after testing that it works).
-- It might be best to go into Caddy 2 with no assumptions carried over from Caddy 1.
-- You might not be able to perfectly replicate your niche v1 configuration in v2. Usually, there's a good reason for that.
-- The command line is no longer used for server configuration.
-- Environment variables are no longer needed for configuration.
-- The primary way to give Caddy 2 its configuration is through its [API](/docs/api), but the [`caddy` command](/docs/command-line) can also be used.
-- You should know that Caddy 2's native configuration language is [JSON](/docs/json/), and the Caddyfile is just another [config adapter](/docs/config-adapters) that converts to JSON for you. Extremely custom/advanced use cases may require JSON, as not every possible configuration can be expressed by the Caddyfile.
-- The Caddyfile is mostly the same, but also much more powerful; directives have changed.
+1. 通过我们的[入门](/docs/getting-started)教程熟悉 Caddy 2。
+2. 如果还没做，请先完成第 1 步。说真的——至少要知道如何使用 Caddy 2 有多重要，我们怎么强调都不为过。（而且更有趣！）
+3. 使用下面的指南转换您的 `caddy` 命令。
+4. 使用下面的指南转换您的 Caddyfile。
+5. 在本地或预发布环境中测试您的新配置。
+6. 测试、再测试、再再测试。
+7. 部署并享受吧！
 
+## HTTPS 与端口
 
+Caddy 的默认端口不再是 `:2015`。Caddy 2 的默认端口是 `:443`，或者如果没有已知的主机名/IP，则使用端口 `:80`。您可以在配置中随时自定义端口。
 
-## Steps
+Caddy 2 的默认协议是：如果已知主机名或 IP，则 _始终_ 使用 HTTPS](/docs/automatic-https#overview)。这与 Caddy 1 不同，在 Caddy 1 中只有看起来公开的域名默认使用 HTTPS。现在，_每个_ 站点都使用 HTTPS（除非您通过明确指定端口 `:80` 或 `http://` 来禁用它）。
 
-1. Get familiar with Caddy 2 by doing our [Getting Started](/docs/getting-started) tutorial.
-2. Do step 1 if you haven't yet. Seriously -- we can't stress how important it is to at least know how to use Caddy 2. (It's more fun!)
-3. Use the guide below to transition your `caddy` command(s).
-4. Use the guide below to transition your Caddyfile.
-5. Test your new config locally or in staging.
-6. Test, test, test again
-7. Deploy and have fun!
+IP 地址和 localhost 域名将从[本地信任的内置 CA](/docs/automatic-https#local-https) 获取证书。所有其他域名将使用 ZeroSSL 或 Let's Encrypt。（这些都是可配置的。）
 
+证书和 ACME 资源的存储结构已经改变。Caddy 2 可能会为您的站点获取新证书；但如果您有很多证书，并且 Caddy 没有自动迁移，您可以手动迁移。详情请参见 issue [#2955](https://github.com/caddyserver/caddy/issues/2955) 和 [#3124](https://github.com/caddyserver/caddy/issues/3124)。
 
+## 命令行
 
-## HTTPS and ports
+`caddy` 命令现在变成了 `caddy run`。
 
-Caddy's default port is no longer `:2015`. Caddy 2's default port is `:443` or, if no hostname/IP is known, port `:80`. You can always customize the ports in your config.
+所有命令行标志都已改变。请移除它们；所有服务器配置现在都存在于实际配置文档中（通常是 Caddyfile 或 JSON）。您可能会在 [JSON 结构](/docs/json/) 或 [Caddyfile 全局选项](/docs/caddyfile/options) 中找到替换 v1 命令行标志所需的内容。
 
-Caddy 2's default protocol is [_always_ HTTPS if a hostname or IP is known](/docs/automatic-https#overview). This is different from Caddy 1, where only public-looking domains used HTTPS by default. Now, _every_ site uses HTTPS (unless you disable it by explicitly specifying port `:80` or `http://`).
+像 `caddy -conf ../Caddyfile` 这样的命令将变为 `caddy run --config ../Caddyfile`。
 
-IP addresses and localhost domains will be issued certificates from a [locally-trusted, embedded CA](/docs/automatic-https#local-https). All other domains will use ZeroSSL or Let's Encrypt. (This is all configurable.)
+和以前一样，如果您的 Caddyfile 在当前文件夹中，Caddy 会自动找到并使用它；在这种情况下，您不需要使用 `--config` 标志。
 
-The storage structure of certificates and ACME resources has changed. Caddy 2 will probably obtain new certificates for your sites; but if you have a lot of certificates you can migrate them manually if it does not do it for you. See issues [#2955](https://github.com/caddyserver/caddy/issues/2955) and [#3124](https://github.com/caddyserver/caddy/issues/3124) for details.
+信号基本保持不变，但不再支持 USR1 和 USR2。请改用 [`caddy reload`](/docs/command-line#caddy-reload) 命令或 [API](/docs/api) 来加载新配置。
 
+不带任何配置运行 `caddy` 曾经是一个简单的文件服务器。在 Caddy 2 中，对应的命令是 [`caddy file-server`](/docs/command-line#caddy-file-server)。
 
-
-## Command line
-
-The `caddy` command is now `caddy run`.
-
-All command line flags are different. Remove them; all server config now exists within the actual config document (usually Caddyfile or JSON). You will probably find what you need in the [JSON structure](/docs/json/) or in the [Caddyfile global options](/docs/caddyfile/options) to replace most of the command line flags from v1.
-
-A command like `caddy -conf ../Caddyfile` would become `caddy run --config ../Caddyfile`.
-
-As before, if your Caddyfile is in the current folder, Caddy will find and use it automatically; you don't need to use the `--config` flag in that case.
-
-Signals are mostly the same, except USR1 and USR2 are no longer supported. Use the [`caddy reload`](/docs/command-line#caddy-reload) command or the [API](/docs/api) instead to load new configuration.
-
-Running `caddy` without any config used to run a simple file server. The equivalent in Caddy 2 is [`caddy file-server`](/docs/command-line#caddy-file-server).
-
-Environment variables are no longer relevant, except for `HOME` (and, optionally, any `XDG_*` variables you set). The `CADDYPATH` is [replaced by OS conventions](/docs/conventions#file-locations).
-
-
+环境变量不再相关，除了 `HOME`（以及您设置的任意 `XDG_*` 变量）。`CADDYPATH` 已被[操作系统惯例](/docs/conventions#file-locations)取代。
 
 ## Caddyfile
 
-The [v2 Caddyfile](/docs/caddyfile/concepts) is very similar to what you're already familiar with. The main thing you'll need to do is change your directives.
+[v2 Caddyfile](/docs/caddyfile/concepts) 与您已经熟悉的非常相似。您主要需要做的是更改指令。
 
-⚠️ **Be sure to read into the new directives!** Especially if your config is more advanced, there are many nuances to consider. These tips will get you mostly switched over pretty quickly, but please read the full documentation for each directive so you can understand the implications of the upgrade. And of course, always test your configs thoroughly before putting them into production.
+⚠️ **请务必阅读新指令的文档！** 特别是如果您的配置比较复杂，会有很多细微之处需要考虑。这些提示能让您快速上手，但请阅读每个指令的完整文档，以便理解升级的含义。当然，在投入生产前，一定要全面测试配置。
 
+### 主要变化
 
-### Primary changes
+- 如果您要提供静态文件服务，需要添加 [`file_server` 指令](/docs/caddyfile/directives/file_server)，因为 Caddy 2 默认不会这样做。出于安全原因，Caddy 2 默认也不会嗅探 MIME 类型；如果缺少 Content-Type，您可能需要使用 [header](/docs/caddyfile/directives/header) 指令自行设置。
+- 在 v1 中，您只能通过请求路径过滤（或“匹配”）指令。在 v2 中，[请求匹配](/docs/caddyfile/matchers) 更加强大。任何向 HTTP 处理链添加中间件或以任何方式操作 HTTP 请求/响应的 v2 指令都利用了这种新的匹配功能。[阅读更多关于 v2 请求匹配器。](/docs/caddyfile/matchers) 您需要了解它们才能理解 v2 Caddyfile。
+- 尽管许多[占位符](/docs/conventions#placeholders)相同，但许多已经改变，并且现在有[许多新的占位符](/docs/modules/http#docs)，包括 [Caddyfile 的简写](/docs/caddyfile/concepts#placeholders)。
+- Caddy 2 日志都是结构化的，默认格式为 JSON。所有日志级别都可以发送到同一个日志进行处理（但您可以根据需要自定义）。
+- 在 Caddy 1 中，您使用请求路径前缀进行匹配；在 Caddy 2 中，路径匹配默认是精确的。如果您想匹配像 `/foo/` 这样的前缀，需要在 Caddy 2 中使用 `/foo/*`。
 
-- If you are serving static files, you will need to add a [`file_server` directive](/docs/caddyfile/directives/file_server), since Caddy 2 does not assume this by default. Caddy 2 does not sniff MIME by default, either, for security reasons; if a Content-Type is missing you may need to set the header yourself using the [header](/docs/caddyfile/directives/header) directive.
+我们在这里列出一些最常见的 v1 指令，并描述如何转换为 v2 Caddyfile 中使用。
 
-- In v1, you could only filter (or "match") directives by request path. In v2, [request matching](/docs/caddyfile/matchers) is much more powerful. Any v2 directives which add a middleware to the HTTP handler chain or which manipulate the HTTP request/response in any way take advantage of this new matching functionality. [Read more about v2 request matchers.](/docs/caddyfile/matchers) You'll need to know about them to make sense of the v2 Caddyfile.
-
-- Although many [placeholders](/docs/conventions#placeholders) are the same, many have changed, and there are now [many new ones](/docs/modules/http#docs), including [shorthands for the Caddyfile](/docs/caddyfile/concepts#placeholders).
-
-- Caddy 2 logs are all structured, and the default format is JSON. All log levels can simply go to the same log to be processed (but you can customize this if needed).
-
-- Where you matched requests by path prefix in Caddy 1, path matching is now exact by default in Caddy 2. If you want to match a prefix like `/foo/`, you'll need `/foo/*` in Caddy 2.
-
-We'll list some of the most common v1 directives here and describe how to convert them for use in the v2 Caddyfile.
-
-⚠️ **Just because a v1 directive is missing from this page does not mean v2 can't do it!** Some v1 directives aren't needed, don't translate well, or are fulfilled other ways in v2. For some advanced customization, you may need to drop down to the JSON to get what you want. Explore [our documentation](/docs/caddyfile) to find what you need!
-
+⚠️ **本页缺少某个 v1 指令并不意味着 v2 无法实现！** 某些 v1 指令已不再需要、不易转换，或在 v2 中以其他方式实现。对于某些高级定制，您可能需要降级到 JSON 来获得所需功能。探索[我们的文档](/docs/caddyfile)以找到您需要的内容！
 
 ### basicauth
 
-HTTP Basic Authentication is still configured with the [`basic_auth`](/docs/caddyfile/directives/basic_auth) directive. However, Caddy 2 configuration does not accept plaintext passwords. You must hash them, which the [`caddy hash-password`](/docs/command-line#caddy-hash-password) can help with.
+HTTP 基本认证仍然通过 [`basic_auth`](/docs/caddyfile/directives/basic_auth) 指令配置。但是，Caddy 2 配置不接受明文密码。您必须对密码进行哈希处理，可以使用 [`caddy hash-password`](/docs/command-line#caddy-hash-password) 命令。
 
 - **v1:**
 ```
@@ -132,10 +116,9 @@ basic_auth /secret/* {
 }
 ```
 
-
 ### browse
 
-File browsing is now enabled through the [`file_server`](/docs/caddyfile/directives/file_server) directive.
+文件浏览现在通过 [`file_server`](/docs/caddyfile/directives/file_server) 指令启用。
 
 - **v1:**
 ```
@@ -146,14 +129,11 @@ browse /subfolder/
 file_server /subfolder/* browse
 ```
 
-
 ### errors
 
-Custom error pages can be accomplished with [`handle_errors`](/docs/caddyfile/directives/handle_errors).
-
+自定义错误页面可以通过 [`handle_errors`](/docs/caddyfile/directives/handle_errors) 实现。
 
 - **v1:**
-
 ```
 errors {
 	404 404.html
@@ -162,7 +142,6 @@ errors {
 ```
 
 - **v2:**
-
 ```
 handle_errors {
 	rewrite /{err.status_code}.html
@@ -172,15 +151,14 @@ handle_errors {
 
 ### ext
 
-Implied file extensions can be done with [`try_files`](/docs/caddyfile/directives/try_files).
+隐含的文件扩展名可以通过 [`try_files`](/docs/caddyfile/directives/try_files) 实现。
 
 - **v1:** `ext .html`
 - **v2:** `try_files {path}.html {path}`
 
-
 ### fastcgi
 
-Assuming you're serving PHP, the v2 equivalent is [`php_fastcgi`](/docs/caddyfile/directives/php_fastcgi).
+假设您正在为 PHP 提供服务，v2 的对应指令是 [`php_fastcgi`](/docs/caddyfile/directives/php_fastcgi)。
 
 - **v1:**
 ```
@@ -191,16 +169,15 @@ fastcgi / localhost:9005 php
 php_fastcgi localhost:9005
 ```
 
-Note that the `fastcgi` directive from v1 did a lot under the hood, including trying files on disk, rewriting requests, and even redirecting. The v2 `php_fastcgi` directive also does these things for you, but the docs give its [expanded form](/docs/caddyfile/directives/php_fastcgi#expanded-form) that you can modify if your requirements are different.
+请注意，v1 的 `fastcgi` 指令在幕后做了很多事情，包括尝试磁盘上的文件、重写请求甚至重定向。v2 的 `php_fastcgi` 指令也会为您做这些事情，但其文档提供了[展开形式](/docs/caddyfile/directives/php_fastcgi#expanded-form)，如果您的需求不同，可以修改。
 
-There is no `php` preset needed in v2, since the `php_fastcgi` directive assumes PHP by default. A line such as `php_fastcgi 127.0.0.1:9000 php` will cause the reverse proxy to think that there is a second backend called `php`, leading to connection errors.
+v2 中不需要 `php` 预设，因为 `php_fastcgi` 指令默认假定 PHP。像 `php_fastcgi 127.0.0.1:9000 php` 这样的行会使反向代理认为存在一个名为 `php` 的后端，导致连接错误。
 
-The subdirectives are different in v2 -- you probably will not need any for PHP.
-
+v2 中的子指令不同——您可能不需要为 PHP 设置任何子指令。
 
 ### gzip
 
-A single directive [`encode`](/docs/caddyfile/directives/encode) is now used for all response encodings, including multiple compression formats.
+单个指令 [`encode`](/docs/caddyfile/directives/encode) 现在用于所有响应编码，包括多种压缩格式。
 
 - **v1:**
 ```
@@ -211,12 +188,11 @@ gzip
 encode gzip
 ```
 
-Fun fact: Caddy 2 also supports `zstd` (but no browsers do yet).
-
+有趣的事实：Caddy 2 也支持 `zstd`（但还没有浏览器支持）。
 
 ### header
 
-[Mostly unchanged](/docs/caddyfile/directives/header), but now way more powerful since it can do substring replacements in v2.
+[基本不变](/docs/caddyfile/directives/header)，但在 v2 中更强大，因为它可以进行子字符串替换。
 
 - **v1:**
 ```
@@ -227,33 +203,31 @@ header / Strict-Transport-Security max-age=31536000;
 header Strict-Transport-Security max-age=31536000;
 ```
 
-
 ### log
 
-Enables access logging; the [`log`](/docs/caddyfile/directives/log) directive can still be used in v2, but all logs are structured, encoded as JSON, by default.
+启用访问日志；[`log`](/docs/caddyfile/directives/log) 指令在 v2 中仍可使用，但所有日志默认是结构化 JSON 编码。
 
-The recommended way to enable access logging is simply:
+启用访问日志的推荐方式简单如下：
 
 ```caddy-d
 log
 ```
 
-which emits structured logs to stderr. (You can also emit to a file or network socket; see the [`log`](/docs/caddyfile/directives/log) directive docs.)
+它将结构化日志输出到 stderr。（您也可以输出到文件或网络套接字；请参阅 [`log`](/docs/caddyfile/directives/log) 指令文档。）
 
-By default, logs will be in [structured](/docs/logging) JSON format. If you still need logs in Common Log Format (CLF) for legacy reasons, you may use the [`transform-encoder`](https://github.com/caddyserver/transform-encoder) plugin.
-
+默认情况下，日志将采用[结构化](/docs/logging) JSON 格式。如果出于遗留原因仍需要通用日志格式（CLF），您可以使用 [`transform-encoder`](https://github.com/caddyserver/transform-encoder) 插件。
 
 ### proxy
 
-The v2 equivalent is [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy).
+v2 的对应指令是 [`reverse_proxy`](/docs/caddyfile/directives/reverse_proxy)。
 
-Notable subdirective changes are `header_upstream` and `header_downstream` have become `header_up` and `header_down`, respectively; and load-balancing-related subdirectives are prefixed with `lb_`.
+值得注意的子指令变化包括 `header_upstream` 和 `header_downstream` 分别变更为 `header_up` 和 `header_down`；与负载均衡相关的子指令前缀为 `lb_`。
 
-One other significant difference is that the v2 proxy passes all incoming headers thru by default (including the `Host` header) and sets the `X-Forwarded-For` header. In other words, v1's "transparent" mode is basically the default in v2 (but if you need other headers like X-Real-IP you have to set those yourself). You can still override/customize the `Host` header using the `header_up` subdirective.
+另一个显著区别是 v2 代理默认通过所有传入头部（包括 `Host` 头部）并设置 `X-Forwarded-For` 头部。换句话说，v1 的“透明”模式基本上是 v2 的默认模式（但如果您需要其他头部如 X-Real-IP，则需要自行设置）。您仍可以使用 `header_up` 子指令覆盖/自定义 `Host` 头部。
 
-Websocket proxying "just works" in v2; there is no need to "enable" websockets like in v1.
+WebSocket 代理在 v2 中“开箱即用”；无需像 v1 那样“启用” WebSocket。
 
-The `without` subdirective has been removed because [rewrite hacks](#rewrite) are no longer necessary in v2 thanks to improved matcher support.
+`without` 子指令已被移除，因为 v2 中改进的匹配器支持不再需要[重写技巧](#rewrite)。
 
 - **v1:**
 ```
@@ -264,20 +238,18 @@ proxy / localhost:9005
 reverse_proxy localhost:9005
 ```
 
-
 ### redir
 
-[Unchanged](/docs/caddyfile/directives/redir), except for a few details about the optional status code argument. Most configs won't need to make any changes.
+[基本不变](/docs/caddyfile/directives/redir)，除了可选状态码参数的一些细节。大多数配置无需更改。
 
 - **v1:** `redir https://example.com{uri}`
 - **v2:** `redir https://example.com{uri}`
 
-
 ### rewrite
 
-The semantics of request rewriting ("internal redirecting") has changed slightly. If you used a so-called "rewrite hack" in v1 as a way to match requests on something other than a simple path prefix, that is completely unnecessary in v2.
+请求重写（“内部重定向”）的语义略有变化。如果您在 v1 中使用所谓的“重写技巧”来匹配除简单路径前缀以外的请求，这在 v2 中完全不需要。
 
-The [new `rewrite` directive](/docs/caddyfile/directives/rewrite) is very simple but very powerful, as most of its complexity is handled by [matchers](/docs/caddyfile/matchers) in v2:
+[新的 `rewrite` 指令](/docs/caddyfile/directives/rewrite) 非常简单但功能强大，因为其大部分复杂性由 v2 中的[匹配器](/docs/caddyfile/matchers)处理：
 
 - **v1:**
 ```
@@ -294,23 +266,21 @@ rewrite {
 rewrite @mobile /mobile{uri}
 ```
 
-Notice how we simply use Caddy 2's usual [matcher tokens](/docs/caddyfile/matchers); it's no longer a special case for this directive.
+注意我们只是使用 Caddy 2 常用的[匹配器标记](/docs/caddyfile/matchers)；它不再是指令的特殊情况。
 
-Start by removing all rewrite hacks; turn them into [named matchers](/docs/caddyfile/concepts#named-matchers) instead. Evaluate each v1 `rewrite` to see if it's really needed in v2. Hint: A v1 Caddyfile that uses `rewrite` to add a path prefix and then `proxy` with `without` to remove that same prefix is a rewrite hack, and can be eliminated.
+从移除所有重写技巧开始；将它们转换为[命名匹配器](/docs/caddyfile/concepts#named-matchers) 代替。评估每个 v1 `rewrite` 是否在 v2 中确实需要。提示：一个 v1 Caddyfile 使用 `rewrite` 添加路径前缀，然后使用 `proxy` 配合 `without` 移除相同前缀，这是重写技巧，可以消除。
 
-You may find the new [`route`](/docs/caddyfile/directives/route) and [`handle`](/docs/caddyfile/directives/handle) directives useful for having greater control over advanced routing logic.
-
+您可能会发现新的 [`route`](/docs/caddyfile/directives/route) 和 [`handle`](/docs/caddyfile/directives/handle) 指令在更好地控制高级路由逻辑方面很有用。
 
 ### root
 
-[Unchanged](/docs/caddyfile/directives/root).
+[基本不变](/docs/caddyfile/directives/root)。
 
-Remember to add a [`file_server` directive](/docs/caddyfile/directives/file_server) if serving static files, since Caddy 2 does not assume this by default, whereas in v1 always had it enabled.
-
+如果提供静态文件，请记得添加 [`file_server` 指令](/docs/caddyfile/directives/file_server)，因为 Caddy 2 默认不假定这样做，而 v1 始终启用它。
 
 ### status
 
-The v2 equivalent is [`respond`](/docs/caddyfile/directives/respond), which can also write a response body.
+v2 的对应指令是 [`respond`](/docs/caddyfile/directives/respond)，它还可以写入响应体。
 
 - **v1:**
 ```
@@ -321,54 +291,48 @@ status 404 /secrets/
 respond /secrets/* 404
 ```
 
-
 ### templates
 
-The overall syntax of the [`templates`](/docs/caddyfile/directives/templates) directive is unchanged, but the actual template actions/functions are different and much improved. For example, templates are capable of including files, rendering markdown, making internal sub-requests, parsing front matter, and more!
+[`templates`](/docs/caddyfile/directives/templates) 指令的总体语法不变，但实际的模板动作/函数已不同且改进很大。例如，模板能够包含文件、渲染 Markdown、执行内部子请求、解析前言元数据等等！
 
-[See the docs](/docs/modules/http.handlers.templates) for details about the new functions.
+[查看文档](/docs/modules/http.handlers.templates)了解新函数的详细信息。
 
 - **v1:** `templates`
 - **v2:** `templates`
 
-
 ### tls
 
-The fundamentals of the [`tls`](/docs/caddyfile/directives/tls) directive have not changed, for example specifying your own cert and key:
+[`tls`](/docs/caddyfile/directives/tls) 指令的基础没有改变，例如指定您自己的证书和密钥：
 
 - **v1:** `tls cert.pem key.pem`
 - **v2:** `tls cert.pem key.pem`
 
-But Caddy's [auto-HTTPS logic](/docs/automatic-https) _has_ changed, so be aware of that!
+但 Caddy 的[自动 HTTPS 逻辑](/docs/automatic-https) _已经_改变，请注意！
 
-The cipher suite names have also changed.
+密码套件名称也已改变。
 
-A common configuration in Caddy 2 is to use `tls internal` to have it serve a locally-trusted certificate for a dev hostname that isn't `localhost` or an IP address.
+Caddy 2 中一个常见的配置是使用 `tls internal` 来为不是 `localhost` 或 IP 地址的开发主机名提供本地信任的证书。
 
-Most sites will not need this directive at all.
+大多数站点根本不需要这个指令。
 
+## 服务文件
 
-## Service files
+对于 Caddy 部署，我们建议使用[我们官方的 systemd 服务文件之一](/docs/running#linux-service)。
 
-We recommend using [one of our official systemd service files](/docs/running#linux-service) for Caddy deployments.
+如果您需要自定义服务文件，请以我们提供的为基础。它们经过精心调整，有充分的理由！如果需要，请务必自定义您的文件。
 
-If you need a custom service file, base it off of ours. They've been carefully tuned to what it is for good reasons! Be sure to customize yours if needed.
+## 插件
 
+为 v1 编写的插件不会自动与 v2 兼容。许多 v1 插件在 v2 中甚至不需要。另一方面，v2 比 v1 更容易扩展和灵活！
 
-## Plugins
+如果您想为 Caddy 2 编写插件，请[学习如何编写 Caddy 模块](/docs/extending-caddy)。
 
-Plugins written for v1 are not automatically compatible with v2. Many v1 plugins are not even needed in v2. On the other hand, v2 is way more easily extensible and flexible than v1!
+### 使用插件构建 Caddy 2
 
-If you want to write a plugin for Caddy 2, [learn how to write a Caddy module](/docs/extending-caddy).
+您可以在[交互式下载页面](/download)下载带插件的 Caddy 2。或者，您也可以使用 `xcaddy` [自己构建 Caddy](/docs/build)，并选择要包含的插件。`xcaddy` 可以自动化 Caddy 的 [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go) 文件中的指令。
 
+## 获取帮助
 
-### Building Caddy 2 with plugins
+如果您在让 Caddy 正常工作时遇到困难，请先浏览我们的网站文档。花时间尝试新事物并理解发生了什么——v2 在很多方面与 v1 非常不同（但也有很多相似之处）！
 
-Caddy 2 can be downloaded with plugins at the [interactive download page](/download). Alternatively, you can [build Caddy yourself](/docs/build) using `xcaddy` and choose which plugins to include. `xcaddy` automates the instructions in Caddy's [main.go](https://github.com/caddyserver/caddy/blob/master/cmd/caddy/main.go) file.
-
-
-## Getting help
-
-If you're struggling to get Caddy working, please take a look through our website for documentation first. Take time to try new things and understand what is going on - v2 is very different from v1 in a lot of ways (but it's also very familiar)!
-
-If you still need assistance, please be a part of [our community](https://caddy.community)! You may find that helping others is the best way to help yourself, too.
+如果您仍需要帮助，请加入[我们的社区](https://caddy.community)！您可能会发现帮助他人也是帮助自己的最佳方式。

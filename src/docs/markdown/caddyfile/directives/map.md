@@ -1,16 +1,16 @@
 ---
-title: map (Caddyfile directive)
+title: map（Caddyfile 指令）
 ---
 
 # map
 
-Sets values of custom placeholders switched on an input value.
+根据输入值设置自定义占位符的值。
 
-It compares the source value against the input side of the map, and for one that matches, it applies the output value(s) to each destination. Destinations become placeholder names. Default output values may also be specified for each destination.
+它将源值与映射的输入侧进行比较，对于匹配的输入，将输出值应用于每个目标。目标成为占位符名称。还可以为每个目标指定默认输出值。
 
-Mapped placeholders are not evaluated until they are used, so even for very large mappings, this directive is quite efficient.
+映射占位符在使用之前不会被求值，因此即使映射非常大，该指令也相当高效。
 
-## Syntax
+## 语法
 
 ```caddy-d
 map [<matcher>] <source> <destinations...> {
@@ -19,28 +19,24 @@ map [<matcher>] <source> <destinations...> {
 }
 ```
 
-- **&lt;source&gt;** is the input value to switch on. Usually a placeholder.
-
-- **&lt;destinations...&gt;** are the placeholders to create that hold the output values.
-
-- **&lt;input&gt;** is the input value to match. If prefixed with `~`, it is treated as a regular expression.
-
-- **&lt;outputs...&gt;** is one or more output values to store in the associated placeholder. The first output is written to the first destination, the second output to the second destination, etc.
+- **&lt;source&gt;** 是要切换的输入值。通常是一个占位符。
+- **&lt;destinations...&gt;** 是要创建的用于保存输出值的占位符。
+- **&lt;input&gt;** 是要匹配的输入值。如果以 `~` 作为前缀，则将其视为正则表达式。
+- **&lt;outputs...&gt;** 是一个或多个要存储到关联占位符中的输出值。第一个输出写入第一个目标，第二个输出写入第二个目标，依此类推。
   
-  As a special case, the Caddyfile parser treats outputs that are a literal hyphen (`-`) as null/nil values. This is useful if you want to fall back to a default value for that particular output in the case of the given input, but want to use non-default values for other outputs.
+  作为特殊情况，Caddyfile 解析器将字面意义上的连字符（`-`）视为 null 值。如果希望在给定输入的情况下回退到该特定输出的默认值，但其他输出使用非默认值，这将很有用。
 
-  The outputs will be type converted if possible; `true` and `false` will be converted to boolean types, and numeric values will be converted to integer or float accordingly. To avoid this conversion, you may wrap the output with [quotes](/docs/caddyfile/concepts#tokens-and-quotes) and they will stay strings.
+  如果可能，输出值将进行类型转换；`true` 和 `false` 将转换为布尔类型，数值将相应地转换为整数或浮点数。要避免这种转换，可以使用[引号](/docs/caddyfile/concepts#tokens-and-quotes)包裹输出，它们将保持为字符串。
 
-  The number of outputs for each mapping must not exceed the number of destinations; however, for convenience, there may be fewer outputs than destinations, and any missing outputs will be filled in implicitly.
+  每个映射的输出数量不得超过目标数量；但为了方便，输出数量可以少于目标数量，缺失的输出将隐式填充。
   
-  If a regular expression was used as the input, then the capture groups can be referenced with `${group}` where `group` is either the name or number of the capture group in the expression. Capture group `0` is the full regexp match, `1` is the first capture group, `2` is the second capture group, and so on.
+  如果输入使用了正则表达式，则可以通过 `${group}` 引用捕获组，其中 `group` 是表达式中的捕获组名称或编号。捕获组 `0` 是整个正则表达式匹配，`1` 是第一个捕获组，`2` 是第二个，以此类推。
 
-- **&lt;default&gt;** specifies the output values to store if no inputs are matched.
+- **&lt;default&gt;** 指定如果没有匹配到任何输入时要存储的输出值。
 
+## 示例
 
-## Examples
-
-The following example demonstrates most aspects of this directive:
+以下示例展示了该指令的大部分特性：
 
 ```caddy-d
 map {host}                {my_placeholder}  {magic_number} {
@@ -55,10 +51,10 @@ map {host}                {my_placeholder}  {magic_number} {
 }
 ```
 
-This directive switches on the value of `{host}`, i.e. the domain name of the request.
+该指令根据 `{host}` 的值（即请求的域名）进行切换。
 
-- If the request is for `example.com`, set `{my_placeholder}` to `some value`, and `{magic_number}` to `3`.
-- Else, if the request is for `foo.example.com`, set `{my_placeholder}` to `another value`, and let `{magic_number}` default to `42`.
-- Else, if the request is for any subdomain of `example.com`, set `{my_placeholder}` to a string containing the value of the first regexp capture group, i.e the entire subdomain, and set `{magic_number}` to 5.
-- Else, if the request is for any host that ends in `.net` or `.xyz`, set only `{magic_number}` to `7` or `15`, respectively. Leave `{my_placeholder}` unset.
-- Else (for all other hosts), the default values will apply: `{my_placeholder}` will be set to `unknown domain` and `{magic_number}` will be set to `42`.
+- 如果请求的是 `example.com`，则将 `{my_placeholder}` 设置为 `some value`，将 `{magic_number}` 设置为 `3`。
+- 否则，如果请求的是 `foo.example.com`，则将 `{my_placeholder}` 设置为 `another value`，并让 `{magic_number}` 默认为 `42`。
+- 否则，如果请求的是 `example.com` 的任何子域名，则将 `{my_placeholder}` 设置为包含第一个正则捕获组值的字符串（即整个子域名），并将 `{magic_number}` 设置为 `5`。
+- 否则，如果请求的是任何以 `.net` 或 `.xyz` 结尾的主机，则仅将 `{magic_number}` 分别设置为 `7` 或 `15`，`{my_placeholder}` 保持未设置状态。
+- 否则（对于所有其他主机），将应用默认值：`{my_placeholder}` 设置为 `unknown domain`，`{magic_number}` 设置为 `42`。

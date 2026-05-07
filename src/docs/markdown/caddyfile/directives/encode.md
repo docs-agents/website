@@ -1,22 +1,22 @@
 ---
-title: encode (Caddyfile directive)
+title: encode (Caddyfile 指令)
 ---
 
 <script>
 ready(function() {
-	// We'll add links to all the subdirectives if a matching anchor tag is found on the page.
+	// 如果页面中找到匹配的锚点标签，我们将为所有子指令添加链接。
 	addLinksToSubdirectives();
 
-	// Response matchers
+	// 响应匹配器
 	$$_('pre.chroma .k').forEach(item => {
 		if (item.innerText.includes('status')) {
-			item.innerHTML = '<a href="/docs/caddyfile/response-matchers#status" style="color: inherit;" title="Response matcher">status</a>';
+			item.innerHTML = '<a href="/docs/caddyfile/response-matchers#status" style="color: inherit;" title="响应匹配器">status</a>';
 		}
 	});
 	
 	$$_('pre.chroma .k').forEach(item => {
 		if (item.innerText.includes('header')) {
-			item.innerHTML = '<a href="/docs/caddyfile/response-matchers#header" style="color: inherit;" title="Response matcher">header</a>';
+			item.innerHTML = '<a href="/docs/caddyfile/response-matchers#header" style="color: inherit;" title="响应匹配器">header</a>';
 		}
 	});
 });
@@ -24,31 +24,31 @@ ready(function() {
 
 # encode
 
-Encodes responses using the configured encoding(s). A typical use for encoding is compression.
+使用配置的编码方式对响应进行编码。编码的典型用途是压缩。
 
-## Syntax
+## 语法
 
 ```caddy-d
-encode [<matcher>] [<formats...>] {
-	# encoding formats
-	gzip [<level>]
-	zstd [<level>]
+encode [<匹配器>] [<格式...>] {
+	# 编码格式
+	gzip [<级别>]
+	zstd [<级别>]
 	
-	minimum_length <length>
+	minimum_length <长度>
 
-	match <inline_response_matcher>
+	match <内联响应匹配器>
 }
 ```
 
-- **&lt;formats...&gt;** is the list of encoding formats to enable. If multiple encodings are enabled, the encoding is chosen based the request's Accept-Encoding header; if the client has no strong preference (q-factor), then the first supported encoding is used. If omitted, `zstd` (preferred) and `gzip` are enabled by default.
+- **&lt;格式...&gt;** 是要启用的编码格式列表。如果启用了多种编码，则根据请求的 `Accept-Encoding` 头部选择编码；如果客户端没有明确的偏好（q 因子），则使用第一个支持的编码。如果省略，默认启用 `zstd`（优先）和 `gzip`。
 
-- **gzip** <span id="gzip"/> enables Gzip compression, optionally at a specified level.
+- **gzip** <span id="gzip"/> 启用 Gzip 压缩，可选地指定压缩级别。
 
-- **zstd** <span id="zstd"/> enables Zstandard compression, optionally at a specified level (possible values = default, fastest, better, best). The default compression level is roughly equivalent to the default Zstandard mode (level 3). 
+- **zstd** <span id="zstd"/> 启用 Zstandard 压缩，可选地指定压缩级别（可能的值 = default、fastest、better、best）。默认压缩级别大致相当于 Zstandard 默认模式（级别 3）。
 
-- **minimum_length** <span id="minimum_length"/> the minimum number of bytes a response should have to be encoded (default: 512).
+- **minimum_length** <span id="minimum_length"/> 响应的最小字节数，超过此长度才会被编码（默认：512）。
 
-- **match** <span id="match"/> is a [response matcher](/docs/caddyfile/response-matchers). Only matching responses are encoded. The default looks like this:
+- **match** <span id="match"/> 是一个[响应匹配器](/docs/caddyfile/response-matchers)。只有匹配的响应才会被编码。默认配置如下：
 
   ```caddy-d
   match {
@@ -88,28 +88,27 @@ encode [<matcher>] [<formats...>] {
   }
   ```
 
+## 示例
 
-## Examples
-
-Enable Gzip compression:
+启用 Gzip 压缩：
 
 ```caddy-d
 encode gzip
 ```
 
-Enable Zstandard and Gzip compression (with Zstandard implicitly preferred, since it is first):
+启用 Zstandard 和 Gzip 压缩（Zstandard 隐式优先，因为排在首位）：
 
 ```caddy-d
 encode zstd gzip
 ```
 
-As this is the default value, the previous configuration is strictly equivalent to:
+由于这是默认值，上述配置严格等同于：
 
 ```caddy-d
 encode
 ```
 
-And in a full site, compressing static files served by [`file_server`](file_server):
+在完整站点中，压缩由 [`file_server`](file_server) 提供的静态文件：
 
 ```caddy
 example.com {
@@ -117,4 +116,3 @@ example.com {
 	encode
 	file_server
 }
-```

@@ -1,30 +1,28 @@
 ---
-title: log_name (Caddyfile directive)
+title: log_name (Caddyfile 指令)
 ---
 
 # log_name
 
-Overrides the logger name to use for a request when writing access logs with the [`log` directive](log).
+覆盖在使用 [`log` 指令](log) 写入访问日志时为请求使用的日志器名称。
 
-This directive is useful when you want to log requests to different files based on some condition, such as the request path or method.
+当你希望根据某些条件（例如请求路径或方法）将请求记录到不同文件时，此指令非常有用。
 
-More than one logger name can be specified, such that the request's log gets pushed to more than one matching logger.
+可以指定多个日志器名称，这样请求的日志会被推送到多个匹配的日志器。
 
-This is often paired with the `log` directive's [`no_hostname`](log#no_hostname) option, which prevents the logger from being associated with any of the site block's hostnames, so that only requests that set `log_name` will push logs to that logger.
+该指令通常与 `log` 指令的 [`no_hostname`](log#no_hostname) 选项配合使用，该选项可防止日志器与站点块的任何主机名关联，从而只有设置了 `log_name` 的请求才会将日志推送到该日志器。
 
-
-## Syntax
+## 语法
 
 ```caddy-d
-log_name [<matcher>] <names...>
+log_name [<匹配器>] <名称...>
 ```
 
+## 示例
 
-## Examples
+你可能希望将请求记录到不同文件，例如，你可能希望将健康检查日志与主访问日志分开记录。
 
-You may want to log requests to different files, for example you might want to log health checks to a separate file from the main access logs.
-
-Using `no_hostname` in a `log` prevents the logger from being associated with any of the site block's hostnames (i.e. `localhost` here), so that only requests that have `log_name` set to that logger's name will receive logs.
+在 `log` 中使用 `no_hostname` 可防止日志器与站点块的任何主机名关联（即此处的 `localhost`），从而只有将 `log_name` 设置为该日志器名称的请求才会收到日志。
 
 ```caddy
 localhost {
@@ -46,4 +44,3 @@ localhost {
 		respond "Hello World"
 	}
 }
-```

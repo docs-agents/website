@@ -60,7 +60,7 @@ document.addEventListener('alpine:init', () => {
 <!-- 
 <div x-data="quick_assist" class="box box-filled box-capped quick-assist">
 	<div class="box-cap quick-assist-history">
-		<a title="Click quick for slick trick (not AI)" @click="reset()">Quick Assist</a>
+		<a title="点击快速获取快捷技巧（不是AI）" @click="reset()">快速助手</a>
 		<template x-for="crumb in crumbs">
 			<a x-text="crumbTitle(crumb)" @click="goto(crumb.id)" />
 		</template>
@@ -90,14 +90,14 @@ document.addEventListener('alpine:init', () => {
 				@click="reset()"
 				class="button reset"
 			>
-				Reset
+				重置
 			</a>
 		</div>
 	</div>
 </div> -->
 
 
-<!-- All the markdown content is hidden by default and loaded by ID -->
+<!-- 所有markdown内容默认隐藏，通过ID加载 -->
 <div style="display: none;">
 {{ markdown (include "/includes/quick-assist/content.md") }}
 </div>

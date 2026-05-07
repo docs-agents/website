@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Caddy is the best web server for HTTPS</title>
+		<title>Caddy 是 HTTPS 的最佳 Web 服务器</title>
 		{{import "/includes/head.html"}}
 		{{template "head" .}}
 		<link rel="stylesheet" href="/resources/css/marketing.css">
@@ -15,9 +15,9 @@
 			<div class="wrapper">
 				<div class="hero-content">
 					<h1>
-						You just got served
+						您刚刚享受了服务
 						<div class="subheading">
-							... a dynamically-provisioned TLS certificate by Caddy!
+							... 由 Caddy 动态颁发的 TLS 证书！
 						</div>
 					</h1>
 				</div>
@@ -29,19 +29,19 @@
 			<section class="diagonal up feature">
 				<div class="wrapper">
 					<h2>
-						What happened?
+						发生了什么？
 					</h2>
 					<p>
-						Caddy automatically obtained a certificate for your domain, <code>{{.Req.Header.Get "X-Forwarded-Host"}}</code>, without any change to the server's configuration. We call this technology On-Demand TLS, and it's an exclusive feature of Caddy.
+						Caddy 自动为您的域名 <code>{{.Req.Header.Get "X-Forwarded-Host"}}</code> 获取了证书，无需修改服务器配置。我们将这项技术称为按需 TLS（On-Demand TLS），这是 Caddy 的独家功能。
 					</p>
 					<p>
-						With On-Demand TLS, no config changes are required to serve more domains over HTTPS. This is perfect for servers hosting content or APIs for customer-owned domains because your HTTPS deployment scales as tall and wide as your business does.
+						使用按需 TLS，无需更改配置即可通过 HTTPS 提供更多域名服务。这对于托管客户自有域名内容或 API 的服务器来说非常理想，因为您的 HTTPS 部署能够随业务的发展而扩展。
 					</p>
 					<p>
-						Caddy's technology is the secret sauce of many SaaS products that offer custom domains. It generates hundreds of thousands of dollars in revenue every year while saving businesses tens of thousands of dollars in development and maintenance costs.
+						Caddy 的技术是许多提供自定义域名的 SaaS 产品的秘密武器。它每年能产生数十万美元的收入，同时为企业节省数万美元的开发和维护成本。
 					</p>
 					<p>
-						Fun fact: this feature earned standing ovations at more than one tech demo back in 2015 and 2016 when it was first introduced.
+						趣闻：2015 年和 2016 年该功能首次推出时，曾在多个技术演示现场赢得全场起立鼓掌。
 					</p>
 				</div>
 			</section>
@@ -49,24 +49,24 @@
 			<section class="diagonal down gray feature">
 				<div class="wrapper">
 					<h2>
-						Easy, self-hosted HTTPS for customer domains
+						为客户域名轻松实现自托管 HTTPS
 					</h2>
 					<p>
-						Use On-Demand TLS to grow your custom-domain SaaS business in a matter of minutes. A minimal config looks like this:
+						使用按需 TLS，几分钟内即可发展您的自定义域名 SaaS 业务。最小配置如下：
 					</p>
 					
 					<div class="asides">
 						<div class="spacing">
 							<div class="rollover" data-rollover="rollover-abuse">
-								<h3 class="purple">1. Prevent abuse</h3>
+								<h3 class="purple">1. 防止滥用</h3>
 								<p>
-									First, you'll configure an internal endpoint that Caddy can "ask" if a certificate should be allowed for a domain. This endpoint usually looks up the domain in a list or database and returns <code>HTTP 200</code> if it's allowed. Make sure to reject domains you don't recognize. (This implies that customers have to tell your app what their domain is first.)
+									首先，您需要配置一个内部端点，Caddy 可以“询问”该端点是否允许为某个域名颁发证书。该端点通常在列表或数据库中查找域名，如果允许则返回 <code>HTTP 200</code>。请务必拒绝不认识的域名。（这意味着客户需要先告知您的应用程序他们的域名是什么。）
 								</p>
 							</div>
 							<div class="rollover" data-rollover="rollover-ondemand">
-								<h3 class="green">2. Enable On-Demand TLS</h3>
+								<h3 class="green">2. 启用按需 TLS</h3>
 								<p>
-									To finish, enable On-Demand TLS for a catch-all site.
+									最后，为通配站点启用按需 TLS 即可。
 								</p>
 							</div>
 						</div>
@@ -78,7 +78,7 @@
 					</div>
 
 					<p>
-						Actual production configs typically have more, but this is the minimal configuration needed to serve domain names that aren't in your control. All that's left is for the domain owner to set their DNS records (described below).
+						实际生产配置通常会包含更多内容，但这已是为您不控制的域名提供服务所需的最小配置。剩下的只需域名所有者设置他们的 DNS 记录（如下所述）。
 					</p>
 
 				</div>
@@ -88,33 +88,33 @@
 			<section class="diagonal up feature">
 				<div class="wrapper">
 					<h2>
-						Brilliant customer experience
+						卓越的客户体验
 					</h2>
 					<p>
-						For domain owners, the flow is even simpler: set DNS records. The first visit to their site will provision a TLS certificate. Works like magic!
+						对于域名所有者来说，流程更为简单：只需设置 DNS 记录。首次访问他们的网站就会自动颁发 TLS 证书。简直像魔法一样！
 					</p>
 					
 					<div class="asides">
 						<div class="spacing">
 							<div>
-								<h3 class="purple">1. Point DNS records</h3>
+								<h3 class="purple">1. 指向 DNS 记录</h3>
 								<p>
-									The customer sets either a CNAME record or A/AAAA records on a domain or subdomain they control, so that <i>their</i> domain resolves to <i>your</i> server's IP address.
+									客户在他们控制的域名或子域名上设置 CNAME 记录或 A/AAAA 记录，以便 <i>他们的</i> 域名解析到 <i>您的</i> 服务器的 IP 地址。
 								</p>
 							</div>
 							<!-- <div class="rollover" data-rollover="rollover-ondemand">
-								<h3 class="green">2. Visit site</h3>
+								<h3 class="green">2. 访问网站</h3>
 								<p>
-									Once the DNS propagates, the first request with their domain to your server will provision a TLS certificate.
+									一旦 DNS 传播完成，使用他们的域名对您的服务器发起的第一次请求就会颁发 TLS 证书。
 								</p>
 							</div> -->
 						</div>
 						<div>
 							<div class="display right">
-								<code class="light"><span class="comment"># Customer's DNS (example domains)</span>
+								<code class="light"><span class="comment"># 客户的 DNS（示例域名）</span>
 your-app.customer.com   CNAME  ->  your-app.com
 
-<span class="comment"># Your DNS (example IPs)</span>
+<span class="comment"># 您的 DNS（示例 IP）</span>
 your-app.com            A      ->  198.51.100.1
 your-app.com            AAAA   ->  2001:db8:: 
 </code>
@@ -123,10 +123,10 @@ your-app.com            AAAA   ->  2001:db8::
 					</div>
 
 					<p>
-						There is no step 2. Caddy will obtain and serve a certificate for their domain as soon as a connection is made to it. Caddy keeps the certificates renewed as long as connections keep coming in. Once they stop, Caddy will let the certificate expire and then delete it automatically.
+						没有第二步。一旦建立连接，Caddy 便会为其域名获取并提供证书。只要有持续不断的连接，Caddy 就会自动续期证书。当连接停止后，Caddy 会让证书过期并自动删除。
 					</p>
 					<p>
-						And that is how you save tens of thousands of dollars in development and infrastructure costs every year.
+						这就是您每年节省数万美元开发和基础设施成本的方法。
 					</p>
 				</div>
 			</section>

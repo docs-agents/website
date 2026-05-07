@@ -1,144 +1,141 @@
 ---
-title: uri (Caddyfile directive)
+title: uri (Caddyfile 指令)
 ---
 
 # uri
 
-Manipulates a request's URI. It can strip path prefix/suffix or replace substrings on the whole URI.
+操作请求的 URI。可以去除路径前缀/后缀，或者在整个 URI 中替换子字符串。
 
-This directive is distinct from [`rewrite`](rewrite) in that `uri` _differentiably_ changes the URI, rather than resetting it to something completely different as `rewrite` does. While `rewrite` is treated specially as an internal redirect, `uri` is just another middleware.
+该指令与 [`rewrite`](rewrite) 不同之处在于，`uri` 是 _差异性地_ 修改 URI，而不是像 `rewrite` 那样将其完全重置为另一个值。`rewrite` 被视为特殊的内置重定向，而 `uri` 只是一个普通中间件。
 
+## 语法
 
-## Syntax
-
-Multiple different operations are supported:
+支持多种不同的操作：
 
 ```caddy-d
-uri [<matcher>] strip_prefix <target>
-uri [<matcher>] strip_suffix <target>
-uri [<matcher>] replace      <target> <replacement> [<limit>]
-uri [<matcher>] path_regexp  <target> <replacement>
-uri [<matcher>] query        [-|+]<param> [<value>]
-uri [<matcher>] query {
-	<param> [<value>] [<replacement>]
+uri [<匹配器>] strip_prefix <目标>
+uri [<匹配器>] strip_suffix <目标>
+uri [<匹配器>] replace      <目标> <替换> [<限制>]
+uri [<匹配器>] path_regexp  <目标> <替换>
+uri [<匹配器>] query        [-|+]<参数> [<值>]
+uri [<匹配器>] query {
+	<参数> [<值>] [<替换>]
 	...
 }
 ```
 
-The first (non-matcher) argument specifies the operation:
+第一个（非匹配器）参数指定操作类型：
 
-- **strip_prefix** strips the prefix from the path.
+- **strip_prefix** 从路径中去除前缀。
 
-- **strip_suffix** strips the suffix from the path.
+- **strip_suffix** 从路径中去除后缀。
 
-- **replace** performs a substring replacement across the whole URI.
+- **replace** 对整个 URI 执行子字符串替换。
 
-	- **&lt;target&gt;** is the prefix, suffix, or search string/regular expression. If a prefix, the leading forward slash may be omitted, since paths always start with a forward slash.
+	- **&lt;目标&gt;** 是前缀、后缀或搜索字符串/正则表达式。如果是前缀，开头的斜杠可以省略，因为路径总是以斜杠开头。
 
-	- **&lt;replacement&gt;** is the replacement string. Supports using capture groups with `$name` or `${name}` syntax, or with a number for the index, such as `$1`. See the [Go documentation](https://golang.org/pkg/regexp/#Regexp.Expand) for details. If the replacement value is `""`, then the matching text is removed from the value.
+	- **&lt;替换&gt;** 是替换字符串。支持使用 `$name` 或 `${name}` 语法引用捕获组，或使用数字索引如 `$1`。详情参见 [Go 文档](https://golang.org/pkg/regexp/#Regexp.Expand)。如果替换值为 `""`，则匹配的文本会被移除。
 
-	- **&lt;limit&gt;** is an optional limit to the maximum number of replacements.
+	- **&lt;限制&gt;** 是可选的替换次数上限。
 
-- **path_regexp** performs a regular expression replacement on the path portion of the URI.
+- **path_regexp** 对 URI 的路径部分执行正则表达式替换。
 
-	- **&lt;target&gt;** is the prefix, suffix, or search string/regular expression. If a prefix, the leading forward slash may be omitted, since paths always start with a forward slash.
+	- **&lt;目标&gt;** 是前缀、后缀或搜索字符串/正则表达式。如果是前缀，开头的斜杠可以省略，因为路径总是以斜杠开头。
 
-	- **&lt;replacement&gt;** is the replacement string. Supports using capture groups with `$name` or `${name}` syntax, or with a number for the index, such as `$1`. See the [Go documentation](https://golang.org/pkg/regexp/#Regexp.Expand) for details. If the replacement value is `""`, then the matching text is removed from the value.
+	- **&lt;替换&gt;** 是替换字符串。支持使用 `$name` 或 `${name}` 语法引用捕获组，或使用数字索引如 `$1`。详情参见 [Go 文档](https://golang.org/pkg/regexp/#Regexp.Expand)。如果替换值为 `""`，则匹配的文本会被移除。
 
-- **query** performs manipulations on the URI query, with the mode depending on the prefix to the parameter name or the count of arguments. A block can be used to specify multiple operations at once, grouped and performed in this order: rename 🡒 set 🡒 append 🡒 replace 🡒 delete.
+- **query** 对 URI 查询执行操作，模式取决于参数名的前缀或参数数量。可以使用块语法一次性指定多个操作，它们按以下顺序分组执行：重命名 🡒 设置 🡒 追加 🡒 替换 🡒 删除。
 
-	- With no prefix, the parameter is set with the given value in the query.
+	- 无前缀时，使用给定值在查询中设置参数。
 	
-	  For example, `uri query foo bar` will set the value of the `foo` param to `bar`.
+	  例如，`uri query foo bar` 会将 `foo` 参数的值设置为 `bar`。
 
-	- Prefix with `-` to remove the parameter from the query.
+	- 使用 `-` 作为前缀，从查询中移除该参数。
 	
-	  For example, `uri query -foo` will delete the `foo` parameter from the query.
+	  例如，`uri query -foo` 会从查询中删除 `foo` 参数。
 
-	- Prefix with `+` to append a parameter to the query, with the given value. This will _not_ overwrite an existing parameter with the same name (omit the `+` to overwrite).
+	- 使用 `+` 作为前缀，将参数及给定值追加到查询中。这 _不会_ 覆盖已有的同名参数（省略 `+` 可覆盖）。
 	
-	  For example, `uri query +foo bar` will append `foo=bar` to the query.
+	  例如，`uri query +foo bar` 会将 `foo=bar` 追加到查询中。
 
-	- A param with `>` as an infix will rename the parameter to the value after the `>`. 
+	- 在参数名中使用 `>` 作为中缀，可以将参数重命名为 `>` 后的值。
 	
-	  For example, `uri query foo>bar` will rename the `foo` parameter to `bar`.
+	  例如，`uri query foo>bar` 会将 `foo` 参数重命名为 `bar`。
 
-	- With three arguments, query value regular expression replacement is performed, where the first arg is the query param name, the second is the search value, and the third is the replacement. The first arg (param name) may be `*` to perform the replacement on all query params.
+	- 使用三个参数时，执行查询值的正则替换：第一个参数是查询参数名，第二个是搜索值，第三个是替换值。第一个参数（参数名）可为 `*`，表示对所有查询参数执行替换。
 	
-	  Supports using capture groups with `$name` or `${name}` syntax, or with a number for the index, such as `$1`. See the [Go documentation](https://golang.org/pkg/regexp/#Regexp.Expand) for details. If the replacement value is `""`, then the matching text is removed from the value.
+	  支持使用 `$name` 或 `${name}` 语法引用捕获组，或使用数字索引如 `$1`。详情参见 [Go 文档](https://golang.org/pkg/regexp/#Regexp.Expand)。如果替换值为 `""`，则匹配的文本会被移除。
 	
-	  For example, `uri query foo ^(ba)r $1z` would replace the value of the `foo` param, where the value began with `bar` resulting in the value becoming `baz`.
+	  例如，`uri query foo ^(ba)r $1z` 会替换 `foo` 参数的值，若值以 `bar` 开头，则结果变为 `baz`。
 
-URI mutations occur on the normalized or unescaped form of the URI. However, escape sequences can be used in the prefix or suffix patterns to match only those literal escapes at those positions in the request path. For example, `uri strip_prefix /a/b` will rewrite both `/a/b/c` and `/a%2Fb/c` to `/c`; and `uri strip_prefix /a%2Fb` will rewrite `/a%2Fb/c` to `/c`, but won't match `/a/b/c`.
+URI 的变更发生在归一化或未转义形式的 URI 上。但前缀或后缀模式中可以使用转义序列，仅匹配请求路径中对应位置的字面转义字符。例如，`uri strip_prefix /a/b` 会将 `/a/b/c` 和 `/a%2Fb/c` 都重写为 `/c`；而 `uri strip_prefix /a%2Fb` 会将 `/a%2Fb/c` 重写为 `/c`，但不会匹配 `/a/b/c`。
 
-The URI path is cleaned of directory traversal dots before modifications. Additionally, multiple slashes (such as `//`) are merged unless the `<target>` contains multiple slashes too.
+URI 路径会在修改前清理掉目录遍历的点号。此外，除非 `<目标>` 也包含多个斜杠，否则多个斜杠（如 `//`）会被合并。
 
-## Similar directives
+## 类似指令
 
-Some other directives can also manipulate the request URI.
+其他一些指令也可以操作请求的 URI。
 
-- [`rewrite`](rewrite) changes the entire path and query to a new value instead of partially changing the value.
+- [`rewrite`](rewrite) 会将整个路径和查询更改为一个新值，而不是部分修改。
+- [`handle_path`](handle_path) 与 [`handle`](handle) 相同，但在运行处理器之前会从请求中去掉一个前缀。在许多情况下，可用它代替 `uri strip_prefix` 来减少一行配置。
 
-- [`handle_path`](handle_path) does the same as [`handle`](handle), but it strips a prefix from the request before running its handlers. Can be used instead of `uri strip_prefix` to eliminate one extra line of configuration in many cases.
+## 示例
 
-
-## Examples
-
-Strip `/api` from the beginning of all request paths:
+从所有请求路径的开头去除 `/api`：
 
 ```caddy-d
 uri strip_prefix /api
 ```
 
-Strip `.php` from the end of all request paths:
+从所有请求路径的末尾去除 `.php`：
 
 ```caddy-d
 uri strip_suffix .php
 ```
 
-Replace "/docs/" with "/v1/docs/" in any request URI:
+在任何请求 URI 中将 "/docs/" 替换为 "/v1/docs/"：
 
 ```caddy-d
 uri replace /docs/ /v1/docs/
 ```
 
-Collapse all repeated slashes in the request path (but not the request query) to a single slash:
+将请求路径（而非请求查询）中所有连续的斜杠折叠为一个斜杠：
 
 ```caddy-d
 uri path_regexp /{2,} /
 ```
 
-Set the value of the `foo` query parameter to `bar`:
+将 `foo` 查询参数的值设置为 `bar`：
 
 ```caddy-d
 uri query foo bar
 ```
 
-Remove the `foo` parameter from the query:
+从查询中移除 `foo` 参数：
 
 ```caddy-d
 uri query -foo
 ```
 
-Rename the `foo` query parameter to `bar`:
+将 `foo` 查询参数重命名为 `bar`：
 
 ```caddy-d
 uri query foo>bar
 ```
 
-Append the `bar` parameter to the query:
+将 `bar` 参数追加到查询：
 
 ```caddy-d
 uri query +foo bar
 ```
 
-Replace the value of the `foo` query parameter where the value begins with `bar` with `baz`:
+替换 `foo` 查询参数的值，若值以 `bar` 开头则替换为 `baz`：
 
 ```caddy-d
 uri query foo ^(ba)r $1z
 ```
 
-Perform multiple query operations at once:
+一次执行多个查询操作：
 
 ```caddy-d
 uri query {
@@ -147,4 +144,3 @@ uri query {
 	qux test
 	renamethis>renamed
 }
-```

@@ -1,39 +1,37 @@
 ---
-title: Welcome
+title: 欢迎
 ---
 
-# Welcome to Caddy
+# 欢迎使用 Caddy
 
-Caddy is a powerful, extensible platform to serve your sites, services, and apps, written in Go. If you're new to Caddy, the way you serve the Web is about to change.
+Caddy 是一个强大、可扩展的平台，用于托管您的站点、服务和应用程序，由 Go 编写。如果您是 Caddy 新手，您处理网站的方式即将发生改变。
 
-## Introduction
+## 简介
 
-Most people use Caddy as a web server or proxy, but at its core, Caddy is a server of servers. With the [requisite modules](/docs/modules/), it can take on the role of any long-running process!
+大多数人将 Caddy 用作 Web 服务器或代理，但其核心是服务器的服务器。通过[所需的模块](/docs/modules/)，它可以扮演任何长时间运行进程的角色！
 
-Configuration is both dynamic and exportable with [Caddy's API](/docs/api). Although no config files required, you can still use them; most people's favorite way of configuring Caddy is using the [Caddyfile](/docs/caddyfile). The format of the config document takes many forms with [config adapters](/docs/config-adapters), but Caddy's native config language is [JSON](/docs/json/).
+通过 [Caddy 的 API](/docs/api)，配置既动态又可导出。虽然不需要配置文件，您仍然可以使用它们；大多数人最喜爱的配置 Caddy 的方式是使用 [Caddyfile](/docs/caddyfile)。借助[配置适配器](/docs/config-adapters)，配置文档的格式可以有多种形式，但 Caddy 的原生配置语言是 [JSON](/docs/json/)。
 
-Caddy compiles for all major platforms and has no runtime dependencies.
+Caddy 可编译到所有主流平台，且无运行时依赖。
 
+## 第一次使用？
 
-## First time?
+没问题！**我们建议 _每个人_，无论经验如何，都先阅读我们的[入门指南](/docs/getting-started)。** 它将为您提供关于新 Web 服务器的全面视角，这对您后续学习将非常宝贵。
 
-No problem! **We suggest that _everyone_ regardless of experience go through our [Getting Started guide](/docs/getting-started).** It will give you a well-rounded perspective on your new web server that will be invaluable as you continue learning.
+如果您只有几分钟时间且需要快速上手，请尝试我们的[快速开始](/docs/quick-starts)之一。
 
-If you only have a few minutes and need to hit the ground running, try one of our [quick starts](/docs/quick-starts).
+如需更多内容，例如具体示例，请查看[我们的社区维基](https://caddy.community/c/wiki/13)，然后为其做出贡献！
 
-For expanded content like specific examples, check out [our community wiki](https://caddy.community/c/wiki/13) - then contribute to it!
+我们建议您坚持使用这些官方资源来[安装](/docs/install)、[配置](/docs/caddyfile)和[运行](/docs/command-line) Caddy，而不是从随机博客和问答板运行命令或复制配置片段。您会发现我们的资料通常更准确且更新。我们还鼓励您自行编写配置，以确保您了解服务器的工作原理，这样以后出现问题时您能更好地修复。
 
-We recommend sticking to these official resources to [install](/docs/install), [configure](/docs/caddyfile), and [run](/docs/command-line) Caddy, rather than running commands or copying config snippets from random blogs and Q&A boards. You will find that our material is generally more accurate and up-to-date. We also encourage you to craft your own configurations to ensure that you understand how your server works so you'll be more able to fix problems if they arise later on.
+但无论您做什么，请享受使用您的新 Web 服务器。Caddy 是一种与您使用过的任何服务器软件都不同的体验！
 
-But whatever you do, enjoy using your new web server. Caddy is an experience unlike any other server software you've used!
+## 获取帮助
 
+如果您需要使用 Caddy 的帮助，请在我们的[社区论坛](https://caddy.community)礼貌提问。我们很乐意帮助您。我们只要求您尽可能详细地填写帮助模板，并通过帮助他人来传递善意。我们始终需要更多帮手。
 
-## Getting help
+只有在您确实识别出 Caddy 中的错误或有特定功能请求时，才使用[我们的问题跟踪器](https://github.com/caddyserver/caddy/issues)。
 
-If you need help using Caddy, please ask nicely in [our community forum](https://caddy.community). We would be happy to help you. All we ask is that you fill out the help template as thoroughly as possible, and pay it forward by helping others. We always need more helpers.
+本网站[在 GitHub 上维护](https://github.com/caddyserver/website)。要提交改进，请提出 Issue 或 Pull Request。
 
-Only use [our issue tracker](https://github.com/caddyserver/caddy/issues) if you've positively identified a bug in Caddy or have a specific feature request.
-
-This website is [maintained on GitHub](https://github.com/caddyserver/website). To submit improvements, open an issue or pull request.
-
-Thank you for participating in our community! We hope Caddy will serve you well.
+感谢您参与我们的社区！希望 Caddy 能为您提供良好服务。

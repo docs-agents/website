@@ -1,24 +1,24 @@
 ---
-title: tls (Caddyfile directive)
+title: tls (Caddyfile 指令)
 ---
 
 <script>
 ready(function() {
-	// We'll add links to all the subdirectives if a matching anchor tag is found on the page.
+	// 如果页面中找到匹配的锚点标签，我们将为所有子指令添加链接。
 	addLinksToSubdirectives();
 });
 </script>
 
 # tls
 
-Configures TLS for the site.
+配置站点的 TLS。
 
-**Caddy's default TLS settings are secure. Only change these settings if you have a good reason and understand the implications.** The most common use of this directive will be to specify an ACME account email address, change the ACME CA endpoint, or to provide your own certificates.
+**Caddy 默认的 TLS 设置是安全的。除非你有充分理由并理解其影响，否则不要更改这些设置。** 此指令最常见的用途是指定 ACME 账户邮箱地址、更改 ACME CA 端点或提供自己的证书。
 
-Compatibility note: Due to its sensitive nature as a security protocol, deliberate adjustments to TLS defaults may be made in new minor or patch releases. Old or broken TLS versions, ciphers, features, etc. may be removed at any time. If your deployment is extremely sensitive to changes, you should explicitly specify those values which must remain constant, and be vigilant about upgrades. In almost every case, we recommend using the default settings.
+兼容性说明：由于 TLS 作为安全协议具有敏感性，在新的次要版本或补丁版本中可能会故意调整 TLS 默认值。过时或有缺陷的 TLS 版本、密码套件、功能等可能会随时移除。如果你的部署对变更极为敏感，应明确指定必须保持不变的数值，并警惕升级。在几乎所有情况下，我们建议使用默认设置。
 
 
-## Syntax
+## 语法
 
 ```caddy-d
 tls [internal|force_automate|<email>] | [<cert_file> <key_file>] {
@@ -52,25 +52,25 @@ tls [internal|force_automate|<email>] | [<cert_file> <key_file>] {
 }
 ```
 
-- **internal** means to use Caddy's internal, locally-trusted CA to produce certificates for this site. To further configure the [`internal`](#internal) issuer, use the [`issuer`](#issuer) subdirective.
+- **internal** 表示使用 Caddy 内部的、本地信任的 CA 为该站点生成证书。要进一步配置 [`internal`](#internal) 签发者，请使用 [`issuer`](#issuer) 子指令。
 
-- **force_automate** forces Caddy to automate certificates for the site, even if other managed certificates apply.
+- **force_automate** 强制 Caddy 自动化管理该站点的证书，即使其他受管理的证书已适用。
 
-- **&lt;email&gt;** is the email address to use for the ACME account managing the site's certificates. You may prefer to use the [`email` global option](/docs/caddyfile/options#email) instead, to configure this for all your sites at once.
+- **&lt;email&gt;** 是用于管理站点证书的 ACME 账户的邮箱地址。你可能更倾向于使用 [`email` 全局选项](/docs/caddyfile/options#email) 一次性为所有站点配置此选项。
 
 <aside class="tip">
 
-Keep in mind that Let's Encrypt may send you emails about your certificate nearing expiry, but this may be misleading because Caddy may have chosen to use a different issuer (e.g. ZeroSSL) when renewing. Check your logs and/or the certificate itself (in your browser for example) to see which issuer was used, and that its expiry is still valid; if so, you may safely ignore the email from Let's Encrypt.
+请记住，Let's Encrypt 可能会向你发送关于证书即将到期的电子邮件，但这可能具有误导性，因为 Caddy 可能在续期时选择了不同的签发者（例如 ZeroSSL）。请检查你的日志和/或证书本身（例如在浏览器中）以查看使用了哪个签发者，以及其有效期是否仍然有效；如果是，你可以安全地忽略 Let's Encrypt 的邮件。
 
 </aside>
 
-- **&lt;cert_file&gt;** and **&lt;key_file&gt;** are the paths to the certificate and private key PEM files. Specifying just one is invalid.
+- **&lt;cert_file&gt;** 和 **&lt;key_file&gt;** 是证书和私钥 PEM 文件的路径。仅指定其中一个无效。
 
-- **protocols** <span id="protocols"/> specifies the minimum and maximum protocol versions. DO NOT change these unless you know what you're doing. Configuring this is rarely necessary, because Caddy will always use modern defaults.
+- **protocols** <span id="protocols"/> 指定最低和最高协议版本。除非你清楚自己在做什么，否则不要更改这些设置。通常无需配置，因为 Caddy 总是使用现代默认值。
   
-  Default min: `tls1.2`, Default max: `tls1.3`
+  默认最低版本：`tls1.2`，默认最高版本：`tls1.3`
 
-- **ciphers** <span id="ciphers"/> specifies the list of cipher suite names in descending preference order. DO NOT change these unless you know what you're doing. Note that cipher suites are not customizable for TLS 1.3; and not all TLS 1.2 ciphers are enabled by default. The supported names are (in order of preference by the Go stdlib):
+- **ciphers** <span id="ciphers"/> 按优先顺序降序指定密码套件列表。除非你清楚自己在做什么，否则不要更改这些设置。注意：密码套件在 TLS 1.3 中不可自定义；并且并非所有 TLS 1.2 密码套件都默认启用。支持的名称（按 Go 标准库的偏好顺序）为：
 	- `TLS_AES_128_GCM_SHA256`
 	- `TLS_CHACHA20_POLY1305_SHA256`
 	- `TLS_AES_256_GCM_SHA384`
@@ -86,98 +86,98 @@ Keep in mind that Let's Encrypt may send you emails about your certificate neari
 	- `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA`
 	- `TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA`
 
-- **curves** <span id="curves"/> specifies the list of EC groups to support. It is recommended to not change the defaults. Supported values are:
-	- `x25519mlkem768` (PQC)
+- **curves** <span id="curves"/> 指定要支持的 EC 组列表。建议不要更改默认值。支持的值有：
+	- `x25519mlkem768`（后量子密码）
 	- `x25519`
 	- `secp256r1`
 	- `secp384r1`
 	- `secp521r1`
 
-- **alpn** <span id="alpn"/> is the list of values to advertise in the [ALPN extension <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Glossary/ALPN) of the TLS handshake.
+- **alpn** <span id="alpn"/> 是在 TLS 握手的 [ALPN 扩展 <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Glossary/ALPN) 中通告的值列表。
 
-- **load** <span id="load"/> specifies a list of folders from which to load PEM files that are certificate+key bundles.
+- **load** <span id="load"/> 指定要从中加载包含证书+密钥捆绑的 PEM 文件的文件夹列表。
 
-- **ca** <span id="ca"/> changes the ACME CA endpoint. This is most often used to set [Let's Encrypt's staging endpoint <img src="/old/resources/images/external-link.svg" class="external-link">](https://letsencrypt.org/docs/staging-environment/) when testing, or an internal ACME server. (To change this value for the whole Caddyfile, use the `acme_ca` [global option](/docs/caddyfile/options) instead.)
+- **ca** <span id="ca"/> 更改 ACME CA 端点。这最常用于测试时设置 [Let's Encrypt 的临时端点 <img src="/old/resources/images/external-link.svg" class="external-link">](https://letsencrypt.org/docs/staging-environment/)，或设置内部 ACME 服务器。（要为整个 Caddyfile 更改此值，请改用 `acme_ca` [全局选项](/docs/caddyfile/options)。）
 
-- **ca_root** <span id="ca_root"/> specifies a PEM file that contains a trusted root certificate for the ACME CA endpoint, if not in the system trust store.
+- **ca_root** <span id="ca_root"/> 指定一个 PEM 文件，其中包含 ACME CA 端点的受信任根证书（如果系统信任存储中没有）。
 
-- **key_type** <span id="key_type"/> is the type of key to use when generating CSRs. Only set this if you have a specific requirement.
+- **key_type** <span id="key_type"/> 是生成 CSR 时要使用的密钥类型。仅在你有特定要求时才设置。
 
-- **dns** <span id="dns"/> enables the [DNS challenge](/docs/automatic-https#dns-challenge) using the specified provider plugin, which must be plugged in from one of the [`caddy-dns` <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) repositories. Each provider plugin may have their own syntax following their name; refer to their docs for details. Maintaining support for each DNS provider is a community effort. [Learn how to enable the DNS challenge for your provider at our wiki.](https://caddy.community/t/how-to-use-dns-provider-modules-in-caddy-2/8148)
+- **dns** <span id="dns"/> 使用指定的提供者插件启用 [DNS 挑战](/docs/automatic-https#dns-challenge)。该插件必须来自 [`caddy-dns` <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) 仓库之一。每个提供者插件可能在其名称后有自己特定的语法；详情请参考其文档。维护每个 DNS 提供者的支持是社区努力的结果。[在我们的维基中了解如何为你的提供者启用 DNS 挑战。](https://caddy.community/t/how-to-use-dns-provider-modules-in-caddy-2/8148)
 
-- **propagation_timeout** <span id="propagation_timeout"/> is a [duration value](/docs/conventions#durations) that sets the maximum time to wait for the DNS TXT records to appear when using the DNS challenge. Set to `-1` to disable propagation checks. Default 2 minutes.
+- **propagation_timeout** <span id="propagation_timeout"/> 是一个[时长值](/docs/conventions#durations)，设置使用 DNS 挑战时等待 DNS TXT 记录出现的最长时间。设置为 `-1` 以禁用传播检查。默认 2 分钟。
 
-- **propagation_delay** <span id="propagation_delay"/> is a [duration value](/docs/conventions#durations) that sets how long to wait before starting DNS TXT records propagation checks when using the DNS challenge. Default `0` (no wait).
+- **propagation_delay** <span id="propagation_delay"/> 是一个[时长值](/docs/conventions#durations)，设置在使用 DNS 挑战时，开始 DNS TXT 记录传播检查前等待的时间。默认 `0`（不等待）。
 
-- **dns_ttl** <span id="dns_ttl"/> is a [duration value](/docs/conventions#durations) that sets the TTL of the `TXT` record used for the DNS challenge. Rarely needed.
+- **dns_ttl** <span id="dns_ttl"/> 是一个[时长值](/docs/conventions#durations)，设置用于 DNS 挑战的 `TXT` 记录的 TTL。很少需要设置。
 
-- **dns_challenge_override_domain** <span id="dns_challenge_override_domain"/> overrides the domain to use for the DNS challenge. This is to delegate the challenge to a different domain.
+- **dns_challenge_override_domain** <span id="dns_challenge_override_domain"/> 覆盖用于 DNS 挑战的域名。这是为了将挑战委托给另一个域名。
 
-  You may want to use this if your primary domain's DNS provider does not have a [DNS plugin <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) available. You can instead add a `CNAME` record with subdomain `_acme-challenge` to your primary domain, pointing to a secondary domain for which you _do_ have a plugin. This option _does not_ require special support from the plugin.
+  如果你的主域名的 DNS 提供者没有可用的 [DNS 插件 <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns)，你可能希望使用此选项。你可以改为在你的主域名中添加一个子域为 `_acme-challenge` 的 `CNAME` 记录，指向你确实拥有插件的辅助域名。此选项 _不需要_ 插件提供特殊支持。
   
-  When ACME issuers try to solve the DNS challenge for your primary domain, they will then follow the `CNAME` to your secondary domain to find the `TXT` record.
+  当 ACME 签发者尝试为你主域名解决 DNS 挑战时，它们将跟随 `CNAME` 记录到你的辅助域名以查找 `TXT` 记录。
 
-  **Note:** Use full canonical name from the CNAME record as value here - `_acme-challenge` subdomain won't be prepended automatically.
+  **注意：** 在此处使用 CNAME 记录中的完整规范名称 - `_acme-challenge` 子域不会自动附加。
 
-- **resolvers** <span id="resolvers"/> customizes the DNS resolvers used when performing the DNS challenge; these take precedence over system resolvers or any default ones. If set here, the resolvers will propagate to all configured certificate issuers.
+- **resolvers** <span id="resolvers"/> 自定义执行 DNS 挑战时使用的 DNS 解析器；这些解析器优先于系统解析器或任何默认解析器。如果在此处设置，解析器将传播到所有配置的证书签发者。
 
-  This is typically a list of IP addresses. For example, to use [Google Public DNS <img src="/old/resources/images/external-link.svg" class="external-link">](https://developers.google.com/speed/public-dns):
+  这通常是一个 IP 地址列表。例如，要使用 [Google Public DNS <img src="/old/resources/images/external-link.svg" class="external-link">](https://developers.google.com/speed/public-dns)：
 
   ```caddy-d
   resolvers 8.8.8.8 8.8.4.4
   ```
 
-- **eab** <span id="eab"/> configures ACME external account binding (EAB) for this site, using the key ID and MAC key provided by your CA.
+- **eab** <span id="eab"/> 使用你的 CA 提供的密钥 ID 和 MAC 密钥，为该站点配置 ACME 外部账户绑定（EAB）。
 
-- **on_demand** <span id="on_demand"/> enables [On-Demand TLS](/docs/automatic-https#on-demand-tls) for the hostnames given in the site block's address(es). **Security warning:** Doing so in production is insecure unless you also configure the [`on_demand_tls` global option](/docs/caddyfile/options#on-demand-tls) to mitigate abuse.
+- **on_demand** <span id="on_demand"/> 为站点块地址中给定的主机名启用 [按需 TLS](/docs/automatic-https#on-demand-tls)。**安全警告：** 在生产环境中这样做是不安全的，除非你还配置了 [`on_demand_tls` 全局选项](/docs/caddyfile/options#on-demand-tls) 来减轻滥用风险。
 
-- **reuse_private_keys** <span id="reuse_private_keys"/> enables reuse of private keys when renewing certificates. By default, a new key is created for every new certificate to mitigate pinning and reduce the scope of key compromise. Key pinning is against industry best practices. This option is not recommended unless you have a specific reason to use it; this may be subject to removal in a future version.
+- **reuse_private_keys** <span id="reuse_private_keys"/> 启用续期证书时重用私钥。默认情况下，每个新证书都会创建一个新密钥，以减轻固定密钥的风险并减少密钥泄露的影响。密钥固定违反行业最佳实践。除非你有特定理由使用它，否则不建议使用此选项；这在未来版本中可能会被移除。
 
-- **client_auth** <span id="client_auth"/> enables and configures TLS client authentication:
-  - **mode** <span id="mode"/> is the mode for authenticating the client. Allowed values are:
+- **client_auth** <span id="client_auth"/> 启用并配置 TLS 客户端认证：
+  - **mode** <span id="mode"/> 是认证客户端的模式。允许的值有：
 
-    | Mode | Description |
+    | 模式 | 描述 |
     | --- | --- |
-    | request | Ask clients for a certificate, but allow even if there isn't one; do not verify it |
-    | require | Require clients to present a certificate, but do not verify it |
-    | verify_if_given | Ask clients for a certificate; allow even if there isn't one, but verify it if there is |
-    | require_and_verify | Require clients to present a valid certificate that is verified |
+    | request | 向客户端请求证书，但即使没有也允许；不进行验证 |
+    | require | 要求客户端提供证书，但不进行验证 |
+    | verify_if_given | 向客户端请求证书；即使没有也允许，但有证书则进行验证 |
+    | require_and_verify | 要求客户端提供经过验证的有效证书 |
 
-    Default: `require_and_verify` if `trust_pool` module is provided; otherwise, `require`.
+    默认值：如果提供了 `trust_pool` 模块，则为 `require_and_verify`；否则为 `require`。
 	
-  - **trust_pool** <span id="trust_pool"/> configures the source of certificate authorities (CA) providing certificates against which to validate client certificates.
+  - **trust_pool** <span id="trust_pool"/> 配置证书颁发机构（CA）的来源，这些 CA 提供用于验证客户端证书的证书。
 	
-	The certificate authority used providing the pool of trusted certificates and the configuration within the segment depends on the configured source of trust pool module. The standard modules available in Caddy are [listed below](#trust-pool-providers). The full list of modules, including 3rd-party, is listed in the [`trust_pool` JSON documentation](/docs/json/apps/http/servers/tls_connection_policies/client_authentication/#trust_pool).
+	用于提供受信任证书池的证书颁发机构以及分段内的配置取决于所配置的信任池模块来源。Caddy 中可用的标准模块[如下所列](#trust-pool-providers)。完整模块列表（包括第三方）在 [`trust_pool` JSON 文档](/docs/json/apps/http/servers/tls_connection_policies/client_authentication/#trust_pool) 中列出。
 
-    Multiple `trusted_*` directives may be used to specify multiple CA or leaf certificates. Client certificates which are not listed as one of the leaf certificates or signed by any of the specified CAs will be rejected according to the **mode**.
+    可以使用多个 `trusted_*` 指令来指定多个 CA 或叶证书。未列为叶证书之一或未由任何指定 CA 签名的客户端证书将根据 **mode** 被拒绝。
 
-  - **verifier** <span id="verifier"/> enables the use of a custom client certificate verifier module. These can perform custom client authentication checks, such as ensuring the certificate is not revoked.
+  - **verifier** <span id="verifier"/> 启用自定义客户端证书验证器模块。这些模块可以执行自定义客户端认证检查，例如确保证书未被吊销。
 
-- **issuer** <span id="issuer"/> configures a custom certificate issuer, or a source from which to obtain certificates.
+- **issuer** <span id="issuer"/> 配置自定义证书签发者，或从中获取证书的来源。
 
-  Which issuer is used and the options that follow in this segment depend on the [issuer modules](#issuers) that are available. Some of the other subdirectives such as `ca` and `dns` are actually shortcuts for configuring the `acme` issuer (and this subdirective was added later), so specifying this directive and some of the others is confusing and thus prohibited.
+  使用哪个签发者以及此分段中跟随的选项取决于可用的[签发者模块](#issuers)。其他一些子指令，如 `ca` 和 `dns`，实际上是配置 `acme` 签发者的快捷方式（而此子指令是后来添加的），因此同时指定此指令和其他一些指令会引起混淆，因此被禁止。
   
-  This subdirective can be specified multiple times to configure multiple, redundant issuers; if one fails to issue a cert, the next one will be tried.
+  可以多次指定此子指令以配置多个冗余签发者；如果一个签发者无法签发证书，将尝试下一个。
 
-- **get_certificate** <span id="get_certificate"/> enables getting certificates from a [manager module](#certificate-managers) at handshake-time.
+- **get_certificate** <span id="get_certificate"/> 启用握手时从[管理器模块](#certificate-managers)获取证书。
 
-- **insecure_secrets_log** <span id="insecure_secrets_log"/> enables logging of TLS secrets to a file. This is also known as `SSLKEYLOGFILE`. Uses NSS key log format, which can then be parsed by Wireshark or other tools. ⚠️ **Security Warning:** This is insecure as it allows other programs or tools to decrypt TLS connections, and therefore completely compromises security. However, this capability can be useful for debugging and troubleshooting.
+- **insecure_secrets_log** <span id="insecure_secrets_log"/> 启用将 TLS 密钥记录到文件。这也称为 `SSLKEYLOGFILE`。使用 NSS 密钥日志格式，可由 Wireshark 或其他工具解析。⚠️ **安全警告：** 这是不安全的，因为它允许其他程序或工具解密 TLS 连接，从而完全破坏安全性。然而，此能力可用于调试和故障排除。
 
-- **renewal_window_ratio** <span id="renewal_window_ratio"/> is a ratio between 0 and 1 that determines the certificate lifetime that must be remaining before Caddy attempts to renew the certificate. For example, if a certificate has a lifetime of 90 days, and this ratio is `0.3333` (the default value), then Caddy will continually attempt to renew the certificate when it has 30 days or less remaining before expiration. Can also be set globally with the [`renewal_window_ratio` global option](/docs/caddyfile/options#renewal_window_ratio).
+- **renewal_window_ratio** <span id="renewal_window_ratio"/> 是 0 到 1 之间的比率，确定证书剩余生命周期中，Caddy 应尝试续期的时间点。例如，如果证书有效期为 90 天，且此比率为 `0.3333`（默认值），则 Caddy 将在证书剩余 30 天或更少时持续尝试续期。也可以使用 [`renewal_window_ratio` 全局选项](/docs/caddyfile/options#renewal_window_ratio) 全局设置。
 
-  You should rarely need to change this, but it can be useful to renew later in the certificate's lifetime if your CA has a very long issuance time.
+  你很少需要更改此值，但如果你的 CA 签发时间非常长，它可能有助于在证书生命周期后期续期。
 
-  Keep in mind that this is a suggestion since ACME issuers may implement the [ARI extension](https://datatracker.ietf.org/doc/rfc9773/). ARI dictates a window in which the ACME client (Caddy in this case) should attempt renewal, and that window may not align with this ratio.
+  请记住，这只是一个建议，因为 ACME 签发者可能实现 [ARI 扩展](https://datatracker.ietf.org/doc/rfc9773/)。ARI 规定了 ACME 客户端（此处为 Caddy）应尝试续期的时间窗口，该窗口可能与此比率不一致。
 
-- **force_automate** is the same as specifying inline (see above).
+- **force_automate** 与内联指定相同（见上文）。
 
-### Trust Pool Providers
+### 信任池提供者
 
-These are the standard trust pool providers that can be used in the `trust_pool` subdirective:
+以下是可在 `trust_pool` 子指令中使用的标准信任池提供者：
 
 #### inline
 
-The `inline` module parses the trusted root certificates as listed in the Caddyfile directly in base64 DER-encoded format. The `trust_der` directive may be repeated multiple times.
+`inline` 模块直接在 Caddyfile 中解析以 base64 DER 编码格式列出的受信任根证书。`trust_der` 指令可以重复多次。
 
 ```caddy-d
 trust_pool inline {
@@ -185,11 +185,11 @@ trust_pool inline {
 }
 ```
 
-- **trust_der** <span id="trust_der"/> is a base64 DER-encoded CA certificate against which to validate client certificates.
+- **trust_der** <span id="trust_der"/> 是一个 base64 DER 编码的 CA 证书，用于验证客户端证书。
 
 #### file
 
-The `file` module reads the trusted root certificates from PEM files from disk. The `pem_file` directive can accept multiple file paths on the same line and may be repeated multiple times.
+`file` 模块从磁盘上的 PEM 文件读取受信任根证书。`pem_file` 指令可以在一行中接受多个文件路径，并可重复多次。
 
 ```caddy-d
 ... file [<pem_file>...] {
@@ -197,11 +197,11 @@ The `file` module reads the trusted root certificates from PEM files from disk. 
 }
 ```
 
-- **pem_file** <span id="pem_file"/> is a path to a PEM CA certificate file against which to validate client certificates.
+- **pem_file** <span id="pem_file"/> 是一个 PEM CA 证书文件的路径，用于验证客户端证书。
 
 #### pki_root
 
-The `pki_root` module obtains the _root_ and trusts certificates from the certificate authority defined in the [PKI app](/docs/caddyfile/options#pki-options). The `authority` directive can accept multiple authorities at the same time and may be repeated multiple times.
+`pki_root` 模块从 [PKI 应用](/docs/caddyfile/options#pki-options) 定义的证书颁发机构获取 _根_ 证书并信任它们。`authority` 指令可以同时接受多个授权机构，并可重复多次。
 
 ```caddy-d
 ... pki_root [<ca_name>...] {
@@ -209,11 +209,11 @@ The `pki_root` module obtains the _root_ and trusts certificates from the certif
 }
 ```
 
-- **authority** <span id="authority"/> is the name of the certificate authority configured in the PKI app.
+- **authority** <span id="authority"/> 是在 PKI 应用中配置的证书颁发机构名称。
 
 #### pki_intermediate
 
-The `pki_intermediate` module obtains the _intermediate_ and trusts certificates from the certificate authority defined in the [PKI app](/docs/caddyfile/options#pki-options). The `authority` directive can accept multiple authorities at the same time and may be repeated multiple times.
+`pki_intermediate` 模块从 [PKI 应用](/docs/caddyfile/options#pki-options) 定义的证书颁发机构获取 _中间_ 证书并信任它们。`authority` 指令可以同时接受多个授权机构，并可重复多次。
 
 ```caddy-d
 ... pki_intermediate [<ca_name>...] {
@@ -221,11 +221,11 @@ The `pki_intermediate` module obtains the _intermediate_ and trusts certificates
 }
 ```
 
-- **authority** <span id="authority"/> is the name of the certificate authority configured in the PKI app.
+- **authority** <span id="authority"/> 是在 PKI 应用中配置的证书颁发机构名称。
 
 #### storage
 
-The `storage` module extracts the trusted certificates root from Caddy [storage](/docs/caddyfile/options#storage). The `authority` directive can accept multiple authorities at the same time and may be repeated multiple times.
+`storage` 模块从 Caddy [存储](/docs/caddyfile/options#storage) 中提取受信任的证书根。`authority` 指令可以同时接受多个授权机构，并可重复多次。
 
 ```caddy-d
 ... storage [<storage_keys>...] {
@@ -234,13 +234,13 @@ The `storage` module extracts the trusted certificates root from Caddy [storage]
 }
 ```
 
-- **storage** <span id="storage"/> is an optional storage module to use. If not specified, the default storage module will be used. If specified, it may be specified only once.
+- **storage** <span id="storage"/> 是一个可选的存储模块。如果未指定，将使用默认存储模块。如果指定，只能指定一次。
 
-- **keys** <span id="keys"/> is the list of storage keys at which the PEM files of the certificates are stored. The directive accepts multiple values on the same line and may be specified multiple times.
+- **keys** <span id="keys"/> 是存储证书 PEM 文件的存储键列表。该指令接受同一行中的多个值，并可多次指定。
 
 #### http
 
-The `http` module obtains the trusted certificates from HTTP endpoints. The `endpoints` directive can accept multiple endpoints at the same time and may be repeated multiple times.
+`http` 模块从 HTTP 端点获取受信任证书。`endpoints` 指令可以同时接受多个端点，并可重复多次。
 
 ```caddy-d
 ... http [<endpoints...>] {
@@ -249,9 +249,9 @@ The `http` module obtains the trusted certificates from HTTP endpoints. The `end
 }
 ```
 
-- **endpoints** <span id="endpoints"/> is the list of HTTP endpoints from which to obtain certificates. The directive accepts multiple values on the same line and may be specified multiple times.
+- **endpoints** <span id="endpoints"/> 是获取证书的 HTTP 端点列表。该指令接受同一行中的多个值，并可多次指定。
 
-- **tls** <span id="tls"/> is an optional TLS configuration to use when connecting to the HTTP endpoint. The segment parsing is defined in the [following section](#tls-1).
+- **tls** <span id="tls"/> 是连接 HTTP 端点时使用的可选 TLS 配置。分段解析在[以下部分](#tls-1)中定义。
 
 ##### TLS
 
@@ -265,34 +265,34 @@ The `http` module obtains the trusted certificates from HTTP endpoints. The `end
 }
 ```
 
-- **ca** <span id="ca"/> is an optional directive to define the provider of trust pool. The configuration follows the same behavior of [`trust_pool`](#trust_pool). If specified, it may be specified only once.
+- **ca** <span id="ca"/> 是一个可选指令，用于定义信任池的提供者。配置遵循与 [`trust_pool`](#trust_pool) 相同的行为。如果指定，只能指定一次。
 
-- **insecure_skip_verify** <span id="insecure_skip_verify"/> turns off TLS handshake verification, making the connection insecure and vulnerable to man-in-the-middle attacks. _Do not use in production._ The verification is done against either the certificate authorities trusted by the system or as determined by the [`ca`](#ca) directive.
+- **insecure_skip_verify** <span id="insecure_skip_verify"/> 关闭 TLS 握手验证，使连接不安全，容易受到中间人攻击。_不要在生产环境中使用。_ 验证针对系统信任的证书颁发机构或由 [`ca`](#ca) 指令决定。
 
-- **handshake_timeout** <span id="handshake_timeout"/> is the maximum [duration](/docs/conventions#durations) to wait for the TLS handshake to complete. Default: No timeout..
+- **handshake_timeout** <span id="handshake_timeout"/> 是等待 TLS 握手完成的最长[时长](/docs/conventions#durations)。默认值：无超时。
 
-- **server_name** <span id="server_name"/> sets the server name used when verifying the certificate received in the TLS handshake. By default, this will use the upstream address' host part.
+- **server_name** <span id="server_name"/> 设置验证 TLS 握手中收到的证书时使用的服务器名称。默认情况下，将使用上游地址的主机部分。
 
-- **renegotiation** <span id="renegotiation"/> sets the TLS renegotiation level. TLS renegotiation is the act of performing subsequent handshakes after the first. The level may be one of:
-  - `never` (the default) disables renegotiation.
-  - `once` allows a remote server to request renegotiation once per connection.
-  - `freely` allows a remote server to repeatedly request renegotiation.
+- **renegotiation** <span id="renegotiation"/> 设置 TLS 重协商级别。TLS 重协商是在首次握手之后执行后续握手的行为。级别可以是以下之一：
+  - `never`（默认值）禁用重协商。
+  - `once` 允许远程服务器每次连接请求一次重协商。
+  - `freely` 允许远程服务器重复请求重协商。
 
-### Verifiers
+### 验证器
 
-Client certificate verifier modules are executed after validating they are issued from a trusted certificate authority, if the `trust_pool` is configured. The one verifier, currently, shipped in standard Caddy is `leaf`.
+客户端证书验证器模块在验证证书由受信任的证书颁发机构签发后执行（如果配置了 `trust_pool`）。目前，标准 Caddy 中附带的一个验证器是 `leaf`。
 
 #### Leaf
 
-The `leaf` verifier checks if the client certificate is one of a defined set of permitted certificates. The certificate set is loaded using [loader](https://caddyserver.com/docs/modules/tls.client_auth.verifier.leaf#leaf_certs_loaders) modules.
+`leaf` 验证器检查客户端证书是否属于定义的一组允许的证书。证书集使用[加载器](https://caddyserver.com/docs/modules/tls.client_auth.verifier.leaf#leaf_certs_loaders)模块加载。
 
-##### Loaders
+##### 加载器
 
-Standard Caddy distribution bundles 4 loaders, 3 of them are available in Caddyfile.
+标准 Caddy 发行版捆绑了 4 个加载器，其中 3 个可在 Caddyfile 中使用。
 
 ###### File
 
-The `file` loader loads the set of certificates from specified PEM files.
+`file` 加载器从指定的 PEM 文件加载证书集。
 
 ```caddy-d
 ... file <pem_files...>
@@ -300,7 +300,7 @@ The `file` loader loads the set of certificates from specified PEM files.
 
 ###### Folder
 
-The `folder` loader recursively traverses the named directories searching for PEM files to be loaded as accepted client certificates.
+`folder` 加载器递归遍历指定的目录，搜索要加载为接受客户端证书的 PEM 文件。
 
 ```caddy-d
 ... folder <folders...>
@@ -308,19 +308,19 @@ The `folder` loader recursively traverses the named directories searching for PE
 
 ###### PEM
 
-The `pem` loader accepts certificates inlined in the Caddyfile in PEM format.
+`pem` 加载器接受以 PEM 格式内联在 Caddyfile 中的证书。
 
 ```caddy-d
 ... pem <pem_strings...>
 ```
 
-### Issuers
+### 签发者
 
-These issuers come standard with the `tls` directive:
+以下是 `tls` 指令附带的标准签发者：
 
 #### acme
 
-Obtains certificates using the ACME protocol. Note that `acme` is a default issuer (using Let's Encrypt), so configuring it explicitly is usually unnecessary.
+使用 ACME 协议获取证书。注意 `acme` 是默认签发者（使用 Let's Encrypt），因此明确配置它通常是不必要的。
 
 ```caddy-d
 ... acme [<directory_url>] {
@@ -348,67 +348,67 @@ Obtains certificates using the ACME protocol. Note that `acme` is a default issu
 }
 ```
 
-- **dir** <span id="dir"/> is the URL to the ACME CA's directory.
+- **dir** <span id="dir"/> 是 ACME CA 目录的 URL。
   
-  Default: `https://acme-v02.api.letsencrypt.org/directory`
+  默认值：`https://acme-v02.api.letsencrypt.org/directory`
 
-- **test_dir** <span id="test_dir"/> is an optional fallback directory to use when retrying challenges; if all challenges fail, this endpoint will be used during retries; useful if a CA has a staging endpoint where you want to avoid rate limits on their production endpoint.
+- **test_dir** <span id="test_dir"/> 是重试挑战时使用的可选备用目录；如果所有挑战失败，将在重试期间使用此端点；如果 CA 有一个临时端点，你希望避免对其生产端点施加速率限制，这将很有用。
 
-  Default: `https://acme-staging-v02.api.letsencrypt.org/directory`
+  默认值：`https://acme-staging-v02.api.letsencrypt.org/directory`
 
-- **email** <span id="email"/> is the ACME account contact email address.
+- **email** <span id="email"/> 是 ACME 账户联系邮箱地址。
 
-- **timeout** <span id="timeout"/> is a [duration value](/docs/conventions#durations) that sets how long to wait before timing out an ACME operation.
+- **timeout** <span id="timeout"/> 是一个[时长值](/docs/conventions#durations)，设置 ACME 操作超时前等待的时间。
 
-- **disable_http_challenge** <span id="disable_http_challenge"/> will disable the HTTP challenge.
+- **disable_http_challenge** <span id="disable_http_challenge"/> 将禁用 HTTP 挑战。
 
-- **disable_tlsalpn_challenge** <span id="disable_tlsalpn_challenge"/> will disable the TLS-ALPN challenge.
+- **disable_tlsalpn_challenge** <span id="disable_tlsalpn_challenge"/> 将禁用 TLS-ALPN 挑战。
 
-- **alt_http_port** <span id="alt_http_port"/> is an alternate port on which to serve the HTTP challenge; it has to happen on port 80 so you must forward packets to this alternate port.
+- **alt_http_port** <span id="alt_http_port"/> 是提供 HTTP 挑战的备用端口；必须发生在端口 80 上，因此需要将数据包转发到此备用端口。
 
-- **alt_tlsalpn_port** <span id="alt_tlsalpn_port"/> is an alternate port on which to serve the TLS-ALPN challenge; it has to happen on port 443 so you must forward packets to this alternate port.
+- **alt_tlsalpn_port** <span id="alt_tlsalpn_port"/> 是提供 TLS-ALPN 挑战的备用端口；必须发生在端口 443 上，因此需要将数据包转发到此备用端口。
 
-- **eab** <span id="eab"/> specifies an External Account Binding which may be required with some ACME CAs.
+- **eab** <span id="eab"/> 指定外部账户绑定（EAB），某些 ACME CA 可能需要。
 
-- **trusted_roots** <span id="trusted_roots"/> is one or more root certificates (as PEM filenames) to trust when connecting to the ACME CA server.
+- **trusted_roots** <span id="trusted_roots"/> 是一个或多个根证书（作为 PEM 文件名），在连接到 ACME CA 服务器时信任它们。
 
-- **dns** <span id="dns"/> configures the DNS challenge. A provider must be configured here, unless the [`dns` global option](/docs/caddyfile/options#dns) specifies a globally-applicable DNS provider module.
+- **dns** <span id="dns"/> 配置 DNS 挑战。必须在此处配置提供者，除非 [`dns` 全局选项](/docs/caddyfile/options#dns) 指定了全局适用的 DNS 提供者模块。
 
-- **propagation_timeout** <span id="propagation_timeout"/> is a [duration value](/docs/conventions#durations) that sets the maximum time to wait for the DNS TXT records to appear when using the DNS challenge. Set to `-1` to disable propagation checks. Default 2 minutes.
+- **propagation_timeout** <span id="propagation_timeout"/> 是一个[时长值](/docs/conventions#durations)，设置使用 DNS 挑战时等待 DNS TXT 记录出现的最长时间。设置为 `-1` 以禁用传播检查。默认 2 分钟。
 
-- **propagation_delay** <span id="propagation_delay"/> is a [duration value](/docs/conventions#durations) that sets how long to wait before starting DNS TXT records propagation checks when using the DNS challenge. Default 0 (no wait).
+- **propagation_delay** <span id="propagation_delay"/> 是一个[时长值](/docs/conventions#durations)，设置在使用 DNS 挑战时，开始 DNS TXT 记录传播检查前等待的时间。默认 0（不等待）。
 
-- **dns_ttl** <span id="dns_ttl"/> is a [duration value](/docs/conventions#durations) that sets the TTL of the `TXT` record used for the DNS challenge. Rarely needed.
+- **dns_ttl** <span id="dns_ttl"/> 是一个[时长值](/docs/conventions#durations)，设置用于 DNS 挑战的 `TXT` 记录的 TTL。很少需要设置。
 
-- **dns_challenge_override_domain** <span id="dns_challenge_override_domain"/> overrides the domain to use for the DNS challenge. This is to delegate the challenge to a different domain.
+- **dns_challenge_override_domain** <span id="dns_challenge_override_domain"/> 覆盖用于 DNS 挑战的域名。这是为了将挑战委托给另一个域名。
 
-  You may want to use this if your primary domain's DNS provider does not have a [DNS plugin <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) available. You can instead add a `CNAME` record with subdomain `_acme-challenge` to your primary domain, pointing to a secondary domain for which you _do_ have a plugin. This option _does not_ require special support from the plugin.
+  如果你的主域名的 DNS 提供者没有可用的 [DNS 插件 <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns)，你可能希望使用此选项。你可以改为在你的主域名中添加一个子域为 `_acme-challenge` 的 `CNAME` 记录，指向你确实拥有插件的辅助域名。此选项 _不需要_ 插件提供特殊支持。
   
-  When ACME issuers try to solve the DNS challenge for your primary domain, they will then follow the `CNAME` to your secondary domain to find the `TXT` record.
+  当 ACME 签发者尝试为你主域名解决 DNS 挑战时，它们将跟随 `CNAME` 记录到你的辅助域名以查找 `TXT` 记录。
 
-  **Note:** Use full canonical name from the CNAME record as value here - `_acme-challenge` subdomain won't be prepended automatically.
+  **注意：** 在此处使用 CNAME 记录中的完整规范名称 - `_acme-challenge` 子域不会自动附加。
 
-- **resolvers** <span id="resolvers"/> customizes the DNS resolvers used when performing the DNS challenge; these take precedence over system resolvers or any default ones. If set here, the resolvers will propagate to all configured certificate issuers.
+- **resolvers** <span id="resolvers"/> 自定义执行 DNS 挑战时使用的 DNS 解析器；这些解析器优先于系统解析器或任何默认解析器。如果在此处设置，解析器将传播到所有配置的证书签发者。
 
-  This is typically a list of IP addresses. For example, to use [Google Public DNS <img src="/old/resources/images/external-link.svg" class="external-link">](https://developers.google.com/speed/public-dns):
+  这通常是一个 IP 地址列表。例如，要使用 [Google Public DNS <img src="/old/resources/images/external-link.svg" class="external-link">](https://developers.google.com/speed/public-dns)：
 
   ```caddy-d
   resolvers 8.8.8.8 8.8.4.4
   ```
 
-- **preferred_chains** <span id="preferred_chains"/> specifies which certificate chains Caddy should prefer; useful if your CA provides multiple chains. Use one of the following options:
-	- **smallest** <span id="smallest"/> will tell Caddy to prefer chains with the fewest amount of bytes.
+- **preferred_chains** <span id="preferred_chains"/> 指定 Caddy 应优先使用的证书链；如果你的 CA 提供多条链，这很有用。使用以下选项之一：
+	- **smallest** <span id="smallest"/> 将告诉 Caddy 优先选择字节数最少的链。
 
-	- **root_common_name** <span id="root_common_name"/> is a list of one or more common names; Caddy will choose the first chain that has a root that matches with at least one of the specified common names.
+	- **root_common_name** <span id="root_common_name"/> 是一个或多个通用名称的列表；Caddy 将选择第一个根与至少一个指定通用名称匹配的链。
 
-	- **any_common_name** <span id="any_common_name"/> is a list of one or more common names; Caddy will choose the first chain that has an issuer that matches with at least one of the specified common names.
+	- **any_common_name** <span id="any_common_name"/> 是一个或多个通用名称的列表；Caddy 将选择第一个签发者与至少一个指定通用名称匹配的链。
 
-- **profile** is the name of the [ACME profile](https://datatracker.ietf.org/doc/draft-aaron-acme-profiles/) to apply when ordering certificates. If you specify one, all configured (implictly or otherwise) CAs must support this profile. Refer to your CA's documentation for available profiles; some CAs may not support profiles. EXPERIMENTAL: The ACME profile specification is still in draft state, so this feature/function is subject to change or removal.
+- **profile** 是在订购证书时要应用的 [ACME profile](https://datatracker.ietf.org/doc/draft-aaron-acme-profiles/) 名称。如果指定了，所有配置的（隐式或其他方式）CA 必须支持此 profile。请参考你的 CA 文档了解可用的 profiles；某些 CA 可能不支持 profiles。实验性：ACME profile 规范仍处于草案状态，因此此功能可能更改或移除。
 
 
 #### zerossl
 
-Obtains certificates using [ZeroSSL's proprietary certificate issuance API](https://zerossl.com/documentation/api/). An API key is required and payment may also be required depending on your plan. Note that this issue is distinct from [ZeroSSL's ACME endpoint](https://zerossl.com/documentation/acme/). To use ZeroSSL's ACME endpoint, use the `acme` issuer described above configured with ZeroSSL's ACME directory endpoint.
+使用 [ZeroSSL 专有的证书签发 API](https://zerossl.com/documentation/api/) 获取证书。需要 API 密钥，根据你的计划可能还需要付费。请注意，此签发者与 [ZeroSSL 的 ACME 端点](https://zerossl.com/documentation/acme/) 不同。要使用 ZeroSSL 的 ACME 端点，请使用上面描述的 `acme` 签发者，并配置 ZeroSSL 的 ACME 目录端点。
 
 ```caddy-d
 ... zerossl <api_key> {
@@ -422,22 +422,22 @@ Obtains certificates using [ZeroSSL's proprietary certificate issuance API](http
 }
 ```
 
-- **validity_days** <span id="validity_days"/> defines the certificate lifetime. Only certain values are accepted; see [ZeroSSL's docs](https://zerossl.com/documentation/api/create-certificate/) for details.
+- **validity_days** <span id="validity_days"/> 定义证书的有效期。只接受某些值；详情请参阅 [ZeroSSL 的文档](https://zerossl.com/documentation/api/create-certificate/)。
 <!--   
   Default: `https://acme-v02.api.letsencrypt.org/directory`
  -->
-- **alt_http_port** <span id="zerossl_alt_http_port"/> is the port to use for completing ZeroSSL's HTTP validation, if not port 80.
-- **dns** <span id="zerossl_dns"/> enables CNAME validation method using the named DNS provider with the given configuration for automatic record provisioning. The DNS provider plugin must be installed from the [`caddy-dns` <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) repositories. Each provider plugin may have their own syntax following their name; refer to their docs for details. Maintaining support for each DNS provider is a community effort.
-- **propagation_delay** <span id="zerossl_propagation_delay"/> is how long to wait before checking for CNAME record propagation.
-- **propagation_timeout** <span id="zerossl_propagation_timeout"/> is how long to wait for CNAME record propagation before giving up.
-- **resolvers** <span id="zerossl_resolvers"/> defines custom DNS resolvers to use when checking for CNAME record propagation.
-- **dns_ttl** <span id="zerossl_dns_ttl"/> configures the TTL for CNAME records created as part of the validation process.
+- **alt_http_port** <span id="zerossl_alt_http_port"/> 是用于完成 ZeroSSL HTTP 验证的端口（如果不是端口 80）。
+- **dns** <span id="zerossl_dns"/> 使用指定的 DNS 提供者和给定配置启用 CNAME 验证方法以自动配置记录。DNS 提供者插件必须从 [`caddy-dns` <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddy-dns) 仓库安装。每个提供者插件可能在其名称后有自己特定的语法；详情请参考其文档。维护每个 DNS 提供者的支持是社区努力的结果。
+- **propagation_delay** <span id="zerossl_propagation_delay"/> 是在检查 CNAME 记录传播前等待的时间。
+- **propagation_timeout** <span id="zerossl_propagation_timeout"/> 是等待 CNAME 记录传播的最长时间，超过则放弃。
+- **resolvers** <span id="zerossl_resolvers"/> 定义在检查 CNAME 记录传播时使用的自定义 DNS 解析器。
+- **dns_ttl** <span id="zerossl_dns_ttl"/> 配置作为验证过程一部分创建的 CNAME 记录的 TTL。
 
 
 
 #### internal
 
-Obtains certificates from an internal certificate authority.
+从内部证书颁发机构获取证书。
 
 ```caddy-d
 ... internal {
@@ -447,55 +447,55 @@ Obtains certificates from an internal certificate authority.
 }
 ```
 
-- **ca** <span id="ca"/> is the name of the internal CA to use. Default: `local`. See the [PKI app global options](/docs/caddyfile/options#pki-options) to configure the `local` CA, or to create alternate CAs.
+- **ca** <span id="ca"/> 是要使用的内部 CA 名称。默认值：`local`。请参阅 [PKI 应用全局选项](/docs/caddyfile/options#pki-options) 来配置 `local` CA，或创建其他 CA。
 
-  By default, the root CA certificate has a `3600d` lifetime (10 years) and the intermediate has a `7d` lifetime (7 days).
+  默认情况下，根 CA 证书的有效期为 `3600d`（10 年），中间证书的有效期为 `7d`（7 天）。
 
-  Caddy will attempt to install the root CA certificate to the system trust store, but this may fail when Caddy is running as an unprivileged user, or when running in a Docker container. In that case, the root CA certificate will need to be manually installed, either by using the [`caddy trust`](/docs/command-line#caddy-trust) command, or by [copying out of the container](/docs/running#usage).
+  Caddy 会尝试将根 CA 证书安装到系统信任存储中，但当 Caddy 以非特权用户身份运行或在 Docker 容器中运行时，此操作可能会失败。此时，需要手动安装根 CA 证书，可以使用 [`caddy trust`](/docs/command-line#caddy-trust) 命令，或[从容器中复制](/docs/running#usage)。
 
-- **lifetime** <span id="lifetime"/> is a [duration value](/docs/conventions#durations) that sets the validity period for internally issued leaf certificates. Default: `12h`. It is NOT recommended to change this, unless absolutely necessary. It must be shorter than the intermediate's lifetime.
+- **lifetime** <span id="lifetime"/> 是一个[时长值](/docs/conventions#durations)，设置内部颁发的叶证书的有效期。默认值：`12h`。除非绝对必要，否则不建议更改。它必须短于中间证书的有效期。
 
-- **sign_with_root** <span id="sign_with_root"/> forces the root to be the issuer instead of the intermediate. This is NOT recommended and should only be used when devices/clients do not properly validate certificate chains (very uncommon).
+- **sign_with_root** <span id="sign_with_root"/> 强制使用根证书而不是中间证书作为签发者。不建议这样做，仅当设备/客户端未正确验证证书链时才应使用（非常罕见）。
 
 
 
-### Certificate Managers
+### 证书管理器
 
-Certificate manager modules are distinct from issuer modules in that use of manager modules implies that an external tool or service is keeping the certificate renewed, whereas an issuer module implies that Caddy itself is managing the certificate. (Issuer modules take a Certificate Signing Request (CSR) as input, but certificate manager modules take a TLS ClientHello as input.)
+证书管理器模块与签发者模块不同之处在于，使用管理器模块意味着外部工具或服务负责续期证书，而签发者模块意味着 Caddy 自己管理证书。（签发者模块将证书签名请求（CSR）作为输入，而证书管理器模块将 TLS ClientHello 作为输入。）
 
-These manager modules come standard with the `tls` directive:
+以下是 `tls` 指令附带的标准管理器模块：
 
 #### tailscale
 
-Get certificates from a locally-running [Tailscale <img src="/old/resources/images/external-link.svg" class="external-link">](https://tailscale.com) instance. [HTTPS must be enabled in your Tailscale account](https://tailscale.com/kb/1153/enabling-https/) (or your open source [Headscale server <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/juanfont/headscale)); and the Caddy process must either be running as root, or you must configure `tailscaled` to give your Caddy user [permission to fetch certificates](https://github.com/caddyserver/caddy/pull/4541#issuecomment-1021568348).
+从本地运行的 [Tailscale <img src="/old/resources/images/external-link.svg" class="external-link">](https://tailscale.com) 实例获取证书。[必须在你 Tailscale 账户中启用 HTTPS](https://tailscale.com/kb/1153/enabling-https/)（或你的开源 [Headscale 服务器 <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/juanfont/headscale)）；并且 Caddy 进程必须以 root 身份运行，或者你必须配置 `tailscaled` 以授权你的 Caddy 用户[获取证书](https://github.com/caddyserver/caddy/pull/4541#issuecomment-1021568348)。
 
-_**NOTE: This is usually unnecessary!** Caddy automatically uses Tailscale for all `*.ts.net` domains without any extra configuration._
+_**注意：这通常是不必要的！** Caddy 会自动为所有 `*.ts.net` 域名使用 Tailscale，无需额外配置。_
 
 ```caddy-d
-get_certificate tailscale  # often unnecessary!
+get_certificate tailscale  # 通常不需要！
 ```
 
 
 #### http
 
-Get certificates by making an HTTP(S) request. The response must have a `200` status code and the body must contain a PEM chain including the full certificate (with intermediates) as well as the private key.
+通过发出 HTTP(S) 请求获取证书。响应必须具有 `200` 状态码，并且正文必须包含 PEM 链，包括完整证书（带中间证书）以及私钥。
 
 ```caddy-d
 get_certificate http <url>
 ```
 
-- **url** <span id="url"/> is the fully-qualified URL to which to make the request. It is strongly advised that this be a local endpoint for performance reasons. The URL will be augmented with the following query string parameters: 
+- **url** <span id="url"/> 是请求的完整限定 URL。出于性能原因，强烈建议此端点为本地端点。URL 将附加以下查询字符串参数： 
 
-  - `server_name`: SNI value
-  - `signature_schemes`: comma-separated list of hex IDs of signature algorithms
-  - `cipher_suites`: comma-separated list of hex IDS of cipher suites
-  - `local_ip`: IP address to which the client made the request
+  - `server_name`：SNI 值
+  - `signature_schemes`：以逗号分隔的签名算法十六进制 ID 列表
+  - `cipher_suites`：以逗号分隔的密码套件十六进制 ID 列表
+  - `local_ip`：客户端发起请求的 IP 地址
 
 
 
-## Examples
+## 示例
 
-Use a custom certificate and key. The certificate should have [SANs](https://en.wikipedia.org/wiki/Subject_Alternative_Name) that match the site address:
+使用自定义证书和密钥。证书应具有与站点地址匹配的 [SAN](https://en.wikipedia.org/wiki/Subject_Alternative_Name)：
 
 ```caddy
 example.com {
@@ -503,7 +503,7 @@ example.com {
 }
 ```
 
-Use [locally-trusted](/docs/automatic-https#local-https) certificates for all hosts on the current site block, rather than public certificates via ACME / Let's Encrypt (useful in dev environments):
+对当前站点块中的所有主机使用[本地信任的](/docs/automatic-https#local-https)证书，而不是通过 ACME / Let's Encrypt 使用公共证书（在开发环境中很有用）：
 
 ```caddy
 example.com {
@@ -511,7 +511,7 @@ example.com {
 }
 ```
 
-Use locally-trusted certificates, but managed [On-Demand](/docs/automatic-https#on-demand-tls) instead of in the background. This allows you to point any domain at your Caddy instance and have it automatically provision a certificate for you. This SHOULD NOT be used if your Caddy instance is publicly accessible, since an attacker could use it to exhaust your server's resources:
+使用本地信任的证书，但通过[按需](/docs/automatic-https#on-demand-tls)方式管理，而非后台管理。这允许你将任何域名指向你的 Caddy 实例，并让它自动为你配置证书。如果 Caddy 实例可公开访问，则不应使用此方法，因为攻击者可能利用它耗尽你的服务器资源：
 
 ```caddy
 https:// {
@@ -521,7 +521,7 @@ https:// {
 }
 ```
 
-Use custom options for the internal CA (cannot use the `tls internal` shortcut):
+为内部 CA 使用自定义选项（不能使用 `tls internal` 快捷方式）：
 
 ```caddy
 example.com {
@@ -533,7 +533,7 @@ example.com {
 }
 ```
 
-Specify an email address for your ACME account (but if only one email is used for all sites, we recommend the `email` [global option](/docs/caddyfile/options) instead):
+为你的 ACME 账户指定邮箱地址（但如果所有站点只使用一个邮箱，我们建议使用 `email` [全局选项](/docs/caddyfile/options)代替）：
 
 ```caddy
 example.com {
@@ -541,7 +541,7 @@ example.com {
 }
 ```
 
-Enable the DNS challenge for a domain managed on Cloudflare with account credentials in an environment variable. This unlocks wildcard certificate support, which requires DNS validation:
+为在 Cloudflare 上管理的域名启用 DNS 挑战，账户凭据存储在环境变量中。这会解锁通配符证书支持，而通配符证书需要 DNS 验证：
 
 ```caddy
 *.example.com {
@@ -551,7 +551,7 @@ Enable the DNS challenge for a domain managed on Cloudflare with account credent
 }
 ```
 
-Get the certificate chain via HTTP, instead of having Caddy manage it. Note that [`get_certificate`](#certificate-managers) implies [`on_demand`](#on_demand) is enabled, fetching certificates using a module instead of triggering ACME issuance:
+通过 HTTP 获取证书链，而不是让 Caddy 管理。注意 [`get_certificate`](#certificate-managers) 隐含启用了 [`on_demand`](#on_demand)，使用模块获取证书而不是触发 ACME 签发：
 
 ```caddy
 https:// {
@@ -561,7 +561,7 @@ https:// {
 }
 ```
 
-Enable TLS Client Authentication and require clients to present a valid certificate that is verified against all the provided CA's via the [`trust_pool`](#trust_pool) `file` provider:
+启用 TLS 客户端认证，并要求客户端提供有效证书，该证书将通过 [`trust_pool`](#trust_pool) `file` 提供者提供的所有 CA 进行验证：
 
 ```caddy
 example.com {
@@ -571,4 +571,3 @@ example.com {
 		}
 	}
 }
-```

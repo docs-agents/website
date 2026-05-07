@@ -1,23 +1,23 @@
 ---
-title: "Extending Caddy"
+title: "扩展Caddy"
 ---
 
-# Extending Caddy
+# 扩展Caddy
 
-Caddy is easy to extend because of its modular architecture. Most kinds of Caddy extensions (or plugins) are known as _modules_ if they extend or plug into Caddy's configuration structure. To be clear, Caddy modules are distinct from [Go modules](https://github.com/golang/go/wiki/Modules) (but they are also Go modules).
+Caddy 因其模块化架构而易于扩展。大多数Caddy扩展（或插件）如果扩展或插入到Caddy的配置结构中，被称为**模块**。需要明确的是，Caddy模块与[Go模块](https://github.com/golang/go/wiki/Modules)不同（但它们也是Go模块）。
 
-**Prerequisites:**
-- Basic understanding of [Caddy's architecture](/docs/architecture)
-- Go language proficiency
+**先决条件：**
+- 基本了解 [Caddy 的架构](/docs/architecture)
+- 熟练掌握 Go 语言
 - [`go` <img src="/old/resources/images/external-link.svg" class="external-link">](https://golang.org/doc/install)
 - [`xcaddy` <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddyserver/xcaddy)
 
 
-## Quick Start
+## 快速开始
 
-A Caddy module is any named type that registers itself as a Caddy module when its package is imported. Crucially, a module always implements the [`caddy.Module`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Module) interface, which provides its name and a constructor function.
+Caddy 模块是一种命名类型，当其包被导入时，它会将自己注册为Caddy模块。关键在于，模块总是实现 [`caddy.Module`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Module) 接口，该接口提供了模块的名称和一个构造函数。
 
-In a new Go module, paste the following template into a Go file and customize your package name, type name, and Caddy module ID:
+在一个新的Go模块中，将以下模板粘贴到一个Go文件中，并自定义你的包名、类型名和Caddy模块ID：
 
 ```go
 package mymodule
@@ -28,11 +28,11 @@ func init() {
 	caddy.RegisterModule(Gizmo{})
 }
 
-// Gizmo is an example; put your own type here.
+// Gizmo 是一个示例；在此处放入你自己的类型。
 type Gizmo struct {
 }
 
-// CaddyModule returns the Caddy module information.
+// CaddyModule 返回 Caddy 模块信息。
 func (Gizmo) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
 		ID:  "foo.gizmo",
@@ -41,7 +41,7 @@ func (Gizmo) CaddyModule() caddy.ModuleInfo {
 }
 ```
 
-Then run this command from your project's directory, and you should see your module in the list:
+然后从你的项目目录运行此命令，你应该能在列表中看到你的模块：
 
 <pre><code class="cmd bash">xcaddy list-modules
 ...
@@ -50,67 +50,67 @@ foo.gizmo
 
 <aside class="tip">
 
-The [`xcaddy` command](https://github.com/caddyserver/xcaddy) is an important part of every module developer's workflow. It compiles Caddy with your plugin, then runs it with the given arguments. It discards the temporary binary each time (similar to `go run`).
+[`xcaddy` 命令](https://github.com/caddyserver/xcaddy) 是每个模块开发者工作流程中的重要组成部分。它用你的插件编译 Caddy，然后使用给定的参数运行它。它会每次都丢弃临时二进制文件（类似于 `go run`）。
 
 </aside>
 
 
-Congratulations, your module registers with Caddy and can be used in [Caddy's config document](/docs/json/) in whatever places use modules in the same namespace.
+恭喜，你的模块已注册到 Caddy，并且可以在 [Caddy 的配置文档](/docs/json/) 中的任何使用相同命名空间模块的地方使用它。
 
-Under the hood, `xcaddy` is simply making a new Go module that requires both Caddy and your plugin (with an appropriate `replace` to use your local development version), then adds an import to ensure it is compiled in:
+在底层，`xcaddy` 只是创建一个新的 Go 模块，该模块同时需要 Caddy 和你的插件（使用适当的 `replace` 来使用你的本地开发版本），然后添加一个导入以确保它被编译进来：
 
 ```go
 import _ "github.com/example/mymodule"
 ```
 
 
-## Module Basics
+## 模块基础
 
-Caddy modules:
+Caddy 模块：
 
-1. Implement the `caddy.Module` interface to provide an ID and constructor
-2. Have a unique name in the proper namespace
-3. Usually satisfy some interface(s) that are meaningful to the host module for that namespace
+1. 实现 `caddy.Module` 接口以提供 ID 和构造函数
+2. 在正确的命名空间中具有唯一名称
+3. 通常满足一些对该命名空间的主模块有意义的接口
 
-**Host modules** (or _parent modules_) are modules which load/initialize other modules. They typically define namespaces for guest modules.
+**主模块**（或**父模块**）是加载/初始化其他模块的模块。它们通常为客模块定义命名空间。
 
-**Guest modules** (or _child modules_) are modules which get loaded or initialized. All modules are guest modules.
-
-
-## Module IDs
-
-Each Caddy module has a unique ID, consisting of a namespace and name:
-
-- A complete ID looks like `foo.bar.module_name`
-- The namespace would be `foo.bar`
-- The name would be `module_name` which must be unique in its namespace
-
-Module IDs must use `snake_case` convention.
-
-### Namespaces
-
-Namespaces are like classes, i.e. a namespace defines some functionality that is common among all modules within it. For example, we can expect that all modules within the `http.handlers` namespace are HTTP handlers. It follows that a host module may type-assert guest modules in that namespace from `interface{}` types into a more specific, useful type such as `caddyhttp.MiddlewareHandler`.
-
-A guest module must be properly namespaced in order for it to be recognized by a host module because host modules will ask Caddy for modules within a certain namespace to provide the functionality desired by the host module. For example, if you were to write an HTTP handler module called `gizmo`, your module's name would be `http.handlers.gizmo`, because the `http` app will look for handlers in the `http.handlers` namespace.
-
-Put another way, Caddy modules are expected to implement [certain interfaces](/docs/extending-caddy/namespaces) depending on their module namespace. With this convention, module developers can say intuitive things such as, "All modules in the `http.handlers` namespace are HTTP handlers." More technically, this usually means, "All modules in the `http.handlers` namespace implement the `caddyhttp.MiddlewareHandler` interface." Because that method set is known, the more specific type can be asserted and used.
-
-**[View a table mapping all the standard Caddy namespaces to their Go types.](/docs/extending-caddy/namespaces)**
-
-The `caddy` and `admin` namespaces are reserved and cannot be app names.
-
-To write modules which plug into 3rd-party host modules, consult those modules for their namespace documentation.
-
-### Names
-
-The name within a namespace is significant and highly visible to users, but is not particularly important, as long as it is unique, concise, and makes sense for what it does.
+**客模块**（或**子模块**）是被加载或初始化的模块。所有模块都是客模块。
 
 
-## App Modules
+## 模块 ID
 
-Apps are modules with an empty namespace, and which conventionally become their own top-level namespace. App modules implement the [`caddy.App`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#App) interface.
+每个 Caddy 模块都有一个唯一的 ID，由命名空间和名称组成：
 
-These modules appear in the [`"apps"`](/docs/json/#apps) property of the top-level of Caddy's config:
+- 完整的 ID 看起来像 `foo.bar.module_name`
+- 命名空间是 `foo.bar`
+- 名称是 `module_name`，必须在其命名空间内唯一
+
+模块 ID 必须使用 `snake_case` 约定。
+
+### 命名空间
+
+命名空间类似于类，即命名空间定义了其内所有模块共有的某些功能。例如，我们可以预期 `http.handlers` 命名空间内的所有模块都是 HTTP 处理程序。因此，主模块可以将该命名空间中的客模块从 `interface{}` 类型断言为更具体、有用的类型，例如 `caddyhttp.MiddlewareHandler`。
+
+客模块必须正确命名空间，才能被主模块识别，因为主模块会要求 Caddy 提供某个命名空间内的模块，以获得主模块所需的功能。例如，如果你要编写一个名为 `gizmo` 的 HTTP 处理程序模块，你的模块名称应为 `http.handlers.gizmo`，因为 `http` 应用会在 `http.handlers` 命名空间中查找处理程序。
+
+换句话说，根据其模块命名空间，Caddy 模块应实现[特定接口](/docs/extending-caddy/namespaces)。根据这个约定，模块开发者可以说出诸如“`http.handlers` 命名空间中的所有模块都是 HTTP 处理程序”这样直观的说法。更技术性地说，这通常意味着“`http.handlers` 命名空间中的所有模块都实现了 `caddyhttp.MiddlewareHandler` 接口”。因为该方法集是已知的，所以可以断言并使用更具体的类型。
+
+**[查看将标准 Caddy 命名空间映射到其 Go 类型的表格。](/docs/extending-caddy/namespaces)**
+
+`caddy` 和 `admin` 命名空间是保留的，不能用作应用名称。
+
+要编写插入第三方主模块的模块，请查阅这些模块的命名空间文档。
+
+### 名称
+
+命名空间内的名称对用户来说很重要且高度可见，但并不是特别重要，只要它唯一、简洁并且对其功能有意义即可。
+
+
+## 应用模块
+
+应用是命名空间为空的模块，并且按照惯例成为其自己的顶级命名空间。应用模块实现 [`caddy.App`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#App) 接口。
+
+这些模块出现在 Caddy 配置顶层的 `"apps"` 属性中：
 
 ```json
 {
@@ -118,18 +118,18 @@ These modules appear in the [`"apps"`](/docs/json/#apps) property of the top-lev
 }
 ```
 
-Example [apps](/docs/json/apps/) are `http` and `tls`. Theirs is the empty namespace.
+示例[应用](/docs/json/apps/)包括 `http` 和 `tls`。它们的命名空间为空。
 
-Guest modules written for these apps should be in a namespace derived from the app name. For example, HTTP handlers use the `http.handlers` namespace and TLS certificate loaders use the `tls.certificates` namespace.
+为这些应用编写的客模块应位于从应用名称派生的命名空间中。例如，HTTP 处理程序使用 `http.handlers` 命名空间，TLS 证书加载器使用 `tls.certificates` 命名空间。
 
-## Module Implementation
+## 模块实现
 
-A module can be virtually any type, but structs are the most common because they can hold user configuration.
+模块几乎可以是任何类型，但结构体是最常见的，因为它们可以保存用户配置。
 
 
-### Configuration
+### 配置
 
-Most modules require some configuration. Caddy takes care of this automatically, as long as your type is compatible with JSON. Thus, if a module is a struct type, it will need struct tags on its fields, which should use `snake_casing` according to Caddy convention:
+大多数模块需要一些配置。只要你的类型与 JSON 兼容，Caddy 会自动处理这些。因此，如果模块是结构体类型，则需要在其字段上使用结构体标签，这些标签应根据 Caddy 约定使用 `snake_case`：
 
 ```go
 type Gizmo struct {
@@ -138,108 +138,108 @@ type Gizmo struct {
 }
 ```
 
-Using the `omitempty` option in the struct tag will omit the field from the JSON output if it is the zero value for its type. This is useful to keep the JSON config clean and concise when marshaled (e.g. adapting from Caddyfile to JSON).
+在结构体标签中使用 `omitempty` 选项将在 JSON 输出中忽略该字段（如果它是其类型的零值）。这在输出 JSON 时（例如，从 Caddyfile 适配到 JSON）有助于保持配置简洁。
 
-When a module is initialized, it will already have its configuration filled out. It is also possible to perform additional [provisioning](#provisioning) and [validation](#validating) steps after a module is initialized.
+当模块初始化时，它已经填充了其配置。也可以在模块初始化后执行其他[配置步骤](#配置)和[验证](#验证)步骤。
 
 
-### Module Lifecycle
+### 模块生命周期
 
-A module's life begins when it is loaded by a host module. The following happens:
+当一个模块被主模块加载时，它的生命周期开始。发生以下步骤：
 
-1. [`New()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#ModuleInfo.New) is called to get an instance of the module's value.
-2. The module's configuration is unmarshaled into that instance.
-3. If the module is a [`caddy.Provisioner`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Provisioner), the `Provision()` method is called.
-4. If the module is a [`caddy.Validator`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Validator), the `Validate()` method is called.
-5. At this point, the host module is given the loaded guest module as an `interface{}` value, so the host module will usually type-assert the guest module into a more useful type. Check the documentation for the host module to know what is required of a guest module in its namespace, e.g. what methods need to be implemented.
-6. When a module is no longer needed, and if it is a [`caddy.CleanerUpper`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#CleanerUpper), the `Cleanup()` method is called.
+1. 调用 [`New()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#ModuleInfo.New) 获取模块值的实例。
+2. 模块的配置被反序列化到该实例中。
+3. 如果模块实现了 [`caddy.Provisioner`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Provisioner)，则调用 `Provision()` 方法。
+4. 如果模块实现了 [`caddy.Validator`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Validator)，则调用 `Validate()` 方法。
+5. 此时，主模块获得加载的客模块作为 `interface{}` 值，因此主模块通常会将客模块断言为更有用的类型。请查阅主模块的文档，了解其命名空间中客模块需要满足的条件，例如需要实现哪些方法。
+6. 当不再需要模块时，如果它实现了 [`caddy.CleanerUpper`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#CleanerUpper)，则调用 `Cleanup()` 方法。
 
-Note that multiple loaded instances of your module may overlap at a given time! During config changes, new modules are started before the old ones are stopped. Be sure to use global state carefully. Use the [`caddy.UsagePool`](https://pkg.go.dev/github.com/caddyserver/caddy/v2#UsagePool) type to help manage global state across module loads. If your module listens on a socket, use `caddy.Listen*()` to get a socket that supports overlapping usage.
+请注意，在给定时间内，多个已加载的模块实例可能会重叠！在配置更改期间，新模块会在旧模块停止之前启动。请谨慎使用全局状态。使用 [`caddy.UsagePool`](https://pkg.go.dev/github.com/caddyserver/caddy/v2#UsagePool) 类型来帮助管理跨模块加载的全局状态。如果你的模块监听套接字，使用 `caddy.Listen*()` 获取支持重叠使用的套接字。
 
-### Provisioning
+### 配置
 
-A module's configuration will be unmarshaled into its value automatically (when loading the JSON config). This means, for example, that struct fields will be filled out for you.
+模块的配置将自动反序列化到其值中（在加载 JSON 配置时）。这意味着，例如，结构体字段将被为你填充。
 
-However, if your module requires additional provisioning steps, you can implement the (optional) [`caddy.Provisioner`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Provisioner) interface:
+但是，如果你的模块需要额外的配置步骤，你可以实现（可选）接口 [`caddy.Provisioner`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Provisioner)：
 
 ```go
-// Provision sets up the module.
+// Provision 设置模块。
 func (g *Gizmo) Provision(ctx caddy.Context) error {
-	// TODO: set up the module
+	// TODO: 设置模块
 	return nil
 }
 ```
 
-This is where you should set default values for fields that were not provided by the user (fields that are not their zero value). If a field is required, you may return an error if it is not set. For numeric fields where the zero value has meaning (e.g. some timeout duration), you may want to support `-1` to mean "off" rather than `0`, so you may set a default value if the user did not configure it.
+在此处，你应该为用户未提供的字段（即非零值的字段）设置默认值。如果某个字段是必需的，并且在未设置时可以返回错误。对于零值具有含义的数字字段（例如，某些超时时间），你可能希望支持 `-1` 表示“关闭”而不是 `0`，这样可以在用户未配置时设置默认值。
 
-This is also typically where host modules will load their guest/child modules.
+这也是主模块通常会加载其客/子模块的地方。
 
-A module may access other apps by calling `ctx.App()`, but modules must not have circular dependencies. In other words, a module loaded by the `http` app cannot depend on the `tls` app if a module loaded by the `tls` app depends on the `http` app. (Very similar to rules forbidding import cycles in Go.)
+模块可以通过调用 `ctx.App()` 访问其他应用，但模块不能有循环依赖关系。换句话说，如果 `tls` 应用加载的模块依赖于 `http` 应用，那么 `http` 应用加载的模块就不能依赖于 `tls` 应用。（与 Go 中禁止导入循环的规则非常相似。）
 
-Additionally, you should avoid performing expensive operations in `Provision`, since provisioning is performed even if a config is only being validated. When in the provisioning phase, do not expect that the module will actually be used.
+此外，你应该避免在 `Provision` 中执行昂贵的操作，因为即使配置仅被验证，配置也会执行。在配置阶段，不要期望模块会被实际使用。
 
-#### Logs
+#### 日志
 
-See [how logging works](/docs/logging) in Caddy. If your module needs logging, do not use `log.Print*()` from the Go standard library. In other words, **do not use Go's global logger**. Caddy uses high-performance, highly flexible, structured logging with [zap](https://github.com/uber-go/zap).
+请参阅 [Caddy 中的日志记录方式](/docs/logging)。如果你的模块需要日志记录，不要使用 Go 标准库中的 `log.Print*()`。换句话说，**不要使用 Go 的全局日志记录器**。Caddy 使用高性能、高度灵活的结构化日志记录，基于 [zap](https://github.com/uber-go/zap)。
 
-To emit logs, get a logger in your module's Provision method:
+要输出日志，在模块的 Provision 方法中获取一个日志记录器：
 
 ```go
 func (g *Gizmo) Provision(ctx caddy.Context) error {
-	g.logger = ctx.Logger() // g.logger is a *zap.Logger
+	g.logger = ctx.Logger() // g.logger 是一个 *zap.Logger
 }
 ```
 
-Then you can emit structured, leveled logs using `g.logger`. See [zap's godoc](https://pkg.go.dev/go.uber.org/zap?tab=doc#Logger) for details.
+然后你可以使用 `g.logger` 输出结构化的分级日志。有关详细信息，请参阅 [zap 的 godoc](https://pkg.go.dev/go.uber.org/zap?tab=doc#Logger)。
 
 
-### Validating
+### 验证
 
-Modules which would like to validate their configuration may do so by satisfying the (optional) [`caddy.Validator`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Validator) interface:
+想要验证其配置的模块可以通过满足（可选）接口 [`caddy.Validator`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Validator) 来实现：
 
 ```go
-// Validate validates that the module has a usable config.
+// Validate 验证模块是否具有可用的配置。
 func (g Gizmo) Validate() error {
-	// TODO: validate the module's setup
+	// TODO: 验证模块的设置
 	return nil
 }
 ```
 
-Validate should be a read-only function. It is run after the `Provision()` method.
+Validate 应为只读函数。它在 `Provision()` 方法之后运行。
 
 
-### Interface guards
+### 接口守卫
 
-Caddy module behavior is implicit because Go interfaces are satisfied implicitly. Simply adding the right methods to your module's type is all it takes to make or break your module's correctness. Thus, making a typo or getting the method signature wrong can lead to unexpected (lack of) behavior.
+Caddy 模块的行为是隐式的，因为 Go 接口是隐式满足的。只需向模块的类型添加正确的方法即可使模块正确或错误。因此，拼写错误或方法签名错误可能导致意外（缺乏）行为。
 
-Fortunately, there is an easy, no-overhead, compile-time check you can add to your code to ensure you've added the right methods. These are called interface guards:
+幸运的是，有一种简单、无开销的编译时检查方法，你可以将其添加到代码中，以确保添加了正确的方法。这些被称为接口守卫：
 
 ```go
 var _ InterfaceName = (*YourType)(nil)
 ```
 
-Replace `InterfaceName` with the interface you intend to satisfy, and `YourType` with the name of your module's type.
+将 `InterfaceName` 替换为你打算满足的接口，将 `YourType` 替换为模块类型的名称。
 
-For example, an HTTP handler such as the static file server might satisfy multiple interfaces:
+例如，一个 HTTP 处理程序（如静态文件服务器）可能满足多个接口：
 
 ```go
-// Interface guards
+// 接口守卫
 var (
 	_ caddy.Provisioner           = (*FileServer)(nil)
 	_ caddyhttp.MiddlewareHandler = (*FileServer)(nil)
 )
 ```
 
-This prevents the program from compiling if `*FileServer` does not satisfy those interfaces.
+如果 `*FileServer` 不满足这些接口，这将阻止程序编译。
 
-Without interface guards, confusing bugs can slip in. For example, if your module must provision itself before being used but your `Provision()` method has a mistake (e.g. misspelled or wrong signature), provisioning will never happen, leading to head-scratching. Interface guards are super easy and can prevent that. They usually go at the bottom of the file.
+如果没有接口守卫，可能会混入令人困惑的错误。例如，如果你的模块在使用前必须配置自身，但你的 `Provision()` 方法有错误（例如，拼写错误或签名错误），则配置将永远不会发生，导致令人困惑的情况。接口守卫非常容易，可以防止这种情况。它们通常放在文件底部。
 
 
-## Host Modules
+## 主模块
 
-A module becomes a host module when it loads its own guest modules. This is useful if a piece of the module's functionality can be implemented in different ways.
+当一个模块加载自己的客模块时，它就成为主模块。如果模块功能的某个部分可以通过不同方式实现，这将非常有用。
 
-A host module is almost always a struct. Normally, supporting a guest module requires two struct fields: one to hold its raw JSON, and another to hold its decoded value:
+主模块几乎总是结构体。通常，支持客模块需要两个结构体字段：一个用于保存其原始 JSON，另一个用于保存其解码后的值：
 
 ```go
 type Gizmo struct {
@@ -249,38 +249,38 @@ type Gizmo struct {
 }
 ```
 
-The first field (`GadgetRaw` in this example) is where the raw, unprovisioned JSON form of the guest module can be found.
+第一个字段（此示例中的 `GadgetRaw`）是客模块的原始、未配置的 JSON 形式的存放位置。
 
-The second field (`Gadget`) is where the final, provisioned value will eventually be stored. Since the second field is not user-facing, we exclude it from JSON with a struct tag. (You could also unexport it if it is not needed by other packages, and then no struct tag is needed.)
+第二个字段（`Gadget`）是最终配置后的值最终存储的位置。由于第二个字段不是面向用户的，我们通过结构体标签将其从 JSON 中排除。（如果其他包不需要，你也可以将其取消导出，这样就不需要结构体标签了。）
 
-### Caddy struct tags
+### Caddy 结构体标签
 
-The `caddy` struct tag on the raw module field helps Caddy to know the namespace and name (comprising the complete ID) of the module to load. It is also used for generating documentation.
+原始模块字段上的 `caddy` 结构体标签帮助 Caddy 了解要加载的模块的命名空间和名称（构成完整 ID）。它还用于生成文档。
 
-The struct tag has a very simple format: `key1=val1 key2=val2 ...`
+结构体标签具有非常简单的格式：`key1=val1 key2=val2 ...`
 
-For module fields, the struct tag will look like:
+对于模块字段，结构体标签将如下所示：
 
 ```go
 `caddy:"namespace=foo.bar inline_key=baz"`
 ```
 
-The `namespace=` part is required. It defines the namespace in which to look for the module.
+`namespace=` 部分是必需的。它定义了在其中查找模块的命名空间。
 
-The `inline_key=` part is only used if the module's name will be found _inline_ with the module itself; this implies that the value is an object where one of the keys is the _inline key_, and its value is the name of the module. If omitted, then the field type must be a [`caddy.ModuleMap`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#ModuleMap) or `[]caddy.ModuleMap`, where the map key is the module name.
+`inline_key=` 部分仅在模块名称将与模块本身一起**内联**找到时使用；这意味着该值是一个对象，其中一个键是内联键，其值是模块的名称。如果省略，则字段类型必须为 [`caddy.ModuleMap`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#ModuleMap) 或 `[]caddy.ModuleMap`，其中映射键是模块名称。
 
 
-### Loading guest modules
+### 加载客模块
 
-To load a guest module, call [`ctx.LoadModule()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Context.LoadModule) during the provision phase:
+要加载客模块，在配置阶段调用 [`ctx.LoadModule()`](https://pkg.go.dev/github.com/caddyserver/caddy/v2?tab=doc#Context.LoadModule)：
 
 ```go
-// Provision sets up g and loads its gadget.
+// Provision 设置 g 并加载其 gadget。
 func (g *Gizmo) Provision(ctx caddy.Context) error {
 	if g.GadgetRaw != nil {
 		val, err := ctx.LoadModule(g, "GadgetRaw")
 		if err != nil {
-			return fmt.Errorf("loading gadget module: %v", err)
+			return fmt.Errorf("加载 gadget 模块：%v", err)
 		}
 		g.Gadget = val.(Gadgeter)
 	}
@@ -288,25 +288,25 @@ func (g *Gizmo) Provision(ctx caddy.Context) error {
 }
 ```
 
-Note that the `LoadModule()` call takes a pointer to the struct and the field name as a string. Weird, right? Why not just pass the struct field directly? It's because there are a few different ways to load modules depending on the layout of the config. This method signature allows Caddy to use reflection to figure out the best way to load the module and, most importantly, read its struct tags.
+注意，`LoadModule()` 调用接受指向结构体的指针和字段名称作为字符串。这有点奇怪，对吧？为什么不直接传递结构体字段？这是因为根据配置的布局，有几种不同的加载模块的方式。这种方法签名允许 Caddy 使用反射来确定加载模块的最佳方式，最重要的是，读取其结构体标签。
 
-If a guest module must explicitly be set by the user, you should return an error if the Raw field is nil or empty before trying to load it.
+如果客模块必须由用户显式设置，则在尝试加载之前，如果 Raw 字段为 nil 或为空，你应该返回错误。
 
-Notice how the loaded module is type-asserted: `g.Gadget = val.(Gadgeter)` - this is because the returned `val` is a `interface{}` type which is not very useful. However, we expect that all modules in the declared namespace (`foo.gizmo.gadgets` from the struct tag in our example) implement the `Gadgeter` interface, so this type assertion is safe, and then we can use it!
+注意加载的模块是如何被断言类型的：`g.Gadget = val.(Gadgeter)` - 这是因为返回的 `val` 是 `interface{}` 类型，不是很有用。但是，我们期望声明的命名空间（来自示例中结构体标签的 `foo.gizmo.gadgets`）中的所有模块都实现 `Gadgeter` 接口，因此这种类型断言是安全的，然后我们可以使用它！
 
-If your host module defines a new namespace, be sure to document both that namespace and its Go type(s) for developers [like we have done here](/docs/extending-caddy/namespaces).
+如果你的主模块定义了一个新的命名空间，请务必记录该命名空间及其 Go 类型，供开发者参考，[就像我们在这里所做的那样](/docs/extending-caddy/namespaces)。
 
-## Module Documentation
+## 模块文档
 
-Register the module to make a new Caddy module show up in the module documentation and be available in http://caddyserver.com/download. The registration is available at http://caddyserver.com/account. Create a new account if you don't have one already and click on "Register package".
+注册模块使新的 Caddy 模块出现在模块文档中，并在 http://caddyserver.com/download 上可用。注册可在 http://caddyserver.com/account 进行。如果你还没有帐户，请创建一个新帐户，然后点击“注册包”。
 
-## Complete Example
+## 完整示例
 
-Let's suppose we want to write an HTTP handler module. This will be a contrived middleware for demonstration purposes which prints the visitor's IP address to a stream on every HTTP request.
+假设我们要编写一个 HTTP 处理程序模块。这将是一个为了演示目的而编造中间件，它在每个 HTTP 请求时将访问者的 IP 地址打印到流中。
 
-We also want it to be configurable via the Caddyfile, because most people prefer to use the Caddyfile in non-automated situations. We do this by registering a Caddyfile handler directive, which is a kind of directive that can add a handler to the HTTP route. We also implement the `caddyfile.Unmarshaler` interface. By adding these few lines of code, this module can be configured with the Caddyfile! For example: `visitor_ip stdout`.
+我们还希望它可以通过 Caddyfile 进行配置，因为大多数人在非自动化情况下更喜欢使用 Caddyfile。我们通过注册一个 Caddyfile 处理程序指令来实现这一点，这是一种可以向 HTTP 路由添加处理程序的指令。我们还实现了 `caddyfile.Unmarshaler` 接口。通过添加这几行代码，该模块就可以使用 Caddyfile 进行配置！例如：`visitor_ip stdout`。
 
-Here is the code for such a module, with explanatory comments:
+以下是此类模块的代码，并附有解释性注释：
 
 ```go
 package visitorip
@@ -328,17 +328,15 @@ func init() {
 	httpcaddyfile.RegisterHandlerDirective("visitor_ip", parseCaddyfile)
 }
 
-// Middleware implements an HTTP handler that writes the
-// visitor's IP address to a file or stream.
+// Middleware 实现了一个 HTTP 处理程序，它将访问者的 IP 地址写入文件或流。
 type Middleware struct {
-	// The file or stream to write to. Can be "stdout"
-	// or "stderr".
+	// 要写入的文件或流。可以是 "stdout" 或 "stderr"。
 	Output string `json:"output,omitempty"`
 
 	w io.Writer
 }
 
-// CaddyModule returns the Caddy module information.
+// CaddyModule 返回 Caddy 模块信息。
 func (Middleware) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
 		ID:  "http.handlers.visitor_ip",
@@ -346,7 +344,7 @@ func (Middleware) CaddyModule() caddy.ModuleInfo {
 	}
 }
 
-// Provision implements caddy.Provisioner.
+// Provision 实现 caddy.Provisioner。
 func (m *Middleware) Provision(ctx caddy.Context) error {
 	switch m.Output {
 	case "stdout":
@@ -354,51 +352,50 @@ func (m *Middleware) Provision(ctx caddy.Context) error {
 	case "stderr":
 		m.w = os.Stderr
 	default:
-		return fmt.Errorf("an output stream is required")
+		return fmt.Errorf("需要指定输出流")
 	}
 	return nil
 }
 
-// Validate implements caddy.Validator.
+// Validate 实现 caddy.Validator。
 func (m *Middleware) Validate() error {
 	if m.w == nil {
-		return fmt.Errorf("no writer")
+		return fmt.Errorf("没有写入器")
 	}
 	return nil
 }
 
-// ServeHTTP implements caddyhttp.MiddlewareHandler.
+// ServeHTTP 实现 caddyhttp.MiddlewareHandler。
 func (m Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
 	m.w.Write([]byte(r.RemoteAddr))
 	return next.ServeHTTP(w, r)
 }
 
-// UnmarshalCaddyfile implements caddyfile.Unmarshaler.
+// UnmarshalCaddyfile 实现 caddyfile.Unmarshaler。
 func (m *Middleware) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
-	d.Next() // consume directive name
+	d.Next() // 消耗指令名称
 
-	// require an argument
+	// 需要一个参数
 	if !d.NextArg() {
 		return d.ArgErr()
 	}
 
-	// store the argument
+	// 存储参数
 	m.Output = d.Val()
 	return nil
 }
 
-// parseCaddyfile unmarshals tokens from h into a new Middleware.
+// parseCaddyfile 将 h 中的标记解析为新的 Middleware。
 func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error) {
 	var m Middleware
 	err := m.UnmarshalCaddyfile(h.Dispenser)
 	return m, err
 }
 
-// Interface guards
+// 接口守卫
 var (
 	_ caddy.Provisioner           = (*Middleware)(nil)
 	_ caddy.Validator             = (*Middleware)(nil)
 	_ caddyhttp.MiddlewareHandler = (*Middleware)(nil)
 	_ caddyfile.Unmarshaler       = (*Middleware)(nil)
 )
-```

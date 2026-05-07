@@ -1,47 +1,42 @@
 ---
-title: metrics (Caddyfile directive)
+title: metrics（Caddyfile 指令）
 ---
 
 # metrics
 
-Configures a Prometheus metrics exposition endpoint so the gathered metrics can
-be exposed for scraping. **Metrics must be [turned on in your global options](/docs/caddyfile/options#metrics) first.**
+配置 Prometheus 指标暴露端点，使收集到的指标能被抓取。**必须首先在[全局选项](/docs/caddyfile/options#metrics)中启用指标。**
 
-Note that a `/metrics` endpoint is also attached to the [admin API](/docs/api),
-which is not configurable, and is not available when the admin API is disabled.
+注意 `/metrics` 端点也会附加到[管理 API](/docs/api) 上，该端点不可配置，并且在管理 API 禁用时不可用。
 
-This endpoint will return metrics in the [Prometheus exposition format](https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format)
-or, if negotiated, in the [OpenMetrics exposition format](https://pkg.go.dev/github.com/prometheus/client_golang@v1.9.0/prometheus/promhttp#HandlerOpts)
-(`application/openmetrics-text`).
+此端点将返回 [Prometheus 暴露格式](https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format) 的指标，或者（如果协商后）返回 [OpenMetrics 暴露格式](https://pkg.go.dev/github.com/prometheus/client_golang@v1.9.0/prometheus/promhttp#HandlerOpts)（`application/openmetrics-text`）的指标。
 
-See also [Monitoring Caddy with Prometheus metrics](/docs/metrics).
+另请参阅[使用 Prometheus 指标监控 Caddy](/docs/metrics)。
 
-## Syntax
+## 语法
 
 ```caddy-d
-metrics [<matcher>] {
+metrics [<匹配器>] {
 	disable_openmetrics
 }
 ```
 
-- **disable_openmetrics** disables OpenMetrics negotiation. Usually not 
-  necessary except when needing to work around parsing bugs.
+- **disable_openmetrics** 禁用 OpenMetrics 协商。通常非必要，除非需要解决解析错误。
 
-## Examples
+## 示例
 
-Expose metrics at the default `/metrics` path:
+在默认 `/metrics` 路径暴露指标：
 
 ```caddy-d
 metrics /metrics
 ```
 
-Expose metrics at another path:
+在其他路径暴露指标：
 
 ```caddy-d
 metrics /foo/bar/baz
 ```
 
-Serve metrics at a separate subdomain:
+在单独的子域名上提供指标：
 
 ```caddy
 metrics.example.com {
@@ -49,10 +44,9 @@ metrics.example.com {
 }
 ```
 
-Disable OpenMetrics negotiation:
+禁用 OpenMetrics 协商：
 
 ```caddy-d
 metrics /metrics {
 	disable_openmetrics
 }
-```

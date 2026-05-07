@@ -1,5 +1,5 @@
 ---
-title: handle_path (Caddyfile directive)
+title: handle_path (Caddyfile 指令)
 ---
 
 <script>
@@ -20,12 +20,11 @@ ready(function() {
 
 # handle_path
 
-Works the same as the [`handle` directive](handle), but implicitly uses [`uri strip_prefix`](uri) to strip the matched path prefix.
+工作方式与 [`handle` 指令](handle)相同，但会隐式使用 [`uri strip_prefix`](uri) 来去除匹配的路径前缀。
 
-Handling a request matching a certain path (while stripping that path from the request URI) is a common enough use case that it has its own directive for convenience.
+处理匹配特定路径的请求（并从请求URI中去除该路径）是一个常见的用例，因此专门有一个指令来方便使用。
 
-
-## Syntax
+## 语法
 
 ```caddy-d
 handle_path <path_matcher> {
@@ -33,13 +32,13 @@ handle_path <path_matcher> {
 }
 ```
 
-- **<directives...>** is a list of HTTP handler directives or directive blocks, one per line, just like would be used outside of a `handle_path` block.
+- **<directives...>** 是一系列HTTP处理器指令或指令块，每行一个，就像在 `handle_path` 块外使用一样。
 
-Only a single [path matcher](/docs/caddyfile/matchers#path-matchers) is accepted, and is required; you cannot use named matchers with `handle_path`.
+只接受单个[路径匹配器](/docs/caddyfile/matchers#path-matchers)，且为必需；你不能在 `handle_path` 中使用命名匹配器。
 
-## Examples
+## 示例
 
-This configuration:
+以下配置：
 
 ```caddy-d
 handle_path /prefix/* {
@@ -47,7 +46,7 @@ handle_path /prefix/* {
 }
 ```
 
-👆 is effectively the same as this 👇, but the `handle_path` form 👆 is slightly more succinct
+👆 实际上等同于以下 👇，但 `handle_path` 形式 👆 更为简洁：
 
 ```caddy-d
 handle /prefix/* {
@@ -56,19 +55,18 @@ handle /prefix/* {
 }
 ```
 
-A full Caddyfile example, where `handle_path` and `handle` are mutually exclusive; but, be aware of the [subfolder problem <img src="/old/resources/images/external-link.svg" class="external-link">](https://caddy.community/t/the-subfolder-problem-or-why-cant-i-reverse-proxy-my-app-into-a-subfolder/8575)
+一个完整的 Caddyfile 示例，其中 `handle_path` 和 `handle` 是互斥的；但请注意[子文件夹问题 <img src="/old/resources/images/external-link.svg" class="external-link">](https://caddy.community/t/the-subfolder-problem-or-why-cant-i-reverse-proxy-my-app-into-a-subfolder/8575)：
 
 ```caddy
 example.com {
-	# Serve your API, stripping the /api prefix
+	# 提供你的 API 服务，去除 /api 前缀
 	handle_path /api/* {
 		reverse_proxy localhost:9000
 	}
 
-	# Serve your static site
+	# 提供你的静态站点
 	handle {
 		root /srv
 		file_server
 	}
 }
-```

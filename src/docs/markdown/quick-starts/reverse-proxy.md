@@ -1,38 +1,37 @@
 ---
-title: Reverse proxy quick-start
+title: 反向代理快速入门
 ---
 
-# Reverse proxy quick-start
+# 反向代理快速入门
 
-This guide will show you how to get a production-ready reverse proxy with or without HTTPS up and running quickly.
+本指南将向您展示如何快速搭建一个适用于生产环境的反向代理，支持或不支持HTTPS。
 
-**Prerequisites:**
-- Basic terminal / command line skills
-- `caddy` in your PATH
-- A running backend process to proxy to
+**前提条件：**
+- 基本的终端/命令行技能
+- `caddy` 已在 PATH 环境变量中
+- 一个正在运行的后端进程，用于代理转发
 
 ---
 
-This tutorial assumes that you have a backend HTTP service running at `127.0.0.1:9000`. These commands are for Linux, but the same principles apply to other operating systems.
+本教程假设您有一个在 `127.0.0.1:9000` 运行的后端 HTTP 服务。以下命令适用于 Linux，但相同原理也适用于其他操作系统。
 
-You can get a simple reverse proxy running without a config file, or you can use a config file for more flexibility and control.
+您可以在没有配置文件的情况下启动一个简单的反向代理，也可以使用配置文件以获得更高的灵活性和控制力。
 
+## 命令行
 
-## Command line
-
-To start a plaintext HTTP proxy from port 2080 to port 9000 on your machine:
+要在您的机器上启动一个从端口 2080 到端口 9000 的明文 HTTP 代理：
 
 <pre><code class="cmd bash">caddy reverse-proxy --from :2080 --to :9000</code></pre>
 
-Then try it:
+然后尝试：
 
 <pre><code class="cmd bash">curl -v 127.0.0.1:2080</code></pre>
 
-The [`reverse-proxy` command](/docs/command-line#reverse-proxy) is intended for quick and easy reverse proxies. (You can use it in production if your requirements are simple.)
+[`reverse-proxy` 命令](/docs/command-line#reverse-proxy) 旨在快速简单地配置反向代理。（如果您的需求简单，可以在生产环境中使用。）
 
 ## Caddyfile
 
-In the current working directory, create a file called `Caddyfile` with these contents:
+在当前工作目录中，创建一个名为 `Caddyfile` 的文件，内容如下：
 
 ```caddy
 :2080
@@ -40,49 +39,49 @@ In the current working directory, create a file called `Caddyfile` with these co
 reverse_proxy :9000
 ```
 
-That config file is roughly equivalent to the `caddy reverse-proxy` command above.
+这个配置文件大致等同于上面的 `caddy reverse-proxy` 命令。
 
-Then, from the same directory, run:
+然后，在同一目录下运行：
 
 <pre><code class="cmd bash">caddy run</code></pre>
 
-Then try your proxy:
+然后测试您的代理：
 
 <pre><code class="cmd bash">curl -v 127.0.0.1:2080</code></pre>
 
-If you change the Caddyfile, make sure to [reload](/docs/command-line#caddy-reload) Caddy.
+如果您修改了 Caddyfile，请务必 [重载](/docs/command-line#caddy-reload) Caddy。
 
-This was a simple example. You can do a lot more with the [`reverse_proxy` directive](/docs/caddyfile/directives/reverse_proxy).
+这是一个简单的示例。您可以使用 [`reverse_proxy` 指令](/docs/caddyfile/directives/reverse_proxy) 实现更多功能。
 
-## HTTPS from client to proxy
+## 从客户端到代理的 HTTPS
 
-Caddy will serve your proxy over [HTTPS automatically and by default](/docs/automatic-https) if it knows the hostname (domain name). The `caddy reverse-proxy` command will default to `localhost` if you omit the `--from` flag, or you can replace the first line of your Caddyfile with the domain name of the proxy.
+如果 Caddy 知道主机名（域名），它将 [自动且默认](/docs/automatic-https) 通过 HTTPS 提供代理服务。如果您省略 `--from` 标志，`caddy reverse-proxy` 命令将默认使用 `localhost`，或者您可以将 Caddyfile 的第一行替换为代理的域名。
 
-- If you use `localhost` or any domain ending in `.localhost`, Caddy will use an auto-renewing self-signed certificate. The first time you do this, you may need to enter a password as Caddy attempts to install its CA's root certificate into your trust store.
-- If you use any other domain name, Caddy will attempt to get a publicly-trusted certificate; make sure your DNS records point to your machine and that ports 80 and 443 are open to the public and directed toward Caddy.
+- 如果您使用 `localhost` 或以 `.localhost` 结尾的任何域名，Caddy 将使用自动续期的自签名证书。首次执行时，Caddy 会尝试将其 CA 的根证书安装到您的信任存储中，您可能需要输入密码。
+- 如果您使用任何其他域名，Caddy 将尝试获取公开信任的证书；请确保您的 DNS 记录指向您的机器，并且端口 80 和 443 对公网开放并指向 Caddy。
 
-If you don't specify a port, Caddy defaults to 443 for HTTPS. In that case you will also need permission to bind to low ports. A couple ways to do this on Linux:
+如果您不指定端口，Caddy 在 HTTPS 中默认使用 443。在这种情况下，您还需要拥有绑定低端口的权限。在 Linux 上有几种方法可以实现：
 
-- Run as root (e.g. `sudo -E`).
-- Or run `sudo setcap cap_net_bind_service=+ep $(which caddy)` to give Caddy this specific capability.
+- 以 root 身份运行（例如 `sudo -E`）。
+- 或者运行 `sudo setcap cap_net_bind_service=+ep $(which caddy)` 赋予 Caddy 此特定能力。
 
-Here's the most basic `caddy reverse-proxy` command that gives you HTTPS:
+以下是提供 HTTPS 的最基本的 `caddy reverse-proxy` 命令：
 
 <pre><code class="cmd bash">caddy reverse-proxy --to :9000</code></pre>
 
-Then try it:
+然后测试：
 
 <pre><code class="cmd bash">curl -v https://localhost</code></pre>
 
-You can customize the hostname using the `--from` flag:
+您可以使用 `--from` 标志自定义主机名：
 
 <pre><code class="cmd bash">caddy reverse-proxy --from example.com --to :9000</code></pre>
 
-If you don't have permission to bind to low ports, you can proxy from a higher port:
+如果您没有绑定低端口的权限，可以从较高端口代理：
 
 <pre><code class="cmd bash">caddy reverse-proxy --from example.com:8443 --to :9000</code></pre>
 
-If you're using a Caddyfile, simply change the first line to your domain name, for example:
+如果您使用 Caddyfile，只需将第一行改为您的域名，例如：
 
 ```caddy
 example.com
@@ -90,25 +89,25 @@ example.com
 reverse_proxy :9000
 ```
 
-## HTTPS from proxy to backend
+## 从代理到后端的 HTTPS
 
-Caddy can also proxy using HTTPS between itself and the backend if the backend supports TLS. Just use `https://` in your backend address:
+如果后端支持 TLS，Caddy 也可以在其和后端之间使用 HTTPS 进行代理。只需在后端地址中使用 `https://`：
 
 <pre><code class="cmd bash">caddy reverse-proxy --from :2080 --to https://localhost:9000</code></pre>
 
-This requires that the backend's certificate is trusted by the system Caddy is running on. (Caddy doesn't trust self-signed certificates unless explicitly configured to do so.)
+这要求后端证书被 Caddy 运行的系统信任。（除非明确配置，否则 Caddy 不信任自签名证书。）
 
-Of course, you can do HTTPS on both ends too:
+当然，您也可以两端都使用 HTTPS：
 
 <pre><code class="cmd bash">caddy reverse-proxy --from example.com --to https://example.com:9000</code></pre>
 
-This serves HTTPS from client to proxy, and from proxy to backend.
+这将在客户端到代理以及代理到后端之间提供 HTTPS。
 
-If the hostname you're proxying to is different than the one you're proxying from, you will need to use the `--change-host-header` flag:
+如果您要代理的主机名与代理来源的主机名不同，则需要使用 `--change-host-header` 标志：
 
 <pre><code class="cmd bash">caddy reverse-proxy \
 	--from example.com \
 	--to https://localhost:9000 \
 	--change-host-header</code></pre>
 
-By default, Caddy passes all HTTP headers through unchanged, including `Host`, and Caddy derives the TLS ServerName from the Host header. The `--change-host-header` resets the Host header to that of the backend so that the TLS handshake can complete successfully. In the example above, it would be changed from `example.com` to `localhost:9000` (and `localhost` would be used in the TLS handshake).
+默认情况下，Caddy 会原封不动地传递所有 HTTP 头，包括 `Host` 头，并且 Caddy 会根据 Host 头派生 TLS ServerName。`--change-host-header` 将 Host 头重置为后端的 Host 头，以便 TLS 握手能够成功完成。在上面的示例中，它将被从 `example.com` 改为 `localhost:9000`（并且在 TLS 握手中会使用 `localhost`）。

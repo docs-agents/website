@@ -2,12 +2,12 @@
 
 ```caddy
 {
-	# Enable FrankenPHP
+	# 启用 FrankenPHP
 	frankenphp
 }
 
 example.com {
-	# Serve PHP app from current directory
+	# 从当前目录提供 PHP 应用
 	php_server
 }
 ```

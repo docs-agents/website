@@ -1,39 +1,39 @@
 ---
-title: redir (Caddyfile directive)
+title: redir (Caddyfile 指令)
 ---
 
 # redir
 
-Issues an HTTP redirect to the client.
+向客户端发出 HTTP 重定向。
 
-This directive implies that a matched request is to be rejected as-is, and the client should try again at a different URL. For that reason, its [directive order](/docs/caddyfile/directives#directive-order) is very early.
+此指令意味着匹配到的请求将被原样拒绝，客户端应尝试另一个 URL。因此，它的[指令顺序](/docs/caddyfile/directives#directive-order)非常靠前。
 
 
-## Syntax
+## 语法
 
 ```caddy-d
 redir [<matcher>] <to> [<code>]
 ```
 
-- **&lt;to&gt;** is the target location. Becomes the response's [`Location` header <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Location).
+- **&lt;to&gt;** 是目标位置。将成为响应的 [`Location` 头 <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Location)。
 
-- **&lt;code&gt;** is the HTTP status code to use for the redirect. Can be:
+- **&lt;code&gt;** 是用于重定向的 HTTP 状态码。可以是：
 
-	- A positive integer in the `3xx` range, or `401`
+	- `3xx` 范围内的正整数，或 `401`
 	
-	- `temporary` for a temporary redirect (`302`, this is the default)
+	- `temporary` 表示临时重定向（`302`，此为默认值）
 	
-	- `permanent` for a permanent redirect (`301`)
+	- `permanent` 表示永久重定向（`301`）
 	
-	- `html` to use an HTML document to perform the redirect (useful for redirecting browsers but not API clients)
+	- `html` 使用 HTML 文档执行重定向（对浏览器有效，但对 API 客户端无效）
 	
-	- A placeholder with a status code value
+	- 包含状态码值的占位符
 
 
 
-## Examples
+## 示例
 
-Redirect all requests to `https://example.com`:
+将所有请求重定向到 `https://example.com`：
 
 ```caddy
 www.example.com {
@@ -41,7 +41,7 @@ www.example.com {
 }
 ```
 
-Same, but preserve the existing URI by appending the [`{uri}` placeholder](/docs/caddyfile/concepts#placeholders):
+同样，但通过附加 [`{uri}` 占位符](/docs/caddyfile/concepts#placeholders) 保留原始 URI：
 
 ```caddy
 www.example.com {
@@ -49,7 +49,7 @@ www.example.com {
 }
 ```
 
-Same, but permanent:
+同样，但改为永久重定向：
 
 ```caddy
 www.example.com {
@@ -57,11 +57,10 @@ www.example.com {
 }
 ```
 
-Redirect your old `/about-us` page to your new `/about` page:
+将旧的 `/about-us` 页面重定向到新的 `/about` 页面：
 
 ```caddy
 example.com {
 	redir /about-us /about
 	reverse_proxy localhost:9000
 }
-```

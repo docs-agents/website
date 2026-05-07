@@ -1,45 +1,43 @@
 ---
-title: Static files quick-start
+title: 静态文件快速入门
 ---
 
-# Static files quick-start
+# 静态文件快速入门
 
-This guide will show you how to get a production-ready static file server up and running quickly.
+本指南将向您展示如何快速搭建一个可用于生产环境的静态文件服务器。
 
-**Prerequisites:**
-- Basic terminal / command line skills
-- `caddy` in your PATH
-- A folder containing your website
+**前提条件：**
+- 基本的终端/命令行操作技能
+- `caddy` 已添加到系统 PATH 中
+- 一个包含您网站的文件夹
 
 ---
 
-There are two easy ways to get a quick file server up and running.
+有两种简单方法可以快速启动文件服务器。
 
-## Command line
+## 命令行
 
-In your terminal, change to the root directory of your site and run:
+在终端中，切换到网站的根目录并运行：
 
 <pre><code class="cmd bash">caddy file-server</code></pre>
 
-If you get a permissions error, it probably means your OS does not allow you to bind to low ports -- so use a high port instead:
+如果遇到权限错误，通常意味着您的操作系统不允许绑定低端口——此时使用高位端口即可：
 
 <pre><code class="cmd bash">caddy file-server --listen :2015</code></pre>
 
-Then open [localhost](http://localhost) (or [localhost:2015](http://localhost:2015)) in your browser to see your site!
+然后在浏览器中打开 [localhost](http://localhost)（或 [localhost:2015](http://localhost:2015)）查看您的网站！
 
-If you don't have an index file but you want to display a file listing, use the `--browse` option:
+如果没有索引文件但希望显示文件列表，请使用 `--browse` 选项：
 
 <pre><code class="cmd bash">caddy file-server --browse</code></pre>
 
-You can use another folder as the site root:
+您也可以使用其他文件夹作为网站根目录：
 
 <pre><code class="cmd bash">caddy file-server --root ~/mysite</code></pre>
 
-
-
 ## Caddyfile
 
-In the root of your site, create a file called `Caddyfile` with these contents:
+在网站根目录下，创建一个名为 `Caddyfile` 的文件，内容如下：
 
 ```caddy
 localhost
@@ -47,17 +45,17 @@ localhost
 file_server
 ```
 
-If you don't have permission to bind to low ports, replace `localhost` with `localhost:2015` (or some other high port).
+如果您没有绑定低端口的权限，请将 `localhost` 替换为 `localhost:2015`（或其他高位端口）。
 
-Then, from the same directory, run:
+然后，在同一目录下运行：
 
 <pre><code class="cmd bash">caddy run</code></pre>
 
-You can then load [localhost](https://localhost) (or whatever the address is in your config) to see your site!
+随后即可通过 [localhost](https://localhost)（或配置中指定的地址）访问您的网站！
 
-The [`file_server` directive](/docs/caddyfile/directives/file_server) has more options for you to customize your site. Make sure to [reload](/docs/command-line#caddy-reload) Caddy (or stop and start it again) when you change the Caddyfile!
+[`file_server` 指令](/docs/caddyfile/directives/file_server) 提供了更多自定义选项。修改 Caddyfile 后，请务必[重载](/docs/command-line#caddy-reload) Caddy（或停止后重新启动）。
 
-If you don't have an index file but you want to display a file listing, use the `browse` argument:
+如果没有索引文件但希望显示文件列表，请使用 `browse` 参数：
 
 ```caddy
 localhost
@@ -65,12 +63,10 @@ localhost
 file_server browse
 ```
 
-You can also use another folder as the site root:
+您也可以使用其他文件夹作为网站根目录：
 
 ```caddy
 localhost
 
 root /var/www/mysite
 file_server
-```
-

@@ -1,24 +1,24 @@
 ---
-title: "Placeholder Support"
+title: "占位符支持"
 ---
 
-# Placeholders
+# 占位符
 
-In Caddy, placeholders are processed by each individual plugin as needed; they do not automatically work everywhere.
+在 Caddy 中，占位符由每个插件根据需要进行处理；它们不会自动在所有地方生效。
 
-This means that if you wish for your plugin to support placeholders, you must explicitly add support for them.
+这意味着如果你希望自己的插件支持占位符，你必须显式地添加对它们的支持。
 
-If you are not yet familiar with placeholders, start by [reading here](/docs/conventions#placeholders)!
+如果你对占位符还不熟悉，请从[这里](/docs/conventions#placeholders)开始阅读！
 
-## Placeholders Overview
+## 占位符概述
 
-[Placeholders](/docs/conventions#placeholders) are a string in the format `{foo.bar}` used as dynamic configuration values, which is later evaluated at runtime.
+[占位符](/docs/conventions#placeholders)是一种格式为 `{foo.bar}` 的字符串，用作动态配置值，稍后在运行时进行评估。
 
-Caddyfile [environment variables substitutions](/docs/caddyfile/concepts#environment-variables) which start with a dollar sign like `{$FOO}` are evaluated at Caddyfile-parse time, and do not need to be handled by your plugin. These are _not_ placeholders, despite sharing the same `{ }` syntax.
+Caddyfile 中的[环境变量替换](/docs/caddyfile/concepts#environment-variables)以美元符号开头，例如 `{$FOO}`，它们在 Caddyfile 解析时进行评估，不需要由你的插件处理。这些_不是_占位符，尽管它们使用相同的 `{ }` 语法。
 
-It is therefore important to understand that `{env.HOST}` (a [global placeholder](/docs/conventions#placeholders)) is inherently different from `{$HOST}` (a Caddyfile env-var substitution).
+因此，理解 `{env.HOST}`（一个[全局占位符](/docs/conventions#placeholders)）与 `{$HOST}`（Caddyfile 环境变量替换）本质上是不同的，这一点很重要。
 
-As an example, see the following Caddyfile:
+例如，请参见以下 Caddyfile：
 ```caddy
 :8080 {
 	respond {$HOST} 200
@@ -29,7 +29,7 @@ As an example, see the following Caddyfile:
 }
 ```
 
-When you adapt this Caddyfile to JSON with `HOST=example caddy adapt` you will get:
+当你使用 `HOST=example caddy adapt` 将此 Caddyfile 适配为 JSON 时，你将得到：
 
 ```json
 {
@@ -70,23 +70,21 @@ When you adapt this Caddyfile to JSON with `HOST=example caddy adapt` you will g
 }
 ```
 
-In particular, look at the `"body"` field in both `srv0` and `srv1`.
+特别要注意 `srv0` 和 `srv1` 中的 `"body"` 字段。
 
-Since `srv0` used `{$HOST}` (Caddyfile env-var substitution), the value became `example`, as it was processed during Caddyfile parse time when producing the JSON config.
+由于 `srv0` 使用了 `{$HOST}`（Caddyfile 环境变量替换），该值变成了 `example`，因为它是在生成 JSON 配置时，在 Caddyfile 解析期间处理的。
 
-Since `srv1` used `{env.HOST}` (a global placeholder), it remains untouched when adapting to JSON.
+由于 `srv1` 使用了 `{env.HOST}`（一个全局占位符），在适配为 JSON 时它保持不变。
 
-This does mean that users writing JSON config (not using Caddyfile) cannot use the `{$ENV}` syntax. For that reason, it's important that plugin authors implement support for replacing placeholders when the config is provisioned. This is explained below.
+这意味着用户编写 JSON 配置（不通过 Caddyfile）时不能使用 `{$ENV}` 语法。因此，插件作者在配置被供应时实现占位符的替换支持非常重要。下文将对此进行解释。
 
+## 实现占位符支持
 
-## Implementing placeholder support
+你不应该在 [`UnmarshalCaddyfile()`](/docs/extending-caddy/caddyfile) 中处理占位符。相反，占位符应稍后被替换，要么在 [`Provision()`](/docs/extending-caddy#provisioning) 步骤中，要么在你的模块执行期间（例如 HTTP 处理器的 `ServeHTTP()`、匹配器的 `Match()` 等），使用 `caddy.Replacer`。
 
-You should not process placeholders in [`UnmarshalCaddyfile()`](/docs/extending-caddy/caddyfile). Instead, placeholders should be replaced later, either in the [`Provision()`](/docs/extending-caddy#provisioning) step, or during your module's execution (e.g. `ServeHTTP()` for HTTP handlers, `Match()` for matchers, etc.), using a `caddy.Replacer`.
+### 示例
 
-
-### Examples
-
-Here, we are using a newly constructed replacer to process placeholders. It has access to [global placeholders](/docs/conventions#placeholders) such as `{env.HOST}`, but _not_ HTTP placeholders such as `{http.request.uri}` because provisioning happens when the config is loaded, and not during a request.
+这里，我们使用一个新构建的 replacer 来处理占位符。它可以访问[全局占位符](/docs/conventions#placeholders)，例如 `{env.HOST}`，但_不能_访问 HTTP 占位符，如 `{http.request.uri}`，因为供应发生在配置加载时，而不是请求期间。
 
 ```go
 func (g *Gizmo) Provision(ctx caddy.Context) error {
@@ -96,7 +94,7 @@ func (g *Gizmo) Provision(ctx caddy.Context) error {
 }
 ```
 
-Here, we fetch the replacer from the request context `r.Context()` during `ServeHTTP`. This replacer has access to both global placeholders _and_ per-request HTTP placeholders such as `{http.request.uri}`.
+这里，我们在 `ServeHTTP` 期间从请求上下文 `r.Context()` 中获取 replacer。这个 replacer 既可以访问全局占位符，也可以访问每个请求的 HTTP 占位符，例如 `{http.request.uri}`。
 
 ```go
 func (g *Gizmo) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
@@ -107,4 +105,3 @@ func (g *Gizmo) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp
 	}
 	return next.ServeHTTP(w, r)
 }
-```

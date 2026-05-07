@@ -25,20 +25,20 @@
 <script src="/resources/js/lib.js{{template "cacheBust"}}"></script>
 <script src="/resources/js/common.js{{template "cacheBust"}}"></script>
 
-<!-- General metatags -->
-<meta name="author" content="Caddy Web Server">
-<meta name="description" content="Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go">
+<!-- 通用元标签 -->
+<meta name="author" content="Caddy Web 服务器">
+<meta name="description" content="Caddy 是一个功能强大、企业级、开源的 Web 服务器，具有自动 HTTPS 功能，使用 Go 语言编写">
 <meta name="theme-color" content="#1b3143">
 
-<!-- Open Graph tags -->
+<!-- Open Graph 标签 -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Caddy - The Ultimate Server with Automatic HTTPS">
-<meta property="og:site_name" content="Caddy Web Server">
+<meta property="og:title" content="Caddy - 具有自动 HTTPS 功能的终极服务器">
+<meta property="og:site_name" content="Caddy Web 服务器">
 <meta property="og:url" content="https://{{.Req.Host}}{{.OriginalReq.URL}}">
-<meta property="og:description" content="Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go">
+<meta property="og:description" content="Caddy 是一个功能强大、企业级、开源的 Web 服务器，具有自动 HTTPS 功能，使用 Go 语言编写">
 <meta property="og:image" content="https://{{.Req.Host}}/resources/images/open-graph-square.png{{template "cacheBust"}}">
 
-<!-- Global site tag (gtag.js) - Google Analytics (ZeroSSL) -->
+<!-- 全局网站标签 (gtag.js) - Google Analytics (ZeroSSL) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DLB04LK4P"></script>
 <script>
 	window.dataLayer = window.dataLayer || [];

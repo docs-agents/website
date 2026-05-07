@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Dashboard - Caddy</title>
+		<title>控制面板 - Caddy</title>
 		{{import "/old/includes/account/head.html"}}
 		{{template "account-head"}}
 		<link rel="stylesheet" href="/resources/css/account/dashboard.css{{template "cacheBust"}}">
@@ -12,19 +12,19 @@
 			{{include "/old/includes/account/nav.html"}}
 			<main class="dashboard">
 				<section>
-					<h1 class="pad">Your packages<a href="/account/register-package" class="gray button float-right">Register package</a></h1>
+					<h1 class="pad">您的包<a href="/account/register-package" class="gray button float-right">注册包</a></h1>
 					<table id="user-packages">
 						<tr>
-							<th>Import path</th>
-							<th class="text-center"><span class="help" title="Whether package and module documentation is visible on the website.">Listed</span></th>
-							<th class="text-center"><span class="help" title="Whether visitors can download Caddy with this package plugged in.">Available</span></th>
-							<th>Downloads</th>
+							<th>导入路径</th>
+							<th class="text-center"><span class="help" title="包和模块文档是否在网站上可见。">已列出</span></th>
+							<th class="text-center"><span class="help" title="访问者是否可以下载嵌入了此包的 Caddy。">可用</span></th>
+							<th>下载量</th>
 							<th></th>
 						</tr>
-						<!-- Filled by JS -->
+						<!-- 由 JavaScript 填充 -->
 					</table>
 					<!-- <div class="text-right pad">
-						<a href="/account/register-package" class="gray button">Register package</a>
+						<a href="/account/register-package" class="gray button">注册包</a>
 					</div> -->
 				</section>
 			</main>

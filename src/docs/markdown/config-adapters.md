@@ -1,18 +1,18 @@
 ---
-title: Config Adapters
+title: 配置适配器
 ---
 
-# Config Adapters
+# 配置适配器
 
-Caddy's native config language is [JSON](https://www.json.org/json-en.html), but writing JSON by hand can be tedious and error-prone. That's why Caddy supports being configured with other languages through **config adapters**. They are Caddy plugins which make it possible to use config in your preferred format by outputting [Caddy JSON](/docs/json/) for you.
+Caddy 的原生配置语言是 [JSON](https://www.json.org/json-en.html)，但手动编写 JSON 既繁琐又容易出错。因此，Caddy 支持通过**配置适配器**使用其他语言进行配置。这些适配器是 Caddy 插件，通过输出 [Caddy JSON](/docs/json/)，让你能够以偏好的格式使用配置。
 
-For example, a config adapter could [turn your NGINX config into Caddy JSON](https://github.com/caddyserver/nginx-adapter).
+例如，配置适配器可以将 [你的 NGINX 配置转换为 Caddy JSON](https://github.com/caddyserver/nginx-adapter)。
 
-## Known config adapters
+## 已知的配置适配器
 
-The following config adapters are currently available (some are third-party projects):
+目前可用的配置适配器如下（部分为第三方项目）：
 
-- [**caddyfile**](/docs/caddyfile) (standard)
+- [**caddyfile**](/docs/caddyfile)（标准）
 - [**nginx**](https://github.com/caddyserver/nginx-adapter)
 - [**jsonc**](https://github.com/caddyserver/jsonc-adapter)
 - [**json5**](https://github.com/caddyserver/json5-adapter)
@@ -23,28 +23,28 @@ The following config adapters are currently available (some are third-party proj
 - [**dhall**](https://github.com/mholt/dhall-adapter)
 - [**mysql**](https://github.com/zhangjiayin/caddy-mysql-adapter)
 
-## Using config adapters
+## 使用配置适配器
 
-You can use a config adapter by specifying it on the command line by using the `--adapter` flag on most subcommands that take a config:
+你可以通过在大多数接受配置的子命令中使用 `--adapter` 标志来指定配置适配器：
 
 <pre><code class="cmd bash">caddy run --config caddy.yaml --adapter yaml</code></pre>
 
-Or via the API at the [`/load` endpoint](/docs/api#post-load):
+或者通过 API 的 [`/load` 端点](/docs/api#post-load) 使用：
 
 <pre><code class="cmd bash">curl localhost:2019/load \
 	-H "Content-Type: application/yaml" \
 	--data-binary @caddy.yaml</code></pre>
 
-If you only want to get the output JSON without running it, you can use the [`caddy adapt`](/docs/command-line#caddy-adapt) command:
+如果你只想获取输出的 JSON 而不实际运行，可以使用 [`caddy adapt`](/docs/command-line#caddy-adapt) 命令：
 
 <pre><code class="cmd bash">caddy adapt --config caddy.yaml --adapter yaml</code></pre>
 
-## Caveats
+## 注意事项
 
-Not all config languages are 100% compatible with Caddy; some features or behaviors simply don't translate well or are not yet programmed into the adapter or Caddy itself.
+并非所有配置语言都能与 Caddy 100% 兼容；某些特性或行为可能无法很好地转换，或者尚未在适配器或 Caddy 本身中实现。
 
-Some adapters do a 1-1 translation, like YAML->JSON or TOML->JSON. Others are designed specifically for Caddy, like the Caddyfile. Generally, these adapters will always work.
+某些适配器进行 1:1 的转换，例如 YAML→JSON 或 TOML→JSON。其他适配器则是专门为 Caddy 设计的，例如 Caddyfile。通常，这些适配器始终能正常工作。
 
-However, not all adapters work all of the time. Config adapters do their best to translate your input to Caddy JSON with the highest fidelity and correctness. Because this conversion process is not guaranteed to be complete and correct all the time, we don't call them "converters" or "translators". They are "adapters" since they will at least give you a good starting point to finish crafting your final JSON config.
+然而，并非所有适配器在任何时候都有效。配置适配器会尽力将你的输入以最高保真度和正确性转换为 Caddy JSON。由于这种转换过程并不能保证始终完整和正确，我们不将其称为“转换器”或“翻译器”。它们属于“适配器”，因为至少能为你提供一个良好的起点，帮助你最终完善 JSON 配置。
 
-Config adapters can output the resulting JSON, warnings, and errors. JSON results if no errors occur. Errors occur when something is wrong with the input (for example, syntax errors). Warnings are emitted when something is wrong with the adaptation but which is not necessarily fatal (for example, feature not supported). Caution is advised if using configs that were adapted with warnings.
+配置适配器可以输出最终的 JSON、警告和错误。如果无错误发生，则输出 JSON；如果输入出现问题（例如语法错误），则输出错误；当适配过程出现问题但不一定是致命的（例如不支持的特性）时，会发出警告。如果使用带有警告的适配配置，建议谨慎操作。

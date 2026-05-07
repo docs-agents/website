@@ -1,5 +1,5 @@
 ---
-title: Response matchers (Caddyfile)
+title: 响应匹配器（Caddyfile）
 ---
 
 <script>
@@ -32,25 +32,25 @@ ready(function() {
 });
 </script>
 
-# Response Matchers
+# 响应匹配器
 
-**Response matchers** can be used to filter (or classify) responses by specific criteria.
+**响应匹配器**可用于根据特定条件过滤（或分类）响应。
 
-These typically only appear as config inside of certain other directives, to make decisions on the response as it's being written out to the client.
+它们通常仅作为配置出现在某些其他指令内部，用于在将响应写给客户端的过程中作出决策。
 
-- [Syntax](#syntax)
-- [Matchers](#matchers)
+- [语法](#syntax)
+- [匹配器](#matchers)
 	- [status](#status)
 	- [header](#header)
 
-## Syntax
+## 语法
 
-If a directive accepts response matchers, the usage is represented as either `[<response_matcher>]` or `[<inline_response_matcher>]` in the syntax documentation.
+如果一个指令接受响应匹配器，则在语法文档中以 `[<response_matcher>]` 或 `[<inline_response_matcher>]` 的形式表示。
 
-- The **<response_matcher>** token can be the name of a previously declared named response matcher. For example: `@name`.
-- The **<inline_response_matcher>** token can be the response criteria itself, without requiring prior declaration. For example: `status 200`.
+- **<response_matcher>** 标记可以是先前声明的命名响应匹配器的名称。例如：`@name`。
+- **<inline_response_matcher>** 标记可以是响应条件本身，无需事先声明。例如：`status 200`。
 
-### Named
+### 命名
 
 ```caddy-d
 @name {
@@ -58,13 +58,13 @@ If a directive accepts response matchers, the usage is represented as either `[<
 	header <field> [<value>]
 }
 ```
-If only one aspect of the response is relevant to the directive, you can put the name and the criteria on the same line:
+如果只有响应的一个方面与该指令相关，可以将名称和条件放在同一行：
 
 ```caddy-d
 @name status <code...>
 ```
 
-### Inline
+### 内联
 
 ```caddy-d
 ... {
@@ -79,7 +79,7 @@ If only one aspect of the response is relevant to the directive, you can put the
 ... header <field> [<value>]
 ```
 
-## Matchers
+## 匹配器
 
 ### status
 
@@ -87,17 +87,15 @@ If only one aspect of the response is relevant to the directive, you can put the
 status <code...>
 ```
 
-By HTTP status code.
+按 HTTP 状态码。
 
-- **&lt;code...&gt;** is a list of HTTP status codes. Special cases are strings like `2xx` and `3xx`, which match against all status codes in the range of `200`-`299` and `300`-`399`, respectively.
+- **&lt;code...&gt;** 是一个 HTTP 状态码列表。特殊形式如 `2xx` 和 `3xx`，分别匹配 `200`-`299` 和 `300`-`399` 范围内的所有状态码。
 
-#### Example:
+#### 示例：
 
 ```caddy-d
 @success status 2xx
 ```
-
-
 
 ### header
 
@@ -105,29 +103,29 @@ By HTTP status code.
 header <field> [<value>]
 ```
 
-By response header fields.
+按响应头字段。
 
-- `<field>` is the name of the HTTP header field to check.
-	- If prefixed with `!`, the field must not exist to match (omit value arg).
-- `<value>` is the value the field must have to match.
-	- If prefixed with `*`, it performs a fast suffix match (appears at the end).
-	- If suffixed with `*`, it performs a fast prefix match (appears at the start).
-	- If enclosed by `*`, it performs a fast substring match (appears anywhere).
-	- Otherwise, it is a fast exact match.
+- `<field>` 是要检查的 HTTP 头字段名称。
+	- 如果以 `!` 开头，则字段必须不存在才能匹配（省略值参数）。
+- `<value>` 是字段必须具有的值才能匹配。
+	- 如果以 `*` 开头，则执行快速后缀匹配（出现在末尾）。
+	- 如果以 `*` 结尾，则执行快速前缀匹配（出现在开头）。
+	- 如果被 `*` 包围，则执行快速子串匹配（出现在任意位置）。
+	- 否则，为快速精确匹配。
 
-Different header fields within the same set are AND-ed. Multiple values per field are OR'ed.
+同一集合中的不同头字段是“与”关系。每个字段的多个值是“或”关系。
 
-Note that header fields may be repeated and have different values. Backend applications MUST consider that header field values are arrays, not singular values, and Caddy does not interpret meaning in such quandaries.
+请注意，头字段可能会重复并具有不同的值。后端应用程序必须考虑到头字段值是数组而非单一值，而 Caddy 不会在这种困境中解释含义。
 
-#### Example:
+#### 示例：
 
-Match responses with the `Foo` header containing the value `bar`:
+匹配 `Foo` 头包含值 `bar` 的响应：
 
 ```caddy-d
 @upgrade header Foo *bar*
 ```
 
-Match responses with the `Foo` header having the value `bar` OR `baz`:
+匹配 `Foo` 头值为 `bar` 或 `baz` 的响应：
 
 ```caddy-d
 @foo {
@@ -136,8 +134,7 @@ Match responses with the `Foo` header having the value `bar` OR `baz`:
 }
 ```
 
-Match responses that do not have the `Foo` header field at all:
+匹配根本没有 `Foo` 头字段的响应：
 
 ```caddy-d
 @not_foo header !Foo
-```

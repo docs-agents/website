@@ -1,67 +1,64 @@
 ---
-title: "Getting Started"
+title: "入门指南"
 ---
 
-# Getting Started
+# 入门指南
 
-Welcome to Caddy! This tutorial will explore the basics of using Caddy and help you get familiar with it at a high level.
+欢迎使用 Caddy！本教程将带您了解 Caddy 的基础用法，并从宏观层面帮助您熟悉它。
 
-**Objectives:**
-- 🔲 Run the daemon
-- 🔲 Try the API
-- 🔲 Give Caddy a config
-- 🔲 Test config
-- 🔲 Make a Caddyfile
-- 🔲 Use the config adapter
-- 🔲 Start with an initial config
-- 🔲 Compare JSON and Caddyfile
-- 🔲 Compare API and config files
-- 🔲 Run in the background
-- 🔲 Zero-downtime config reload
+**学习目标：**
+- 🔲 运行守护进程
+- 🔲 尝试使用 API
+- 🔲 为 Caddy 提供配置
+- 🔲 测试配置
+- 🔲 编写 Caddyfile
+- 🔲 使用配置适配器
+- 🔲 使用初始配置启动
+- 🔲 比较 JSON 和 Caddyfile
+- 🔲 比较 API 和配置文件
+- 🔲 后台运行
+- 🔲 零停机配置重载
 
-**Prerequisites:**
-- Basic terminal / command line skills
-- Basic text editor skills
-- `caddy` and `curl` in your PATH
+**前置要求：**
+- 基本的终端/命令行操作能力
+- 基本的文本编辑器操作能力
+- 系统中已安装 `caddy` 和 `curl` 命令（需在 PATH 中）
 
 ---
 
-**If you [installed Caddy](/docs/install) from a package manager, Caddy might already be running as a service. If so, please stop the service before doing this tutorial.**
+**如果您已通过包管理器[安装 Caddy](/docs/install)，Caddy 可能已作为服务运行。如果是这样，请先停止该服务再开始本教程。**
 
-Let's start by running it:
+让我们从运行 Caddy 开始：
 
 <pre><code class="cmd bash">caddy</code></pre>
 
-Oops; without a subcommand, the `caddy` command only displays help text. You can use this any time you forget what to do.
+哎呀；如果没有子命令，`caddy` 命令只会显示帮助文本。无论何时忘记该做什么，都可以使用这个命令。
 
-To start Caddy as a daemon, use the `run` subcommand:
+要将 Caddy 作为守护进程启动，请使用 `run` 子命令：
 
 <pre><code class="cmd bash">caddy run</code></pre>
 
-<aside class="complete">Run the daemon</aside>
+<aside class="complete">运行守护进程</aside>
 
-This blocks forever, but what is it doing? At the moment... nothing. By default, Caddy's configuration ("config") is blank. We can verify this using the [admin API](/docs/api) in another terminal:
+这个命令会一直阻塞，但它在做什么呢？目前……什么都没做。默认情况下，Caddy 的配置（"config"）是空的。我们可以通过另一个终端使用[管理 API](/docs/api) 来验证：
 
 <pre><code class="cmd bash">curl localhost:2019/config/</code></pre>
 
 <aside class="tip">
 
-This is **not** your website: the administration endpoint at localhost:2019 is used for controlling Caddy and is restricted to localhost by default.
+请注意，这**不是您的网站**：localhost:2019 的管理端点用于控制 Caddy，默认只允许本地访问。
 
 </aside>
 
+<aside class="complete">尝试使用 API</aside>
 
-<aside class="complete">Try the API</aside>
+我们可以通过给 Caddy 提供一个配置来让它变得有用。这可以通过多种方式实现，但我们将从下一节中使用 `curl` 向 [/load](/docs/api#post-load) 端点发送 POST 请求开始。
 
-We can make Caddy useful by giving it a config. This can be done many ways, but we'll start by making a POST request to the [/load](/docs/api#post-load) endpoint using `curl` in the next section.
+## 您的第一个配置
 
+为了准备我们的请求，我们需要创建一个配置。核心上，Caddy 的配置只是一个 [JSON 文档](/docs/json/)。
 
-
-## Your first config
-
-To prepare our request, we need to make a config. At its core, Caddy's configuration is simply a [JSON document](/docs/json/).
-
-Save this to a JSON file (e.g. `caddy.json`):
+将其保存为一个 JSON 文件（例如 `caddy.json`）：
 
 ```json
 {
@@ -87,39 +84,37 @@ Save this to a JSON file (e.g. `caddy.json`):
 
 <aside class="tip">
 
-You do not have to use config files, but we are for this tutorial. Caddy's [admin API](/docs/api) is designed for use by other programs or scripts.
+您不必使用配置文件，但本教程中我们会这样做。Caddy 的[管理 API](/docs/api) 设计用于其他程序或脚本。
 
 </aside>
 
-
-Then upload it:
+然后上传它：
 
 <pre><code class="cmd bash">curl localhost:2019/load \
 	-H "Content-Type: application/json" \
 	-d @caddy.json
 </code></pre>
 
-<aside class="complete">Give Caddy a config</aside>
+<aside class="complete">为 Caddy 提供配置</aside>
 
-We can verify that Caddy applied our new config with another GET request:
+我们可以通过再次发送 GET 请求来验证 Caddy 是否应用了我们的新配置：
 
 <pre><code class="cmd bash">curl localhost:2019/config/</code></pre>
 
-Test that it works by going to [localhost:2015](http://localhost:2015) in your browser or use `curl`:
+通过在浏览器中访问 [localhost:2015](http://localhost:2015) 或使用 `curl` 来测试它是否工作：
 
 <pre><code class="cmd"><span class="bash">curl localhost:2015</span>
 Hello, world!</code></pre>
 
-If you see _Hello, world!_, then congrats -- it's working! It's always a good idea to make sure your config works as you expect, especially before deploying into production.
+如果您看到 _Hello, world!_，那么恭喜您——它成功了！确保您的配置按预期工作总是一个好主意，尤其是在部署到生产环境之前。
 
-<aside class="complete">Test config</aside>
+<aside class="complete">测试配置</aside>
 
+## 您的第一个 Caddyfile
 
-## Your first Caddyfile
+为了一个 "Hello World" 程序，我们刚才做的**工作还挺多的**。
 
-That was _kind of a lot of work_ just for Hello World.
-
-Another way to configure Caddy is with the [**Caddyfile**](/docs/caddyfile). The same config we wrote in JSON above can be expressed simply as:
+另一种配置 Caddy 的方式是使用 [**Caddyfile**](/docs/caddyfile)。上面我们用 JSON 编写的相同配置可以简单地表达为：
 
 ```caddy
 :2015
@@ -127,151 +122,144 @@ Another way to configure Caddy is with the [**Caddyfile**](/docs/caddyfile). The
 respond "Hello, world!"
 ```
 
+将其保存到当前目录下的一个名为 `Caddyfile`（无扩展名）的文件中。
 
-Save that to a file named `Caddyfile` (no extension) in the current directory.
+<aside class="complete">编写 Caddyfile</aside>
 
-<aside class="complete">Make a Caddyfile</aside>
-
-Stop Caddy if it is already running (<kbd>Ctrl</kbd>+<kbd>C</kbd>), then run:
+如果 Caddy 已经在运行，请停止它（<kbd>Ctrl</kbd>+<kbd>C</kbd>），然后运行：
 
 <pre><code class="cmd bash">caddy adapt</code></pre>
 
-Or if you stored the Caddyfile somewhere else or named it something other than `Caddyfile`:
+或者，如果您将 Caddyfile 存储在其他位置或命名不是 `Caddyfile`：
 
 <pre><code class="cmd bash">caddy adapt --config /path/to/Caddyfile</code></pre>
 
-You will see JSON output! What happened here?
+您将看到 JSON 输出！这是怎么回事？
 
-We just used a [_config adapter_](/docs/config-adapters) to convert our Caddyfile to Caddy's native JSON structure.
+我们刚刚使用了一个[配置适配器](/docs/config-adapters)将 Caddyfile 转换成了 Caddy 的原生 JSON 结构。
 
-<aside class="complete">Use the config adapter</aside>
+<aside class="complete">使用配置适配器</aside>
 
-While we could take that output and make another API request, we can skip all those steps because the `caddy` command can do it for us. If there is a file called Caddyfile in the current directory and no other config is specified, Caddy will load the Caddyfile, adapt it for us, and run it right away.
+虽然我们可以获取那个输出并再次发起 API 请求，但我们可以跳过所有这些步骤，因为 `caddy` 命令可以为我们完成这些。如果当前目录下有一个名为 Caddyfile 的文件，并且没有指定其他配置，Caddy 将加载 Caddyfile，自动适配它，并立即运行它。
 
-Now that there is a Caddyfile in the current folder, let's do `caddy run` again:
+现在当前文件夹中有了一个 Caddyfile，让我们再次运行 `caddy run`：
 
 <pre><code class="cmd bash">caddy run</code></pre>
 
-Or if your Caddyfile is somewhere else:
+或者，如果您的 Caddyfile 在其他位置：
 
 <pre><code class="cmd bash">caddy run --config /path/to/Caddyfile</code></pre>
 
-(If it is called something else that doesn't start with "Caddyfile", you will need to specify `--adapter caddyfile`.)
+（如果它命名不是以 "Caddyfile" 开头，您还需要指定 `--adapter caddyfile`。）
 
-You can now try loading your site again and you will see that it is working!
+现在您可以再次尝试加载您的网站，您会看到它正在工作！
 
-<aside class="complete">Start with an initial config</aside>
+<aside class="complete">使用初始配置启动</aside>
 
-As you can see, there are several ways you can start Caddy with an initial config:
+如您所见，有几种方式可以通过初始配置启动 Caddy：
 
-- A file named Caddyfile in the current directory
-- The `--config` flag (optionally with the `--adapter` flag)
-- The `--resume` flag (if a config was loaded previously)
+- 当前目录下名为 Caddyfile 的文件
+- `--config` 标志（可选地配合 `--adapter` 标志）
+- `--resume` 标志（如果之前加载过配置）
 
+## JSON 与 Caddyfile 的比较
 
-## JSON vs. Caddyfile
+现在您知道 Caddyfile 只是为了方便而转换为 JSON。
 
-Now you know that the Caddyfile is just converted to JSON for you.
-
-The Caddyfile seems easier than JSON, but should you always use it? There are pros and cons to each approach. The answer depends on your requirements and use case.
+Caddyfile 看起来比 JSON 更简单，但您应该总是使用它吗？每种方法都有利弊。答案取决于您的需求和使用场景。
 
 JSON | Caddyfile
 -----|----------
-Easy to generate | Easy to craft by hand
-Easily programmable | Awkward to automate
-Extremely expressive | Moderately expressive
-Full range of Caddy functionality | Most of Caddy functionality
-Allows config traversal | Cannot traverse within Caddyfile
-Partial config changes | Whole config changes only
-Can be exported | Cannot be exported
-Compatible with all API endpoints | Compatible with some API endpoints
-Documentation generated automatically | Documentation is hand-written
-Ubiquitous | Niche
-More efficient | More computational
-Kind of boring | Kind of fun
-**Learn more: [JSON structure](/docs/json/)** | **Learn more: [Caddyfile docs](/docs/caddyfile)**
+易于生成 | 手工编写简单
+易于编程自动化 | 自动化起来比较笨拙
+表达能力极强 | 表达能力中等
+涵盖 Caddy 的全部功能 | 涵盖 Caddy 的大部分功能
+支持配置遍历 | 无法在 Caddyfile 内部遍历
+支持部分配置修改 | 仅支持整体配置替换
+可以导出 | 无法导出
+与所有 API 端点兼容 | 与部分 API 端点兼容
+文档自动生成 | 文档需手工编写
+通用常见 | 特定领域
+更高效 | 计算开销更大
+有点乏味 | 有点乐趣
+**了解更多：[JSON 结构](/docs/json/)** | **了解更多：[Caddyfile 文档](/docs/caddyfile)**
 
-You will need to decide which is best for your use case.
+您需要根据您的使用场景决定哪种方式最适合。
 
-It is important to note that both JSON and the Caddyfile (and [any other supported config adapter](/docs/config-adapters)) can be used with [Caddy's API](/docs/api). However, you get the full range of Caddy's functionality and API features if you use JSON. If using a config adapter, the only way to load or change the config with the API is the [/load endpoint](/docs/api#post-load).
+需要注意的是，JSON 和 Caddyfile（以及[任何其他支持的配置适配器](/docs/config-adapters)）都可以与 [Caddy 的 API](/docs/api) 配合使用。但是，只有使用 JSON 才能获得 Caddy 的全部功能和 API 特性。如果使用配置适配器，通过 API 加载或更改配置的唯一方法是使用 [/load 端点](/docs/api#post-load)。
 
-<aside class="complete">Compare JSON and Caddyfile</aside>
+<aside class="complete">比较 JSON 和 Caddyfile</aside>
 
-
-## API vs. Config files
+## API 与配置文件的比较
 
 <aside class="tip">
 
-Under the hood, even config files go through Caddy's API endpoints; the `caddy` command just wraps up those API calls for you.
+实际上，即使是配置文件也要经过 Caddy 的 API 端点；`caddy` 命令只是为您封装了这些 API 调用。
 
 </aside>
 
+您还需要决定您的工作流程是基于 API 还是基于 CLI。（您可以在同一台服务器上同时使用 API 和配置文件，但我不推荐这样做：最好只有一个真相来源。）
 
-You will also want to decide whether your workflow is API-based or CLI-based. (You _can_ use both the API and config files on the same server, but we don't recommend it: best to have one source of truth.)
-
-API | Config files
+API | 配置文件
 ----|-------------
-Make config changes with HTTP requests | Make config changes with shell commands
-Easy to scale | Difficult to scale
-Difficult to manage by hand | Easy to manage by hand
-Really fun | Also fun
-**Learn more: [API tutorial](/docs/api-tutorial)** | **Learn more: [Caddyfile tutorial](/docs/caddyfile-tutorial)**
+通过 HTTP 请求进行配置更改 | 通过 shell 命令进行配置更改
+易于扩展 | 难以扩展
+手工管理困难 | 手工管理简单
+非常有趣 | 也很有趣
+**了解更多：[API 教程](/docs/api-tutorial)** | **了解更多：[Caddyfile 教程](/docs/caddyfile-tutorial)**
 
 <aside class="tip">
-	Manually managing a server's configuration with the API is totally doable with proper tools, for example: any REST client application.
+	通过 API 手动管理服务器配置是完全可以做到的，只需使用合适的工具，例如：任何 REST 客户端应用程序。
 </aside>
 
-The choice of API or config file workflow is orthogonal to the use of config adapters: you can use JSON but store it in a file and use the command line interface; conversely, you can also use the Caddyfile with the API.
+选择 API 还是配置文件工作流程与是否使用配置适配器是正交的：您可以使用 JSON 但将其存储在文件中并通过命令行界面使用；反过来，您也可以将 Caddyfile 与 API 一起使用。
 
-But most people will use JSON+API or Caddyfile+CLI combinations.
+但大多数人会使用 JSON+API 或 Caddyfile+CLI 的组合。
 
-As you can see, Caddy is well-suited for a wide variety of use cases and deployments!
+如您所见，Caddy 适用于各种不同的使用场景和部署方式！
 
-<aside class="complete">Compare API and config files</aside>
+<aside class="complete">比较 API 和配置文件</aside>
 
+## 启动、停止、运行
 
+由于 Caddy 是一个服务器，它会无限期运行。这意味着执行 `caddy run` 后，您的终端不会解除阻塞，直到进程终止（通常通过 <kbd>Ctrl</kbd>+<kbd>C</kbd>）。
 
-## Start, stop, run
-
-Since Caddy is a server, it runs indefinitely. That means your terminal won't unblock after you execute `caddy run` until the process is terminated (usually with <kbd>Ctrl</kbd>+<kbd>C</kbd>).
-
-Although `caddy run` is the most common and is usually recommended (especially when making a system service!), you can alternatively use `caddy start` to start Caddy and have it run in the background:
+尽管 `caddy run` 是最常见的，并且通常推荐使用（尤其是在创建系统服务时），但您也可以使用 `caddy start` 来启动 Caddy 并在后台运行：
 
 <pre><code class="cmd bash">caddy start</code></pre>
 
-This will let you use your terminal again, which is convenient in some interactive headless environments.
+这将让您可以继续使用终端，这在某些交互式的无头环境中非常方便。
 
-You will then have to stop the process yourself, since <kbd>Ctrl</kbd>+<kbd>C</kbd> won't stop it for you:
+之后您需要自行停止该进程，因为 <kbd>Ctrl</kbd>+<kbd>C</kbd> 不会为您停止它：
 
 <pre><code class="cmd bash">caddy stop</code></pre>
 
-Or use [the /stop endpoint](/docs/api#post-stop) of the API.
+或者使用 API 的 [/stop 端点](/docs/api#post-stop)。
 
-<aside class="complete">Run in the background</aside>
+<aside class="complete">后台运行</aside>
 
+## 重载配置
 
-## Reloading config
+您的服务器可以执行零停机的配置重载/更改。
 
-Your server can perform zero-downtime config reloads/changes.
+所有加载或更改配置的 [API 端点](/docs/api) 都是平滑且零停机的。
 
-All [API endpoints](/docs/api) that load or change config are graceful with zero downtime.
-
-When using the command line, however, it may be tempting to use <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop your server and then restart it again to pick up the new configuration. Don't do this: stopping and starting the server is orthogonal to config changes, and will result in downtime.
+然而，在使用命令行时，您可能会倾向于使用 <kbd>Ctrl</kbd>+<kbd>C</kbd> 停止服务器，然后重新启动以应用新配置。不要这样做：停止和启动服务器与配置更改是正交的，并且会导致停机。
 
 <aside class="tip">
-	Stopping your server will cause the server to go down.
+	停止服务器会导致服务中断。
 </aside>
 
-Instead, use the [`caddy reload`](/docs/command-line#caddy-reload) command for a graceful config change:
+相反，请使用 `[caddy reload](/docs/command-line#caddy-reload)` 命令进行平滑的配置更改：
 
 <pre><code class="cmd bash">caddy reload</code></pre>
 
-This actually just uses the API under the hood. It will load and, if necessary, adapt your config file to JSON, then gracefully replace the active configuration without downtime.
+实际上，这个命令在底层也使用了 API。它会加载（并在需要时适配您的配置文件为 JSON），然后平滑地替换活动配置，而不会造成停机。
 
-If there are any errors loading the new config, Caddy rolls back to the last working config.
+如果加载新配置时出现任何错误，Caddy 会回退到上一个有效的配置。
 
 <aside class="tip">
-	Technically, the new config is started before the old config is stopped, so for a brief time, both configs are running! If the new config fails, it aborts with an error, while the old one is simply not stopped.
+	技术上来说，新配置会在旧配置停止之前启动，因此在一小段时间内，两个配置都会运行！如果新配置失败，它会中止并报错，而旧配置则不会被停止。
 </aside>
 
-<aside class="complete">Zero-downtime config reload</aside>
+<aside class="complete">零停机配置重载</aside>

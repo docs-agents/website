@@ -1,92 +1,90 @@
 ---
-title: php_fastcgi (Caddyfile directive)
+title: php_fastcgi (Caddyfile 指令)
 ---
 
 <script>
 ready(function() {
-	// We'll add links to all the subdirectives if a matching anchor tag is found on the page.
+	// 如果页面上找到匹配的锚点标签，则向所有子指令添加链接。
 	addLinksToSubdirectives();
 });
 </script>
 
 # php_fastcgi
 
-An opinionated directive that proxies requests to a PHP FastCGI server such as php-fpm.
+一个带有明确预设的指令，用于将请求代理到 PHP FastCGI 服务器（如 php-fpm）。
 
-- [Syntax](#syntax)
-- [Expanded Form](#expanded-form)
-  - [Explanation](#explanation)
-- [Examples](#examples)
+- [语法](#syntax)
+- [展开形式](#expanded-form)
+  - [说明](#explanation)
+- [示例](#examples)
 
-Caddy's [`reverse_proxy`](reverse_proxy) is capable of serving any FastCGI application, but this directive is tailored specifically for PHP apps. This directive is a convenient shortcut, replacing a [longer configuration](#expanded-form).
+Caddy 的 [`reverse_proxy`](reverse_proxy) 能够处理任何 FastCGI 应用，但本指令专为 PHP 应用量身定制。本指令是一个便捷的快捷方式，可替代[更长的配置](#expanded-form)。
 
-It expects that any `index.php` at the site root acts as a router. If that is not desirable, either reconfigure the [`try_files` subdirective](#try_files) to modify the default rewrite behaviour, or take the [expanded form](#expanded-form) as a basis and customize it to your needs.
+它假设站点根目录下的 `index.php` 充当路由器。如果不需要此行为，可以重新配置 [`try_files` 子指令](#try_files) 修改默认的重写行为，或者以[展开形式](#expanded-form)为基础进行自定义。
 
-In addition to the subdirectives listed below, this directive also supports all the subdirectives of [`reverse_proxy`](reverse_proxy#syntax). For example, you may enable load balancing and health checks.
+除了下面列出的子指令外，本指令还支持 [`reverse_proxy`](reverse_proxy#syntax) 的所有子指令。例如，您可以启用负载均衡和健康检查。
 
-**Most modern PHP apps work fine without extra subdirectives or customization.** Subdirectives are usually only used in certain edge cases or with legacy PHP apps.
+**大多数现代 PHP 应用无需额外的子指令或定制即可正常工作。** 子指令通常仅在特定边缘情况或与旧版 PHP 应用一起使用时才需要。
 
-## Syntax
+## 语法
 
 ```caddy-d
-php_fastcgi [<matcher>] <php-fpm_gateways...> {
-	root <path>
-	split <substrings...>
-	index <filename>|off
-	try_files <files...>
-	env [<key> <value>]
+php_fastcgi [<匹配器>] <php-fpm_网关...> {
+	root <路径>
+	split <子字符串...>
+	index <文件名>|off
+	try_files <文件...>
+	env [<键> <值>]
 	resolve_root_symlink
 	capture_stderr
-	dial_timeout  <duration>
-	read_timeout  <duration>
-	write_timeout <duration>
+	dial_timeout  <持续时间>
+	read_timeout  <持续时间>
+	write_timeout <持续时间>
 
 	<any other reverse_proxy subdirectives...>
 }
 ```
 
-- **<php-fpm_gateways...>** are the [addresses](/docs/conventions#network-addresses) of the FastCGI servers. Typically, either a TCP socket, or a unix socket file.
+- **<php-fpm_网关...>** 是 FastCGI 服务器的[地址](/docs/conventions#network-addresses)。通常是 TCP 套接字或 Unix 套接字文件。
 
-- **root** <span id="root"/> sets the root folder to the site. It's recommended to always use the [`root` directive](root) in conjunction with `php_fastcgi`, but overriding this can be useful when your PHP-FPM upstream is using a different root than Caddy (see [an example](#docker)). Defaults to the value of the [`root` directive](root) if used, otherwise defaults to Caddy's current working directory.
+- **root** <span id="root"/> 设置站点的根文件夹。建议始终将 [`root` 指令](root) 与 `php_fastcgi` 结合使用，但覆盖此设置可在您的 PHP-FPM 上游使用与 Caddy 不同的根目录时有用（参见[示例](#docker)）。如果使用了 [`root` 指令](root)，则默认为其值；否则默认为 Caddy 的当前工作目录。
 
-- **split** <span id="split"/> sets the substrings for splitting the URI into two parts. The first matching substring will be used to split the "path info" from the path. The first piece is suffixed with the matching substring and will be assumed as the actual resource (CGI script) name. The second piece will be set to PATH_INFO for the CGI script to use. Default: `.php`
+- **split** <span id="split"/> 设置用于将 URI 拆分为两部分的子字符串。第一个匹配的子字符串将用于从路径中拆分出“路径信息”。第一部分以匹配的子字符串结尾，将被假定为实际资源（CGI 脚本）名称。第二部分将设置为 PATH_INFO，供 CGI 脚本使用。默认值：`.php`
 
-- **index** <span id="index"/> specifies the filename to treat as the directory index file. This affects the file matcher in the [expanded form](#expanded-form). Default: `index.php`. Can be set to `off` to disable rewrite fallback to `index.php` when a matching file is not found.
+- **index** <span id="index"/> 指定被视为目录索引文件的文件名。这会影响[展开形式](#expanded-form)中的文件匹配器。默认值：`index.php`。可以设置为 `off`，以在未找到匹配文件时禁用回退到 `index.php` 的重写。
 
-- **try_files** <span id="try_files"/> specifies an override for the default try-files rewrite. See the [`try_files` directive](try_files) for details. Default: `{path} {path}/index.php index.php`.
+- **try_files** <span id="try_files"/> 指定替代默认尝试文件重写的设置。详细信息请参见 [`try_files` 指令](try_files)。默认值：`{path} {path}/index.php index.php`。
 
-- **env** <span id="env"/> sets an extra environment variable to the given value. Can be specified more than once for multiple environment variables. By default, all the relevant FastCGI environment variables are already set (including HTTP headers) but you may add or override variables as needed. 
+- **env** <span id="env"/> 设置一个额外的环境变量及其值。可多次指定以设置多个环境变量。默认情况下，所有相关的 FastCGI 环境变量（包括 HTTP 头部）已经设置，但您可以根据需要添加或覆盖变量。
 
-- **resolve_root_symlink** <span id="resolve_root_symlink"/> when the [`root`](#root) directory is a symbolic link (symlink), this enables resolving it to its actual value. This is sometimes used as a deployment strategy, by simply swapping the symlink to point to the new version in another directory. Disabled by default to avoid repeated system calls.
+- **resolve_root_symlink** <span id="resolve_root_symlink"/> 当 [`root`](#root) 目录是符号链接时，启用解析为其实际值。这有时用作部署策略，简单地通过交换符号链接来指向另一个目录中的新版本。默认禁用，以避免重复的系统调用。
 
-- **capture_stderr** <span id="capture_stderr"/> enables capturing and logging of any messages sent by the upstream fastcgi server on `stderr`. Logging is done at `WARN` level by default. If the response has a `4xx` or `5xx` status, then the `ERROR` level will be used instead. By default, `stderr` is ignored.
+- **capture_stderr** <span id="capture_stderr"/> 启用捕获并记录上游 FastCGI 服务器在 `stderr` 上发送的任何消息。默认情况下，以 `WARN` 级别记录。如果响应具有 `4xx` 或 `5xx` 状态码，则使用 `ERROR` 级别。默认情况下，忽略 `stderr`。
 
-- **dial_timeout** <span id="dial_timeout"/> is a [duration value](/docs/conventions#durations) that sets how long to wait when connecting to the upstream socket. Default: `3s`.
+- **dial_timeout** <span id="dial_timeout"/> 是一个[持续时间值](/docs/conventions#durations)，设置连接上游套接字时等待的时间。默认值：`3s`。
 
-- **read_timeout** <span id="read_timeout"/> is a [duration value](/docs/conventions#durations) that sets how long to wait when reading from the FastCGI upstream. Default: no timeout.
+- **read_timeout** <span id="read_timeout"/> 是一个[持续时间值](/docs/conventions#durations)，设置从 FastCGI 上游读取时等待的时间。默认值：无超时。
 
-- **write_timeout** <span id="write_timeout"/> is a [duration value](/docs/conventions#durations) that sets how long to wait when sending to the FastCGI upstream. Default: no timeout.
+- **write_timeout** <span id="write_timeout"/> 是一个[持续时间值](/docs/conventions#durations)，设置向 FastCGI 上游发送时等待的时间。默认值：无超时。
 
+由于本指令是反向代理的预设封装，您可以使用 [`reverse_proxy`](reverse_proxy#syntax) 的任何子指令进行自定义。
 
-Since this directive is an opinionated wrapper over a reverse proxy, you can use any of [`reverse_proxy`](reverse_proxy#syntax)'s subdirectives to customize it.
+## 展开形式
 
-
-## Expanded form
-
-The `php_fastcgi` directive (without subdirectives) is the same as the following configuration. Most modern PHP apps work well with this preset. If yours does not, feel free to borrow from this and customize it as needed instead of using the `php_fastcgi` shortcut.
+`php_fastcgi` 指令（不带子指令）等同于以下配置。大多数现代 PHP 应用在此预设下运行良好。如果您的应用不适用，可以引用此配置并根据需要进行自定义，而不是使用 `php_fastcgi` 快捷方式。
 
 ```caddy-d
 route {
-	# Add trailing slash for directory requests
-	# This redirection is automatically disabled if "{http.request.uri.path}/index.php"
-	# doesn't appear in the try_files list
+	# 为目录请求添加尾部斜杠
+	# 如果 "{http.request.uri.path}/index.php" 未出现在 try_files 列表中，
+	# 则此重定向自动禁用
 	@canonicalPath {
 		file {path}/index.php
 		not path */
 	}
 	redir @canonicalPath {http.request.orig_uri.path}/ 308
 
-	# If the requested file does not exist, try index files and assume index.php always exists
+	# 如果请求的文件不存在，尝试索引文件并假设 index.php 始终存在
 	@indexFiles file {
 		try_files {path} {path}/index.php index.php
 		try_policy first_exist_fallback
@@ -94,9 +92,9 @@ route {
 	}
 	rewrite @indexFiles {file_match.relative}
 
-	# Proxy PHP files to the FastCGI responder
+	# 将 PHP 文件代理到 FastCGI 响应器
 	@phpFiles path *.php
-	reverse_proxy @phpFiles <php-fpm_gateway> {
+	reverse_proxy @phpFiles <php-fpm_网关> {
 		transport fastcgi {
 			split .php
 		}
@@ -104,49 +102,47 @@ route {
 }
 ```
 
-### Explanation
+### 说明
 
-- The first section deals with canonicalizing the request path. The goal is to ensure that requests that target a directory on disk actually have the trailing slash `/` added to the request path, so that only a single URL is valid for requests to that directory.
+- 第一部分处理请求路径的规范化。目标确保针对磁盘上目录的请求具有尾部斜杠 `/`，从而使得对该目录的请求只有一个有效 URL。
 
-  This canonicalization occurs only if the `try_files` subdirective contains `{path}/index.php` (the default).
+  仅当 `try_files` 子指令包含 `{path}/index.php`（默认情况）时，才执行此规范化。
 
-  This is performed by using a request matcher that matches only requests that _don't_ end in a slash, and which map to a directory on disk which contains an `index.php` file, and if it matches, performs an HTTP 308 redirect with the trailing slash appended. So for example, it would redirect a request with path `/foo` to `/foo/` (appending a `/`, to canonicalize the path to the directory), if `/foo/index.php` exists on disk.
+  这是通过使用一个请求匹配器来实现的，该匹配器仅匹配不以斜杠结尾的请求，并且这些请求映射到磁盘上包含 `index.php` 文件的目录。如果匹配，则执行 HTTP 308 重定向并附加尾部斜杠。例如，如果 `/foo/index.php` 存在于磁盘上，它将对路径为 `/foo` 的请求重定向到 `/foo/`（附加 `/`，以规范化目录的路径）。
 
-- The next section deals with performing path rewrites based on whether a matching file exists on disk. This also has the side-effect of remembering the part of the path after `.php` (if the request path had `.php` in it). This is important for Caddy to correctly set the FastCGI environment variables.
+- 下一部分根据磁盘上是否存在匹配的文件来执行路径重写。这还会记住路径中 `.php` 之后的部分（如果请求路径中包含 `.php`）。这对于 Caddy 正确设置 FastCGI 环境变量非常重要。
 
-  - First, it checks if `{path}` is a file that exists on disk. If so, it rewrites to that path. This essentially short-circuits the rest, and makes sure that requests to files that _do exist_ on disk don't get otherwise rewritten (see next steps below). So if for example you have a `/js/app.js` file on disk, then the request to that path will be kept the same.
+  - 首先，检查 `{path}` 是否为磁盘上存在的文件。如果是，则重写为该路径。这实际上会短路其余步骤，并确保对磁盘上确实存在的文件的请求不会被其他方式重写（请参见下面的步骤）。例如，如果磁盘上有一个 `/js/app.js` 文件，则对该路径的请求将保持不变。
 
-  - Second, it checks if `{path}/index.php` is a file that exists on disk. If so, it rewrites to that path. For requests to a directory like `/foo/` it'll then look for `/foo//index.php` (which gets normalized to `/foo/index.php`), and rewrite the request to that path if it exists. This behaviour is sometimes useful if you're running another PHP app in a subdirectory of your webroot.
+  - 其次，检查 `{path}/index.php` 是否为磁盘上存在的文件。如果是，则重写为该路径。对于像 `/foo/` 这样的目录请求，它将查找 `/foo//index.php`（被规范化为 `/foo/index.php`），如果存在则重写为该路径。当您在 Web 根目录的子目录中运行另一个 PHP 应用时，此行为有时很有用。
 
-  - Lastly, it'll always rewrite to `index.php` (it almost always exists for modern PHP apps). This allows your PHP app to handle any request for paths that _don't_ map to files on disk, by using the `index.php` script as its entrypoint.
+  - 最后，它将始终重写为 `index.php`（对于现代 PHP 应用，它几乎总是存在的）。这允许您的 PHP 应用通过使用 `index.php` 脚本作为入口点来处理任何不映射到磁盘上文件的路径的请求。
 
-- And finally, the last section is what actually proxies the request to your PHP FastCGI (or PHP-FPM) service to actually run your PHP code. The request matcher will only match requests which end in `.php`, so, any file that _isn't_ a PHP script and that _does_ exist on disk, will _not_ be handled by this directive, and will fall through.
+- 最后一部分是将请求代理到您的 PHP FastCGI（或 PHP-FPM）服务以实际运行 PHP 代码。请求匹配器仅匹配以 `.php` 结尾的请求。因此，任何不是 PHP 脚本并且确实存在于磁盘上的文件将不由本指令处理，并将继续传递。
 
-The `php_fastcgi` directive is not usually enough on its own. It should almost always be paired with the [`root` directive](root) to set the location of your files on disk (for modern PHP apps, this may be `/var/www/html/public`, where the `public` directory is what contains your `index.php`), and the [`file_server` directive](file_server) to serve your static files (your JS, CSS, images, etc) which aren't otherwise handled by this directive and fell through.
+通常，仅靠 `php_fastcgi` 指令是不够的。它几乎总是需要与 [`root` 指令](root) 配对，以设置磁盘上文件的位置（对于现代 PHP 应用，这可能是 `/var/www/html/public`，其中 `public` 目录包含您的 `index.php`），以及与 [`file_server` 指令](file_server) 配对，以提供本指令未处理且继续传递的静态文件（JS、CSS、图像等）。
 
+## 示例
 
-
-## Examples
-
-Proxy all PHP requests to a FastCGI responder listening at `127.0.0.1:9000`:
+将所有 PHP 请求代理到监听在 `127.0.0.1:9000` 的 FastCGI 响应器：
 
 ```caddy-d
 php_fastcgi 127.0.0.1:9000
 ```
 
-Same, but only for requests under `/blog/`:
+相同，但仅针对 `/blog/` 下的请求：
 
 ```caddy-d
 php_fastcgi /blog/* localhost:9000
 ```
 
-When using PHP-FPM listening via a unix socket:
+当使用通过 Unix 套接字监听的 PHP-FPM 时：
 
 ```caddy-d
 php_fastcgi unix//run/php/php8.2-fpm.sock
 ```
 
-The [`root` directive](root) is almost always used to specify the directory containing the PHP scripts, and the [`file_server` directive](file_server) to serve static files:
+[`root` 指令](root) 几乎总是用于指定包含 PHP 脚本的目录，[`file_server` 指令](file_server) 用于服务静态文件：
 
 ```caddy
 example.com {
@@ -156,9 +152,9 @@ example.com {
 }
 ```
 
-<span id="docker"/> When serving multiple PHP apps with Caddy, your webroot for each app must be different so that Caddy can read and serve your static files separately and detect if PHP files exist.
+<span id="docker"/> 当使用 Caddy 服务多个 PHP 应用时，每个应用的 Web 根目录必须不同，以便 Caddy 可以分别读取和服务静态文件，并检测 PHP 文件是否存在。
 
-If you're using Docker, often your PHP-FPM containers will have the files mounted at the same root. In that case, the solution is to mount the files to your Caddy container in different directories, then use the [`root` subdirective](#root) to set the root for each container:
+如果您使用 Docker，通常您的 PHP-FPM 容器会将文件挂载到相同的根目录。在这种情况下，解决方案是将文件挂载到 Caddy 容器中的不同目录，然后使用 [`root` 子指令](#root) 为每个容器设置根目录：
 
 ```caddy
 app1.example.com {
@@ -178,7 +174,7 @@ app2.example.com {
 }
 ```
 
-For a PHP site which does not use `index.php` as an entrypoint, you may fallback to emitting a `404` error instead. The error may be caught and handled with the [`handle_errors` directive](handle_errors):
+对于不使用 `index.php` 作为入口点的 PHP 站点，您可以回退到发出 `404` 错误。可以使用 [`handle_errors` 指令](handle_errors) 捕获并处理该错误：
 
 ```caddy
 example.com {
@@ -190,4 +186,3 @@ example.com {
 		respond "{err.status_code} {err.status_text}"
 	}
 }
-```

@@ -1,39 +1,38 @@
 ---
-title: Profiling Caddy
+title: 分析 Caddy
 ---
 
-Profiling Caddy
+分析 Caddy
 ================
 
-A **program profile** is a snapshot of a program's use of resources at runtime. Profiles can be extremely helpful to identify problem areas, troubleshoot bugs and crashes, and optimize code.
+**程序 profile（性能分析）** 是程序在运行时资源使用情况的快照。Profile 对于识别问题区域、排查错误和崩溃以及优化代码非常有帮助。
 
-Caddy uses Go's tooling for capturing profiles, which is called [pprof](https://github.com/google/pprof), and it is built into the `go` command.
+Caddy 使用 Go 的工具来捕获 profile，该工具名为 [pprof](https://github.com/google/pprof)，它内置于 `go` 命令中。
 
-Profiles report on consumers of CPU and memory, show stack traces of goroutines, and help track down deadlocks or high-contention synchronization primitives.
+Profile 报告 CPU 和内存的消耗者，显示 goroutine 的堆栈跟踪，并帮助追踪死锁或高争用的同步原语。
 
-When reporting certain bugs in Caddy, we may ask for a profile. This article can help. It describes both how to obtain profiles with Caddy, and how to use and interpret the resulting pprof profiles in general.
+在报告 Caddy 的某些错误时，我们可能会要求提供 profile。本文可以提供帮助。它描述了如何通过 Caddy 获取 profile，以及通常如何使用和解释生成的 pprof profile。
 
+开始之前需要了解两件事：
 
-Two things to know before getting started:
+1. **Caddy 的 profile 对安全不敏感。** 它们包含无害的技术读数，而不是内存内容。它们不会授予系统访问权限。分享它们是安全的。
+2. **Profile 是轻量级的，可以在生产环境中收集。** 实际上，对于许多用户来说，这是一个推荐的实践；参见本文后面的内容。
 
-1. **Caddy profiles are NOT security-sensitive.** They contain benign technical readouts, not the contents of memory. They do not grant access to systems. They are safe to share.
-2. **Profiles are lightweight and can be collected in production.** In fact, this is a recommended best practice for many users; see later in this article.
+## 获取 profiles
 
-## Obtaining profiles
-
-Profiles are available via the [admin interface](/docs/api) at `/debug/pprof/`. On a machine running Caddy, open it in your browser:
+Profile 可通过[管理 API](/docs/api) 在 `/debug/pprof/` 路径下获取。在运行 Caddy 的机器上，在浏览器中打开：
 
 ```
 http://localhost:2019/debug/pprof/
 ```
 
 <aside class="tip">
-	By default, the admin API is only accessible locally. If running remotely, in VMs, or in containers, see the next section for how to access this endpoint.
+	默认情况下，管理 API 只能在本地访问。如果在远程、虚拟机或容器中运行，请参阅下一节了解如何访问此端点。
 </aside>
 
-You'll notice a simple table of counts and links, such as:
+你会看到一个简单的计数和链接表格，例如：
 
-Count | Profile
+计数 | Profile
 ----- | --------------------
 79    | allocs
 0     | block
@@ -46,56 +45,56 @@ Count | Profile
 0     | trace
 |     | full goroutine stack dump
 
-The counts are a handy way to quickly identify leaks. If you suspect a leak, refresh the page repeatedly and you'll see one or more of those counts constantly increasing. If the heap count grows, it's a possible memory leak; if the goroutine count grows, it's a possible goroutine leak.
+这些计数是快速识别泄漏的便捷方法。如果你怀疑有泄漏，请反复刷新页面，你会看到其中一个或多个计数不断增长。如果堆计数增长，可能是内存泄漏；如果 goroutine 计数增长，可能是 goroutine 泄漏。
 
-Click through the profiles and see what they look like. Some may be empty and that's normal a lot of the time. The most commonly-used ones are <b>goroutine</b> (function stacks), <b>heap</b> (memory), and <b>profile</b> (CPU). Other profiles are useful for troubleshooting mutex contention or deadlocks.
+点击这些 profile，看看它们的样子。有些可能为空，这很多时候是正常的。最常用的有 <b>goroutine</b>（函数栈）、<b>heap</b>（内存）和 <b>profile</b>（CPU）。其他 profile 可用于调试互斥锁争用或死锁。
 
-At the bottom, there's a simple description of each profile:
+在底部，每个 profile 都有一个简单的描述：
 
-- **allocs:** A sampling of all past memory allocations
-- **block:** Stack traces that led to blocking on synchronization primitives
-- **cmdline:** The command line invocation of the current program
-- **goroutine:** Stack traces of all current goroutines. Use debug=2 as a query parameter to export in the same format as an unrecovered panic.
-- **heap:** A sampling of memory allocations of live objects. You can specify the gc GET parameter to run GC before taking the heap sample.
-- **mutex:** Stack traces of holders of contended mutexes
-- **profile:** CPU profile. You can specify the duration in the seconds GET parameter. After you get the profile file, use the go tool pprof command to investigate the profile.
-- **threadcreate:** Stack traces that led to the creation of new OS threads
-- **trace:** A trace of execution of the current program. You can specify the duration in the seconds GET parameter. After you get the trace file, use the go tool trace command to investigate the trace.
+- **allocs:** 对所有过去内存分配的采样
+- **block:** 导致同步原语阻塞的堆栈跟踪
+- **cmdline:** 当前程序的命令行调用
+- **goroutine:** 所有当前 goroutine 的堆栈跟踪。使用 debug=2 作为查询参数，以未恢复的 panic 相同的格式导出。
+- **heap:** 活动对象的内存分配采样。你可以指定 gc GET 参数，以便在获取堆样本之前运行 GC。
+- **mutex:** 有争用的互斥锁持有者的堆栈跟踪
+- **profile:** CPU profile。你可以在 seconds GET 参数中指定持续时间。获取 profile 文件后，使用 `go tool pprof` 命令进行调查。
+- **threadcreate:** 导致创建新操作系统线程的堆栈跟踪
+- **trace:** 当前程序执行的跟踪。你可以在 seconds GET 参数中指定持续时间。获取跟踪文件后，使用 `go tool trace` 命令进行调查。
 
 <aside class="tip">
 
-The difference between "goroutine" and "full goroutine stack dump" is the `?debug=2` parameter: the full stack dump is like output you'd see after a panic; it's more verbose and, notably, does not collapse identical goroutines.
+"goroutine" 和 "full goroutine stack dump" 之间的区别在于 `?debug=2` 参数：完全堆栈转储就像你在 panic 后看到的输出；它更详细，并且值得注意的是，不会合并相同的 goroutine。
 
 </aside>
 
 
-### Downloading profiles
+### 下载 profiles
 
-Clicking the links on the pprof index page above will give you profiles in text format. This is useful for debugging, and it's what we on the Caddy team prefer because we can scan it to look for obvious clues without needing extra tooling.
+点击上面 pprof 索引页面上的链接，你会得到文本格式的 profile。这对于调试很有用，也是我们 Caddy 团队偏爱的格式，因为我们可以扫描它以寻找明显的线索，而无需额外的工具。
 
-But binary is actually the default format. The HTML links append the `?debug=` query string parameter to format them as text, except for the (CPU) "profile" link, which does not have a textual representation.
+但二进制格式实际上是默认格式。HTML 链接附加了 `?debug=` 查询字符串参数以将它们格式化为文本，但（CPU）"profile" 链接除外，它没有文本表示。
 
-These are the query string parameters you can set (from [the Go docs](https://pkg.go.dev/net/http/pprof#hdr-Parameters)):
+以下是你可以设置的查询字符串参数（来自 [Go 文档](https://pkg.go.dev/net/http/pprof#hdr-Parameters)）：
 
-- **`debug=N` (all profiles except cpu):** response format: N = 0: binary (default), N > 0: plaintext
-- **`gc=N` (heap profile):** N > 0: run a garbage collection cycle before profiling
-- **`seconds=N` (allocs, block, goroutine, heap, mutex, threadcreate profiles):** return a delta profile
-- **`seconds=N` (cpu, trace profiles):** profile for the given duration
+- **`debug=N`（所有 profile 除了 cpu）：** 响应格式：N = 0：二进制（默认），N > 0：纯文本
+- **`gc=N`（heap profile）：** N > 0：在分析之前运行一次垃圾回收循环
+- **`seconds=N`（allocs, block, goroutine, heap, mutex, threadcreate profiles）：** 返回增量 profile
+- **`seconds=N`（cpu, trace profiles）：** 在给定的持续时间内进行分析
 
-Because these are HTTP endpoints, you can also use any HTTP client like curl or wget to download profiles.
+由于这些是 HTTP 端点，你也可以使用任何 HTTP 客户端（如 curl 或 wget）来下载 profile。
 
-Once your profiles are downloaded, you can upload them to a GitHub issue comment or use a site like [pprof.me](https://pprof.me/). For CPU profiles specifically, [flamegraph.com](https://flamegraph.com/) is another option.
+下载 profile 后，你可以将其上传到 GitHub 问题评论，或使用 [pprof.me](https://pprof.me/) 之类的网站。对于 CPU 配置文件，[flamegraph.com](https://flamegraph.com/) 是另一个选择。
 
 
-## Accessing remotely
+## 远程访问
 
-_If you're already able to access the admin API locally, skip this section._
+_如果你已经能够在本地访问管理 API，请跳过此部分。_
 
-By default, Caddy's admin API is only accessible over the loopback socket. However, there are at least 3 ways you can access Caddy's `/debug/pprof` endpoint remotely:
+默认情况下，Caddy 的管理 API 只能通过本地环回套接字访问。但是，至少有 3 种方法可以远程访问 Caddy 的 `/debug/pprof` 端点：
 
-### Reverse proxy through your site
+### 通过你的站点反向代理
 
-One easy option is to simply reverse proxy to it from your site:
+一个简单的选择是直接在你的站点上进行反向代理：
 
 ```caddy-d
 reverse_proxy /debug/pprof/* localhost:2019 {
@@ -103,57 +102,57 @@ reverse_proxy /debug/pprof/* localhost:2019 {
 }
 ```
 
-This will, of course, make profiles available to who can connect to your site. If that's not desired, you can add some authentication using an HTTP auth module of your choice.
+当然，这将使 profile 对能够连接到你站点的任何人可用。如果不需要，你可以使用你选择的 HTTP 认证模块添加一些身份验证。
 
-(Don't forget the `/debug/pprof/*` matcher, otherwise you'll proxy the entire admin API!)
+（不要忘记 `/debug/pprof/*` 匹配器，否则你将代理整个管理 API！）
 
 
-### SSH tunnel
+### SSH 隧道
 
-Another way is to use an SSH tunnel. This is an encrypted connection using the SSH protocol between your computer and your server. Run a command like this on your computer:
+另一种方法是使用 SSH 隧道。这是你的计算机和服务器之间使用 SSH 协议建立的加密连接。在你的计算机上运行如下命令：
 
 <pre><code class="cmd bash">ssh -N username@example.com -L 8123:localhost:2019</code></pre>
 
-This tunnels `localhost:8123` (on your local machine) to `localhost:2019` on `example.com`. Make sure to replace `username`, `example.com`, and ports as necessary.
+这将 `localhost:8123`（在你的本地机器上）隧道到 `example.com` 上的 `localhost:2019`。确保根据需要替换 `username`、`example.com` 和端口。
 
 <aside class="tip">
 
-This command will run in the foreground. Keep in mind that if you try to background the process with <kbd>Ctrl</kbd>+<kbd>Z</kbd>, it will pause the tunnel, and connections using the tunnel will fail to connect.
+此命令将在前台运行。请记住，如果你尝试通过 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 将进程置于后台，它将暂停隧道，使用隧道的连接将无法连接。
 
 </aside>
 
-Then in another terminal you can run `curl` like so:
+然后在另一个终端中，你可以像这样运行 `curl`：
 
 <pre><code class="cmd bash">curl -v http://localhost:8123/debug/pprof/ -H "Host: localhost:2019"</code></pre>
 
-You can avoid the need for `-H "Host: ..."` by using port `2019` on both sides of the tunnel (but this requires that port `2019` is not already taken on your own computer, i.e. not having Caddy running locally).
+通过使用隧道的两端使用端口 `2019`，可以避免需要 `-H "Host: ..."`（但这要求你自己的电脑上尚未占用端口 `2019`，即本地没有运行 Caddy）。
 
-While the tunnel is active, you can access any and all of the admin API. Type <kbd>Ctrl</kbd>+<kbd>C</kbd> on the `ssh` command to close the tunnel.
+在隧道处于活动状态时，你可以访问管理 API 的所有内容。在 `ssh` 命令上输入 <kbd>Ctrl</kbd>+<kbd>C</kbd> 关闭隧道。
 
-#### Long-running tunnel
+#### 长期运行隧道
 
-Running a tunnel with the above command requires that you keep the terminal open. If you want to run the tunnel in the background, you can start the tunnel like this:
+使用上述命令运行隧道需要你保持终端打开。如果你想在后台运行隧道，可以像这样启动它：
 
 <pre><code class="cmd bash">ssh -f -N -M -S /tmp/caddy-tunnel.sock username@example.com -L 8123:localhost:2019</code></pre>
 
-This will start in the background and create a control socket at `/tmp/caddy-tunnel.sock`. You can then use the control socket to close the tunnel when you're done with it:
+这将在后台启动，并在 `/tmp/caddy-tunnel.sock` 处创建一个控制套接字。然后，当你使用完隧道后，可以使用控制套接字关闭它：
 
 <pre><code class="cmd bash">ssh -S /tmp/caddy-tunnel.sock -O exit e</code></pre>
 
 
-### Remote admin API
+### 远程管理 API
 
-You can also configure the admin API to accept remote connections to authorized clients.
+你还可以将管理 API 配置为接受来自授权客户端的远程连接。
 
-(TODO: Write article about this.)
+（TODO：撰写关于此的文章。）
 
 
 
-## Goroutine profiles
+## Goroutine 配置分析
 
-The goroutine dump is useful for knowing what goroutines exist and what their call stacks are. In other words, it give us an idea of code that is either currently executing or is blocking/waiting.
+Goroutine 转储对于了解存在哪些 goroutine 以及它们的调用堆栈非常有用。换句话说，它让我们了解当前正在执行或阻塞/等待的代码。
 
-If you click "goroutines" or go to `/debug/pprof/goroutine?debug=1`, you'll see a list of goroutines and their call stacks. For example:
+如果你点击“goroutines”或访问 `/debug/pprof/goroutine?debug=1`，你会看到一个 goroutine 列表及其调用堆栈。例如：
 
 ```
 goroutine profile: total 88
@@ -192,31 +191,31 @@ goroutine profile: total 88
 ...
 ```
 
-The first line, `goroutine profile: total 88`, tells us what we're looking at and how many goroutines there are.
+第一行 `goroutine profile: total 88` 告诉我们正在查看的内容以及共有多少个 goroutine。
 
-The list of goroutines follows. They are grouped by their call stacks in descending order of frequency.
+接下来是 goroutine 列表。它们按调用堆栈分组，按出现频率降序排列。
 
-A goroutine line has this syntax: `<count> @ <addresses...>`
+一个 goroutine 行的语法是：`<count> @ <addresses...>`
 
-The line starts with a count of the goroutines that have the associated call stack. The `@` symbol indicates the start of the call instruction addresses, i.e. the function pointers, that originated the goroutine. Each pointer is a function call, or call frame.
+行首是拥有该调用堆栈的 goroutine 数量。`@` 符号表示调用指令地址的开始，即函数指针，这些指针是 goroutine 的起源。每个指针都是一个函数调用，或调用帧。
 
-You may notice that many of your goroutines share the same first call address. This is your program's main, or entry point. Some goroutines won't originate there because programs have various `init()` functions and the Go runtime may also spawn goroutines.
+你可能会注意到许多 goroutine 共享相同的第一个调用地址。这是程序的主入口点。有些 goroutine 不会从那里起源，因为程序有各种 `init()` 函数，Go 运行时也可能产生 goroutine。
 
-The lines that follow start with `#` and are actually just comments for the benefit of the reader. They contain the current stack trace of the goroutine. The top represents the top of the stack, i.e. the current line of code being executed. The bottom represents the bottom of the stack, or the code that the goroutine initially started running.
+接下来的行以 `#` 开头，实际上只是为了方便读者阅读的注释。它们包含 goroutine 的当前堆栈跟踪。顶部代表堆栈的顶部，即当前正在执行的代码行。底部代表堆栈的底部，即 goroutine 最初开始运行的代码。
 
-The stack trace has this format:
+堆栈跟踪的格式如下：
 
 ```
 <address> <package/func>+<offset> <filename>:<line>
 ```
 
-The address is the function pointer, then you'll see the Go package and function name (with the associated type name if it's a method), and the instruction offset within the function. Then perhaps the most useful piece of info, the file and line number, are at the end.
+地址是函数指针，然后是 Go 包和函数名（如果是方法，则包含关联的类型名），以及函数内的指令偏移量。最后，也许是最有用的信息，文件和行号。
 
-### Full goroutine stack dump
+### 完整的 goroutine 堆栈转储
 
-If we change the query string parameter to `?debug=2`, we get a full dump. This includes a verbose stack trace of every goroutine, and identical goroutines are not collapsed. This output can be very large on busy servers, but it's interesting information!
+如果我们将查询字符串参数更改为 `?debug=2`，我们会得到完整的转储。这包括每个 goroutine 的详细堆栈跟踪，相同的 goroutine 不会被合并。在繁忙的服务器上，此输出可能非常大，但这是有趣的信息！
 
-Let's look at one that corresponds to the first call stack above (truncated):
+让我们看一个与上面第一个调用堆栈对应的转储（截断）：
 
 ```
 goroutine 61961905 [IO wait, 1 minutes]:
@@ -229,41 +228,41 @@ created by golang.org/x/net/http2.(*serverConn).serve in goroutine 61961902
 	golang.org/x/net@v0.14.0/http2/server.go:930 +0x56a
 ```
 
-Despite its verbosity, the most useful information uniquely provided by this dump are the first and last lines for every goroutine.
+尽管它很详细，但此转储唯一提供的最有用的信息是每个 goroutine 的第一行和最后一行。
 
-The first line contains the goroutine's number (61961905), state ("IO wait"), and duration ("1 minutes"):
+第一行包含 goroutine 的编号 (61961905)、状态 ("IO wait") 和持续时间 ("1 minutes")：
 
-- **Goroutine number:** Yes, goroutines have numbers! But they are not exposed to our code. These numbers are especially helpful in a stack trace, however, because we can see which goroutine spawned this one (see at the end: "created by ... in goroutine 61961902"). Tooling shown below helps us draw visual graphs of this.
+- **goroutine 编号：** 是的，goroutine 有编号！但它们不会暴露给我们的代码。然而，这些编号在堆栈跟踪中特别有用，因为我们可以看到是哪个 goroutine 产生了这个（参见末尾："created by ... in goroutine 61961902"）。下面显示的工具帮助我们绘制视觉化图形。
 
-- **State:** This tells us what the goroutine is currently doing. Here are some possible states you may see:
-	- `running`: Executing code - awesome!
-	- `IO wait`: Waiting for network. Does not consume an OS thread because it is parked on a non-blocking network poller.
-	- `sleep`: We all need more of it.
-	- `select`: Blocked on a select; waiting for a case to become available.
-	- `select (no cases):` Blocked on an empty select `select {}` specifically. Caddy uses one in its main to keep running because shutdowns are initiated from other goroutines.
-	- `chan receive`: Blocked on a channel receive (`<-ch`).
-	- `semacquire`: Waiting to acquire a semaphore (low-level synchronization primitive).
-	- `syscall`: Executing a system call. Consumes an OS thread.
+- **状态：** 告诉我们 goroutine 当前正在做什么。以下是一些可能看到的状态：
+	- `running`: 正在执行代码 - 很好！
+	- `IO wait`: 等待网络。不消耗操作系统线程，因为它被挂起在非阻塞网络轮询器上。
+	- `sleep`: 我们都需要的更多。
+	- `select`: 阻塞在 select 上；等待某个 case 可用。
+	- `select (no cases):` 专门阻塞在空 select `select {}` 上。Caddy 在其 main 中使用了一个，以保持运行，因为关闭是由其他 goroutine 发起的。
+	- `chan receive`: 阻塞在通道接收上 (`<-ch`)。
+	- `semacquire`: 等待获取信号量（低级同步原语）。
+	- `syscall`: 正在执行系统调用。消耗一个操作系统线程。
 
-- **Duration:** How long the goroutine has existed. Useful for finding bugs like goroutine leaks. For example, if we expect all network connections to be closed after a few minutes, what does it mean when we find a lot of netconn goroutines alive for hours?
+- **持续时间：** goroutine 已经存在了多长时间。对于查找 goroutine 泄漏等错误非常有用。例如，如果我们期望所有网络连接在几分钟后关闭，那么当我们发现许多 netconn goroutine 存活数小时时，这意味着什么？
 
-### Interpreting goroutine dumps
+### 解读 goroutine 转储
 
-Without looking at code, what can we learn about the above goroutine?
+在不查看代码的情况下，我们可以从上面的 goroutine 中学到什么？
 
-It was created only about a minute ago, is waiting for data over a network socket, and its goroutine number is quite large (61961905).
+它大约在一分钟前创建，正在等待网络套接字上的数据，并且它的 goroutine 编号非常大 (61961905)。
 
-From the first dump (debug=1), we know its call stack is executed relatively frequently, and the large goroutine number combined with the short duration suggests that there have been tens of millions of these relatively short-lived goroutines. It's in a function called `pollWait` and its call history includes reading HTTP/2 frames from an encrypted network connection that uses TLS.
+从第一个转储（debug=1）中，我们知道它的调用堆栈执行得相对频繁，并且大的 goroutine 编号加上短的持续时间表明存在数千万个这些相对短暂的 goroutine。它处于一个名为 `pollWait` 的函数中，它的调用历史包括从一个使用 TLS 的加密网络连接中读取 HTTP/2 帧。
 
-So, we can deduce that this goroutine is serving an HTTP/2 request! It's waiting on data from the client. What's more, we know that the goroutine that spawned it is not one of the first goroutines of the process because it also has a high number; finding that goroutine in the dump reveals that it was spawned to handle a new HTTP/2 stream during an existing request. By contrast, other goroutines with high numbers may be spawned by a low-numbered goroutine (such as 32), indicating a brand new connection fresh off an `Accept()` call from the socket.
+因此，我们可以推断这个 goroutine 正在服务一个 HTTP/2 请求！它正在等待来自客户端的数据。此外，我们知道产生它的 goroutine 不是进程的第一个 goroutine，因为它也有一个高编号；在转储中找到该 goroutine 显示它是在一个现有请求期间为处理一个新的 HTTP/2 流而产生的。相比之下，其他具有高编号的 goroutine 可能由一个低编号的 goroutine（例如 32）产生，这表明这是一个全新的连接，刚刚从套接字的 `Accept()` 调用中出来。
 
-Every program is different, but when debugging Caddy, these patterns tend to hold true.
+每个程序都是不同的，但在调试 Caddy 时，这些模式往往是成立的。
 
-## Memory profiles
+## 内存分析
 
-Memory (or heap) profiles track heap allocations, which are the major consumers of memory on a system. Allocations are also a usual suspect for performance problems because allocating memory requires system calls, which can be slow.
+内存（或堆）profile 跟踪堆分配，这是系统内存的主要消耗者。分配也是性能问题的常见嫌疑人，因为分配内存需要系统调用，这可能会很慢。
 
-Heap profiles look similar to goroutine profiles in nearly every way except the start of the top line. Here's an example:
+堆 profile 看起来与 goroutine profile 几乎完全一样，除了顶行的开头。这是一个例子：
 
 ```
 0: 0 [1: 4096] @ 0xb1fc05 0xb1fc4d 0x48d8d1 0xb1fce6 0xb184c7 0xb1bc8e 0xb41653 0xb4105c 0xb4151d 0xb23b14 0x4719c1
@@ -279,31 +278,31 @@ Heap profiles look similar to goroutine profiles in nearly every way except the 
 #	0xb23b13	golang.org/x/net/http2.(*serverConn).writeFrameAsync+0x73	golang.org/x/net@v0.17.0/http2/server.go:851
 ```
 
-The first line format is as follows:
+第一行的格式如下：
 
 ```
 <live objects> <live memory> [<allocations>: <allocation memory>] @ <addresses...>
 ```
 
-In the example above, we have a single allocation made by `bufio.NewWriterSize()` but currently no live objects from this call stack.
+在上面的例子中，有一个由 `bufio.NewWriterSize()` 进行的分配，但当前此调用堆栈没有活动对象。
 
-Interestingly, we can infer from that call stack that the http2 package used a pooled 4 KB to write HTTP/2 frame(s) to the client. You'll often see pooled objects in Go memory profiles if hot paths have been optimized to reuse allocations. This reduces new allocations, and the heap profile can help you know if the pool is being used properly!
+有趣的是，我们可以从该调用堆栈推断出 http2 包使用了一个池化的 4 KB 来向客户端写入 HTTP/2 帧。如果热点路径已被优化以重用分配，你经常会在 Go 内存 profile 中看到池化对象。这减少了新的分配，堆 profile 可以帮助你了解池是否被正确使用！
 
-## CPU profiles
+## CPU 分析
 
-CPU profiles help you understand where the Go program is spending most of its scheduled time on the processor.
+CPU profile 帮助你了解 Go 程序在处理器上花费大部分调度时间的位置。
 
-However, there is no plaintext form for these, so in the next section, we'll use `go tool pprof` commands to help us read them.
+然而，这些没有纯文本形式，因此在下一节中，我们将使用 `go tool pprof` 命令来帮助我们读取它们。
 
-To download a CPU profile, make a request to `/debug/pprof/profile?seconds=N`, where N is the number of seconds over which you want to collect the profile. During CPU profile collection, program performance may be mildly impacted. (Other profiles have virtually no performance impact.)
+要下载 CPU profile，请向 `/debug/pprof/profile?seconds=N` 发出请求，其中 N 是你希望收集 profile 的秒数。在 CPU profile 收集期间，程序性能可能会受到轻微影响。（其他 profile 几乎没有性能影响。）
 
-When completed, it should download a binary file, aptly named `profile`. Then we need to examine it.
+完成后，它应该下载一个二进制文件，恰当地命名为 `profile`。然后我们需要检查它。
 
 ## `go tool pprof`
 
-We'll use Go's built-in profile analyzer to read the CPU profile as an example, but you can use it with any kind of profile.
+我们将以 CPU profile 为例使用 Go 内置的 profile 分析器，但你可以将其用于任何类型的 profile。
 
-Run this command (replacing "profile" with the actual filepath if different), which opens an interactive prompt:
+运行此命令（如果文件路径不同，则将 "profile" 替换为实际路径），它将打开一个交互式提示符：
 
 <pre><code class="cmd bash">go tool pprof profile
 File: caddy_master
@@ -315,20 +314,20 @@ Entering interactive mode (type "help" for commands, "o" for options)
 
 <aside class="tip">
 
-You can use this command to examine any type of profile, not just CPU profiles. The principles are the same for other profiles and the concepts carry over.
+你可以使用此命令检查任何类型的 profile，而不仅仅是 CPU profile。其他 profile 的原理相同，概念也可以沿用。
 
 </aside>
 
-This is something you can explore. Entering `help` gives you a list of commands and `o` will show you current options. And if you type `help <command>` you can get information about a specific command.
+这是你可以探索的内容。输入 `help` 会给出命令列表，`o` 会显示当前选项。如果你输入 `help <command>`，可以获取有关特定命令的信息。
 
-There's a lot of commands, but some common ones are:
+有很多命令，但一些常见的有：
 
-- `top`: Show what used the most CPU. You can append a number like `top 20` to see more, or a regex to "focus" on or ignore certain items.
-- `web`: Open the call graph in your web browser. This is a great way to visually see CPU usage.
-- `svg`: Generate an SVG image of the call graph. It's the same as `web` except it doesn't open your web browser and the SVG is saved locally.
-- `tree`: A tabular view of the call stack.
+- `top`: 显示 CPU 使用最多的内容。你可以附加一个数字，例如 `top 20` 以查看更多内容，或者使用正则表达式来“聚焦”或忽略某些项。
+- `web`: 在 Web 浏览器中打开调用图。这是可视化查看 CPU 使用情况的好方法。
+- `svg`: 生成调用图的 SVG 图像。它与 `web` 相同，只是它不会打开 Web 浏览器，并且 SVG 会保存在本地。
+- `tree`: 调用堆栈的表格视图。
 
-Let's start with `top`. We see output like:
+让我们从 `top` 开始。我们看到的输出如下：
 
 ```
 (pprof) top
@@ -348,9 +347,9 @@ Showing top 10 nodes out of 196
      1.57s  2.24% 54.71%      1.57s  2.24%  runtime.epollwait
 ```
 
-The top 10 consumers of the CPU were all in the Go runtime -- in particular, lots of garbage collection (remember that syscalls are used to free and allocate memory). This is a hint that we could reduce allocations to improve performance, and a heap profile would be worthwhile.
+CPU 的前 10 大消费者都在 Go 运行时中——特别是大量的垃圾回收（请记住系统调用用于释放和分配内存）。这暗示我们可以通过减少分配来提高性能，并且堆 profile 将是有价值的。
 
-OK, but what if we want to see CPU utilization from our own code? We can ignore patterns containing "runtime" like so:
+好的，但如果我们想查看我们自己代码的 CPU 利用率呢？我们可以像这样忽略包含 "runtime" 的模式：
 
 ```
 (pprof) top -runtime  
@@ -372,15 +371,15 @@ Showing top 10 nodes out of 243
      0.06s 0.086%  1.31%      0.06s 0.086%  go.uber.org/zap/buffer.(*Buffer).AppendByte
 ```
 
-Well, it's clear that Prometheus metrics are another top consumer, but you'll notice that cumulatively, they amount to orders of magnitude less than GC above. The stark difference suggests that we should focus on reducing GC.
+好吧，很明显 Prometheus 指标是另一个主要消费者，但你会注意到，累积起来，它们的数量级远低于上面的 GC。这种显著差异表明我们应该专注于减少 GC。
 
 <aside class="tip">
 
-It's important to note that CPU profiles get their measurements from intermittent sampling, and samples will never be captured more frequently than the sampling rate, which is 10ms by default. That's why you won't see any cumulative time durations that are less than 10ms (they are likely less, but rounded up). For more specific timings, you can do an execution trace, which does not use sampling. (TODO: Add section about tracing.)
+需要注意的是，CPU profile 是通过间歇性采样获得测量值的，并且采样频率永远不会超过采样率，默认情况下采样率为 10 毫秒。这就是为什么你不会看到任何小于 10 毫秒的累积持续时间（它们可能更小，但被向上取整了）。对于更具体的计时，你可以执行执行跟踪，它不使用采样。（TODO：添加关于跟踪的章节。）
 
 </aside>
 
-Let's use `q` to quit this profile and use the same command on the heap profile:
+让我们使用 `q` 退出此 profile，并使用相同的命令分析堆 profile：
 
 ```
 (pprof) top
@@ -394,22 +393,22 @@ Showing top 10 nodes out of 102
  ...
  ```
 
-Bingo. Nearly half of memory is allocated strictly for read and write buffers from our use of the bufio package. Thus, we can infer that optimizing our code to reduce buffering would be very beneficial. (The [associated patch in Caddy](https://github.com/caddyserver/caddy/pull/4978) does just that).
+找到了。几乎一半的内存分配严格用于我们使用 bufio 包的读写缓冲区。因此，我们可以推断，优化代码以减少缓冲将非常有益。（[Caddy 中的相关补丁](https://github.com/caddyserver/caddy/pull/4978) 正是这样做的。）
 
-### Visualizations
+### 可视化
 
-If we instead run the `svg` or `web` commands, we'll get a visualization of the profile:
+如果我们改为运行 `svg` 或 `web` 命令，我们将获得 profile 的可视化：
 
-![CPU profile visualization](/old/resources/images/profile.png)
+![CPU profile 可视化](/old/resources/images/profile.png)
 
-This is a CPU profile but similar graphs are available for other profile types.
+这是 CPU profile，但其他 profile 类型也可用类似的图。
 
-To learn how to read these graphs, read [the pprof documentation](https://github.com/google/pprof/blob/main/doc/README.md#interpreting-the-callgraph).
+要了解如何阅读这些图，请阅读 [pprof 文档](https://github.com/google/pprof/blob/main/doc/README.md#interpreting-the-callgraph)。
 
 
-### Diffing profiles
+### profile 差异分析
 
-After you make a code change, you can compare the before and after using a difference analysis ("diff"). Here's a diff of the heap:
+在进行代码更改后，你可以使用差异分析（“diff”）比较前后。这是堆的差异：
 
 <pre><code class="cmd bash">go tool pprof -diff_base=before.prof after.prof
 File: caddy
@@ -432,21 +431,21 @@ Showing top 10 nodes out of 137
    -0.55MB  1.00% 50.29%    -0.55MB  1.00%  html.populateMaps
     0.53MB  0.97% 49.32%     0.53MB  0.97%  github.com/alecthomas/chroma.TypeRemappingLexer</code></pre>
 
-As you can see, we reduced memory allocations by about half!
+如你所见，我们减少了大约一半的内存分配！
 
-Diffs can be visualized, too:
+差异也可以可视化：
 
-![CPU profile visualization](/old/resources/images/profile-diff.png)
+![CPU profile 可视化](/old/resources/images/profile-diff.png)
 
-This makes it really obvious how the changes affected the performance of certain parts of the program.
+这使得更改如何影响程序某些部分的性能变得非常明显。
 
-## Further reading
+## 进一步阅读
 
-There's a lot to master with program profiling, and we've only scratched the surface.
+关于程序分析有很多需要掌握的内容，我们只是触及了表面。
 
-To really put the "pro" in "profiling", consider these resources:
+要真正掌握“分析”，请考虑以下资源：
 
-- [pprof Documentation](https://github.com/google/pprof/blob/main/doc/README.md)
-- [A real-world use of profiles with Caddy](https://github.com/caddyserver/caddy/pull/4978)
-- [Performance on the Go wiki](https://github.com/golang/go/wiki/Performance)
-- [The `net/http/pprof` package](https://pkg.go.dev/net/http/pprof)
+- [pprof 文档](https://github.com/google/pprof/blob/main/doc/README.md)
+- [Caddy 中 profile 的实际使用示例](https://github.com/caddyserver/caddy/pull/4978)
+- [Go 维基上的性能](https://github.com/golang/go/wiki/Performance)
+- [`net/http/pprof` 包](https://pkg.go.dev/net/http/pprof)

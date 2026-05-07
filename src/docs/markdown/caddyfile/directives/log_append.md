@@ -1,32 +1,30 @@
 ---
-title: log_append (Caddyfile directive)
+title: log_append (Caddyfile 指令)
 ---
 
 # log_append
 
-Appends a field to the access log for the current request.
+向当前请求的访问日志中追加一个字段。
 
-This should be used alongside the [`log` directive](log) which is required to enable access logging in the first place.
+此指令应与 [`log` 指令](log) 一同使用，后者是启用访问日志的前提。
 
-The value may be a static string, or a [placeholder](/docs/caddyfile/concepts#placeholders) which will be replaced with the value of the placeholder at the time of the request.
+值可以是静态字符串，也可以是[占位符](/docs/caddyfile/concepts#placeholders)，后者将在请求时被替换为占位符的值。
 
-
-## Syntax
+## 语法
 
 ```caddy-d
-log_append [<matcher>] [<]<key> <value>
+log_append [<匹配器>] [<]<键> <值>
 ```
 
-By default, the log field is added on the way back up the middleware chain (i.e. "late"), after all subsequent handlers have completed (e.g. after handlers like [`reverse_proxy`](reverse_proxy), [`respond`](respond), or [`file_server`](file_server), which write a response), so it captures the final state of the request and response.
+默认情况下，日志字段在中间件链返回途中（即“后期”）添加，在所有后续处理器完成之后（例如在 [`reverse_proxy`](reverse_proxy)、[`respond`](respond) 或 [`file_server`](file_server) 等写入响应的处理器之后），因此它捕获了请求和响应的最终状态。
 
-If `<` is used as a prefix to the key, it is marked as "early", which means the log field will be added to the logs _before_ calling the next handler in the chain, so the request can be read before it is modified by subsequent handlers.
+如果键的前缀为 `<`，则标记为“早期”，这意味着日志字段将在调用链中的下一个处理器之前添加到日志中，以便在后续处理器修改请求之前读取请求。
 
-For debugging purposes only (not for use in production), the handler has specialized handling when the value is one of these placeholders: `{http.request.body}`, `{http.request.body_base64}`, `{http.response.body}`, or `{http.response.body_base64}`. If a request body placeholder is used, then "early" mode is implicitly enabled, and the request body will be buffered. If a response body placeholder is used, response buffering is enabled to capture the response body and the field is added to the log "late", as the response is being written.
+仅用于调试目的（不适用于生产环境），当值是以下占位符之一时，该处理器有专门的处理方式：`{http.request.body}`、`{http.request.body_base64}`、`{http.response.body}` 或 `{http.response.body_base64}`。如果使用了请求体占位符，则会隐式启用“早期”模式，并缓冲请求体。如果使用了响应体占位符，则会启用响应缓冲以捕获响应体，并在写入响应时“后期”将该字段添加到日志中。
 
+## 示例
 
-## Examples
-
-Display in the logs the area of the site that the request is being served from, either `static` or `dynamic`:
+在日志中显示请求服务的站点区域（`static` 或 `dynamic`）：
 
 ```caddy
 example.com {
@@ -44,8 +42,7 @@ example.com {
 }
 ```
 
-Display in the logs, which reverse proxy upstream was effectively used (either `node1`, `node2` or `node3`) and
-the time spent proxying to the upstream in milliseconds as well as how long it took the proxy upstream to write the response header:
+在日志中显示实际使用的反向代理上游（`node1`、`node2` 或 `node3`）、代理到上游所花费的毫秒数以及上游写入响应头所花费的时间：
 
 ```caddy
 example.com {
@@ -62,7 +59,7 @@ example.com {
 }
 ```
 
-A field can be added to the logs "early" by prefixing the key with `<`. This allows you to capture the state of the request before it is modified by subsequent handlers. For example, to log the original request path before it gets rewritten (though this is a contrived example, since the original request path is already logged anyway, but just helps illustrate the point):
+通过在键前加上 `<`，可以在“早期”向日志添加一个字段。这允许你在后续处理器修改请求之前捕获请求的状态。例如，记录重写之前的原始请求路径（尽管这是一个刻意设计的例子，因为原始请求路径本身已经会被记录，但有助于说明这一点）：
 
 ```caddy
 example.com {
@@ -73,7 +70,7 @@ example.com {
 }
 ```
 
-For debugging purposes, add the request and response bodies to the logs (not for use in production, as this harms performance and makes the logs very noisy). If you expect the bodies to be binary data with non-printable characters, you can use the base64 variants of the placeholders instead (e.g. `{http.request.body_base64}` and `{http.response.body_base64}`), which will be easier to copy and inspect:
+用于调试目的，将请求体和响应体添加到日志中（不适用于生产环境，因为这会影响性能并导致日志非常嘈杂）。如果你预期主体是包含不可打印字符的二进制数据，可以改用占位符的 base64 变体（例如 `{http.request.body_base64}` 和 `{http.response.body_base64}`），这将更易于复制和检查：
 
 ```caddy
 example.com {
@@ -83,4 +80,3 @@ example.com {
 
 	reverse_proxy localhost:9000
 }
-```

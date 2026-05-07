@@ -1,18 +1,17 @@
 ---
-title: Quick-starts
+title: 快速入门
 ---
 
-# Quick-starts
+# 快速入门
 
-These tutorials are designed to get you up and running quickly without much explanation to get in the way.
+这些教程旨在让您快速上手，而无需过多解释。
 
-It is **highly recommended** that you follow-up by reading other tutorials and reference documentation to fully understand how your web server works.
+**强烈建议**您随后阅读其他教程和参考文档，以全面了解您的 Web 服务器的工作原理。
 
+## 菜单
 
-## Menu
-
-- #### [Using the API](/docs/quick-starts/api)
-- #### [Using a Caddyfile](/docs/quick-starts/caddyfile)
-- #### [Static file server](/docs/quick-starts/static-files)
-- #### [Reverse proxy](/docs/quick-starts/reverse-proxy)
+- #### [使用 API](/docs/quick-starts/api)
+- #### [使用 Caddyfile](/docs/quick-starts/caddyfile)
+- #### [静态文件服务器](/docs/quick-starts/static-files)
+- #### [反向代理](/docs/quick-starts/reverse-proxy)
 - #### [HTTPS](/docs/quick-starts/https)

@@ -1,24 +1,23 @@
 ---
-title: Common Caddyfile Patterns
+title: 常见 Caddyfile 模式
 ---
 
-# Common Caddyfile Patterns
+# 常见 Caddyfile 模式
 
-This page demonstrates a few complete and minimal Caddyfile configurations for common use cases. These can be helpful starting points for your own Caddyfile documents.
+本页展示了一些常见用例的完整且精简的 Caddyfile 配置。这些配置可以作为您自己 Caddyfile 文档的起点。
 
-These are not drop-in solutions; you will have to customize your domain name, ports/sockets, directory paths, etc. They are intended to illustrate some of the most common configuration patterns.
+它们并非直接可用的解决方案；您需要自定义域名、端口/套接字、目录路径等。它们旨在说明一些最常见的配置模式。
 
-- [Static file server](#static-file-server)
-- [Reverse proxy](#reverse-proxy)
+- [静态文件服务器](#静态文件服务器)
+- [反向代理](#反向代理)
 - [PHP](#php)
-- [Redirect `www.` subdomain](#redirect-www-subdomain)
-- [Trailing slashes](#trailing-slashes)
-- [Wildcard certificates](#wildcard-certificates)
-- [Single-page apps (SPAs)](#single-page-apps-spas)
-- [Caddy proxying to another Caddy](#caddy-proxying-to-another-caddy)
+- [重定向 `www.` 子域名](#重定向-www-子域名)
+- [尾部斜杠](#尾部斜杠)
+- [通配符证书](#通配符证书)
+- [单页应用 (SPA)](#单页应用-spa)
+- [Caddy 代理到另一个 Caddy](#caddy-代理到另一个-caddy)
 
-
-## Static file server
+## 静态文件服务器
 
 ```caddy
 example.com {
@@ -27,13 +26,11 @@ example.com {
 }
 ```
 
-As usual, the first line is the site address. The [`root` directive](/docs/caddyfile/directives/root) specifies the path to the root of the site (the `*` means to match all requests, so as to disambiguate from a [path matcher](/docs/caddyfile/matchers#path-matchers))&mdash;change the path to your site if it isn't the current working directory. Finally, we enable the [static file server](/docs/caddyfile/directives/file_server).
+与往常一样，第一行是站点地址。[`root` 指令](/docs/caddyfile/directives/root) 指定站点根目录的路径（`*` 表示匹配所有请求，以便与[路径匹配器](/docs/caddyfile/matchers#path-matchers) 区分）——如果您的站点不是当前工作目录，请将路径改为您的站点。最后，我们启用[静态文件服务器](/docs/caddyfile/directives/file_server)。
 
+## 反向代理
 
-
-## Reverse proxy
-
-Proxy all requests:
+代理所有请求：
 
 ```caddy
 example.com {
@@ -41,7 +38,7 @@ example.com {
 }
 ```
 
-Only proxy requests having a path starting with `/api/` and serve static files for everything else:
+仅代理路径以 `/api/` 开头的请求，其他请求则提供静态文件：
 
 ```caddy
 example.com {
@@ -51,17 +48,15 @@ example.com {
 }
 ```
 
-This uses a [request matcher](/docs/caddyfile/matchers#syntax) to match only requests that start with `/api/` and proxy them to the backend. All other requests will be served from the site [`root`](/docs/caddyfile/directives/root) with the [static file server](/docs/caddyfile/directives/file_server). This also depends on the fact that `reverse_proxy` is higher on the [directive order](/docs/caddyfile/directives#directive-order) than `file_server`.
+这里使用[请求匹配器](/docs/caddyfile/matchers#syntax) 仅匹配以 `/api/` 开头的请求，并将其代理到后端。所有其他请求将使用站点 [`root`](/docs/caddyfile/directives/root) 和[静态文件服务器](/docs/caddyfile/directives/file_server) 提供服务。这还依赖于 `reverse_proxy` 在[指令顺序](/docs/caddyfile/directives#directive-order) 中优先级高于 `file_server` 的事实。
 
-There are many more [`reverse_proxy` examples here](/docs/caddyfile/directives/reverse_proxy#examples).
-
-
+[这里有更多 `reverse_proxy` 示例](/docs/caddyfile/directives/reverse_proxy#examples)。
 
 ## PHP
 
 ### PHP-FPM
 
-With a PHP FastCGI service running, something like this works for most modern PHP apps:
+在运行 PHP FastCGI 服务时，以下配置适用于大多数现代 PHP 应用：
 
 ```caddy
 example.com {
@@ -72,20 +67,19 @@ example.com {
 }
 ```
 
-Customize the site root accordingly; this example assumes that your PHP app's webroot is within a `public` directory&mdash;requests for files that exist on disk will be served with [`file_server`](/docs/caddyfile/directives/file_server), and anything else will be routed to `index.php` for handling by the PHP app.
+根据情况自定义站点根目录；此示例假定您的 PHP 应用的 web 根目录位于 `public` 目录中——对磁盘上已存在文件的请求将由 [`file_server`](/docs/caddyfile/directives/file_server) 处理，其他所有请求将被路由到 `index.php`，由 PHP 应用处理。
 
-You may sometimes use a unix socket to connect to PHP-FPM:
+有时您可能会使用 Unix 套接字连接到 PHP-FPM：
 
 ```caddy-d
 php_fastcgi unix//run/php/php8.2-fpm.sock
 ```
 
-The [`php_fastcgi` directive](/docs/caddyfile/directives/php_fastcgi) is actually just a shortcut for [several pieces of configuration](/docs/caddyfile/directives/php_fastcgi#expanded-form).
-
+[`php_fastcgi` 指令](/docs/caddyfile/directives/php_fastcgi) 实际上是[几个配置项](/docs/caddyfile/directives/php_fastcgi#expanded-form) 的快捷方式。
 
 ### FrankenPHP
 
-Alternatively, you may use [FrankenPHP](https://frankenphp.dev/), which is a distribution of Caddy which calls PHP directly using CGO (Go to C bindings). This can be up to 4x faster than with PHP-FPM, and even better if you can use the worker mode.
+另一种选择是使用 [FrankenPHP](https://frankenphp.dev/)，它是 Caddy 的一个发行版，通过 CGO（Go 到 C 绑定）直接调用 PHP。其速度可比 PHP-FPM 快 4 倍，如果使用工作进程模式则更佳。
 
 ```caddy
 {
@@ -100,10 +94,9 @@ example.com {
 }
 ```
 
+## 重定向 `www.` 子域名
 
-## Redirect `www.` subdomain
-
-To **add** the `www.` subdomain with an HTTP redirect:
+**添加** `www.` 子域名并通过 HTTP 重定向：
 
 ```caddy
 example.com {
@@ -114,8 +107,7 @@ www.example.com {
 }
 ```
 
-
-To **remove** it:
+**移除** 它：
 
 ```caddy
 www.example.com {
@@ -126,8 +118,7 @@ example.com {
 }
 ```
 
-
-To remove it for **multiple domains** at once; this uses the `{labels.*}` placeholders which are the parts of the hostname, `0`-indexed from the right (e.g. `0`=`com`, `1`=`example-one`, `2`=`www`):
+为**多个域名**同时移除 `www.`；这里使用了 `{labels.*}` 占位符，它们是主机名的组成部分，从右侧以 `0` 开始索引（例如 `0`=`com`，`1`=`example-one`，`2`=`www`）：
 
 ```caddy
 www.example-one.com, www.example-two.com {
@@ -138,17 +129,15 @@ example-one.com, example-two.com {
 }
 ```
 
+## 尾部斜杠
 
+通常您不需要自己配置；[`file_server` 指令](/docs/caddyfile/directives/file_server) 会自动通过 HTTP 重定向为请求添加或移除尾部斜杠，具体取决于请求的资源是目录还是文件。
 
-## Trailing slashes
+但如果需要，您仍然可以通过配置来强制尾部斜杠。有两种方法：内部强制或外部强制。
 
-You will not usually need to configure this yourself; the [`file_server` directive](/docs/caddyfile/directives/file_server) will automatically add or remove trailing slashes from requests by way of HTTP redirects, depending on whether the requested resource is a directory or file, respectively.
+### 内部强制
 
-However, if you need to, you can still enforce trailing slashes with your config. There are two ways to do it: internally or externally.
-
-### Internal enforcement
-
-This uses the [`rewrite`](/docs/caddyfile/directives/rewrite) directive. Caddy will rewrite the URI internally to add or remove the trailing slash:
+这使用了 [`rewrite`](/docs/caddyfile/directives/rewrite) 指令。Caddy 会在内部重写 URI 以添加或移除尾部斜杠：
 
 ```caddy
 example.com {
@@ -157,12 +146,11 @@ example.com {
 }
 ```
 
-Using a rewrite, requests with and without the trailing slash will be the same.
+使用重写后，带或不带尾部斜杠的请求将视为相同。
 
+### 外部强制
 
-### External enforcement
-
-This uses the [`redir`](/docs/caddyfile/directives/redir) directive. Caddy will ask the browser to change the URI to add or remove the trailing slash:
+这使用了 [`redir`](/docs/caddyfile/directives/redir) 指令。Caddy 会要求浏览器更改 URI 以添加或移除尾部斜杠：
 
 ```caddy
 example.com {
@@ -171,19 +159,15 @@ example.com {
 }
 ```
 
-Using a redirect, the client will have to re-issue the request, enforcing a single acceptable URI for a resource.
+使用重定向，客户端必须重新发出请求，从而为资源强制执行单一可接受的 URI。
 
+## 通配符证书
 
+对于包括 Let's Encrypt 在内的大多数颁发机构，您必须启用 [ACME DNS 挑战](/docs/automatic-https#dns-challenge) 才能让 Caddy 自动管理通配符证书。
 
-## Wildcard certificates
+在启用 DNS 挑战后，自 Caddy 2.10 起，Caddy 会优先使用已配置或管理的适用通配符证书，而不是为子域名单独管理证书。
 
-For most issuers including Let's Encrypt, you must enable the [ACME DNS challenge](/docs/automatic-https#dns-challenge) to have Caddy automate wildcard certificates.
-
-With the DNS challenge enabled, as of Caddy 2.10, Caddy will prefer an applicable wildcard certificate that is already configured or managed before managing a separate certificate for a subdomain.
-
-
-
-If you need to serve multiple subdomains with the same wildcard certificate, the best way to handle them is with a Caddyfile like this, making use of the [`handle` directive](/docs/caddyfile/directives/handle) and [`host` matchers](/docs/caddyfile/matchers#host):
+如果需要用同一张通配符证书服务多个子域名，最佳处理方式是使用如下 Caddyfile，利用 [`handle` 指令](/docs/caddyfile/directives/handle) 和 [`host` 匹配器](/docs/caddyfile/matchers#host)：
 
 ```caddy
 *.example.com {
@@ -201,24 +185,22 @@ If you need to serve multiple subdomains with the same wildcard certificate, the
 		respond "Bar!"
 	}
 
-	# Fallback for otherwise unhandled domains
+	# 未处理的域名回退
 	handle {
 		abort
 	}
 }
 ```
 
-You must enable the [ACME DNS challenge](/docs/automatic-https#dns-challenge) to have Caddy automatically manage wildcard certificates.
+必须启用 [ACME DNS 挑战](/docs/automatic-https#dns-challenge) 才能让 Caddy 自动管理通配符证书。
 
+## 单页应用 (SPA)
 
+当网页自行处理路由时，服务器可能会收到大量请求，这些页面在服务器端并不存在，但只要提供唯一的索引文件，就可以在客户端渲染。这种架构的 Web 应用称为 SPA，即单页应用。
 
-## Single-page apps (SPAs)
+主要思路是让服务器“尝试文件”，查看请求的文件在服务器端是否存在，如果不存在，则回退到索引文件，由客户端（通常使用客户端 JavaScript）进行路由。
 
-When a web page does its own routing, servers may receive lots of requests for pages that don't exist server-side, but which are renderable client-side as long as the singular index file is served instead. Web applications architected like this are known as SPAs, or single-page apps.
-
-The main idea is to have the server "try files" to see if the requested file exists server-side, and if not, fall back to an index file where the client does the routing (usually with client-side JavaScript).
-
-A typical SPA config usually looks something like this:
+典型的 SPA 配置通常如下所示：
 
 ```caddy
 example.com {
@@ -229,7 +211,7 @@ example.com {
 }
 ```
 
-If your SPA is coupled with an API or other server-side-only endpoints, you will want to use `handle` blocks to treat them exclusively:
+如果您的 SPA 与 API 或其他仅服务器端的端点配合使用，您需要使用 `handle` 块来单独处理：
 
 ```caddy
 example.com {
@@ -247,7 +229,7 @@ example.com {
 }
 ```
 
-If your `index.html` contains references to your JS/CSS assets with hashed filenames, you may want to consider adding a `Cache-Control` header to instruct clients to _not_ cache it (so that if the assets change, browsers fetch the new ones). Since the `try_files` rewrite is used to serve your `index.html` from any path that doesn't match another file on disk, you can wrap the `try_files` with a `route` so that the `header` handler runs _after_ the rewrite (it normally would run before due to the [directive order](/docs/caddyfile/directives#directive-order)):
+如果您的 `index.html` 中包含对带有哈希文件名的 JS/CSS 资产的引用，您可能需要添加一个 `Cache-Control` 头，指示客户端不要缓存它（这样当资产更改时，浏览器会获取新版本）。由于 `try_files` 重写用于从任何不匹配磁盘上其他文件的路径提供 `index.html`，您可以将 `try_files` 包装在 `route` 中，以便 `header` 处理器在重写之后运行（正常情况下由于[指令顺序](/docs/caddyfile/directives#directive-order)，它会先运行）：
 
 ```caddy-d
 route {
@@ -256,12 +238,11 @@ route {
 }
 ```
 
+## Caddy 代理到另一个 Caddy
 
-## Caddy proxying to another Caddy
+如果您有一个公网可访问的 Caddy 实例（我们称之为“前端”），以及另一个在私有网络中运行实际应用的 Caddy 实例（我们称之为“后端”），您可以使用 [`reverse_proxy` 指令](/docs/caddyfile/directives/reverse_proxy) 将请求传递过去。
 
-If you have one Caddy instance publicly accessible (let's call it "front"), and another Caddy instance in your private network (let's call it "back") serving your actual app, you can use the [`reverse_proxy` directive](/docs/caddyfile/directives/reverse_proxy) to pass requests through.
-
-Front instance:
+前端实例：
 
 ```caddy
 foo.example.com, bar.example.com {
@@ -269,7 +250,7 @@ foo.example.com, bar.example.com {
 }
 ```
 
-Back instance:
+后端实例：
 
 ```caddy
 {
@@ -287,12 +268,8 @@ http://bar.example.com {
 }
 ```
 
-- This example serves two different domains, proxying both to the same back Caddy instance, on port `80`. Your back instance is serving the two domains different ways, so it's configured with two separate site blocks.
-
-- On the back, [`http://`](/docs/caddyfile/concepts#addresses) is used to accept HTTP on port `80`. The front instance terminates TLS, and the traffic between front and back are on a private network, so there's no need to re-encrypt it.
-
-- You may use a different port like `8080` on the back instance if you need to; just append `:8080` to each site address on the back's config, OR set the [`http_port` global option](/docs/caddyfile/options#http_port) to `8080`.
-
-- On the back, the [`trusted_proxies` global option](/docs/caddyfile/options#trusted_proxies) is used to tell Caddy to trust the front instance as a proxy. This ensures the real client IP is preserved.
-
-- Going further, you could have more than one back instance that you [load balance](/docs/caddyfile/directives/reverse_proxy#load-balancing) between. You could set up mTLS (mutual TLS) using the [`acme_server`](/docs/caddyfile/directives/acme_server) on the front instance such that it acts like the CA for the back instance (useful if the traffic between front and back cross untrusted networks).
+- 此示例服务两个不同的域名，并将两者都代理到同一个后端 Caddy 实例的 80 端口。您的后端实例以不同方式服务这两个域名，因此配置了两个独立的站点块。
+- 在后端，使用 [`http://`](/docs/caddyfile/concepts#addresses) 来接受 80 端口的 HTTP 流量。前端实例终止 TLS，前端和后端之间的流量在私有网络上，因此无需重新加密。
+- 如果需要，您可以在后端实例上使用不同的端口，例如 `8080`；只需在后端配置的每个站点地址后附加 `:8080`，或者将 [`http_port` 全局选项](/docs/caddyfile/options#http_port) 设置为 `8080`。
+- 在后端，使用 [`trusted_proxies` 全局选项](/docs/caddyfile/options#trusted_proxies) 告诉 Caddy 信任前端实例作为代理。这确保了真实的客户端 IP 得以保留。
+- 更进一步，您可以在多个后端实例之间进行[负载均衡](/docs/caddyfile/directives/reverse_proxy#load-balancing)。您可以使用前端实例上的 [`acme_server`](/docs/caddyfile/directives/acme_server) 设置 mTLS（双向 TLS），使其充当后端实例的 CA（如果前端和后端之间的流量跨越不可信网络，这会很有用）。

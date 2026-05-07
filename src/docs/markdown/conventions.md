@@ -1,39 +1,39 @@
 ---
-title: Conventions
+title: 约定
 ---
 
-# Conventions
+# 约定
 
-The Caddy ecosystem adheres to a few conventions to make things consistent and intuitive across the platform.
-
-
-- [Network addresses](#network-addresses)
-- [Placeholders](#placeholders)
-- [File locations](#file-locations)
-  - [Data directory](#data-directory)
-  - [Configuration directory](#configuration-directory)
-- [Durations](#durations)
+Caddy 生态系统遵循一些约定，以确保跨平台的一致性和直观性。
 
 
+- [网络地址](#网络地址)
+- [占位符](#占位符)
+- [文件位置](#文件位置)
+  - [数据目录](#数据目录)
+  - [配置目录](#配置目录)
+- [持续时间](#持续时间)
 
-## Network addresses
 
-When specifying a network address to dial or bind, Caddy accepts a string in the following format:
+
+## 网络地址
+
+指定用于连接或绑定的网络地址时，Caddy 接受以下格式的字符串：
 
 ```
 network/address
 ```
 
-The network part is optional (defaulting to `tcp`), and is anything that [Go's `net.Dial` function](https://pkg.go.dev/net#Dial) recognizes. If a network is specified, a single forward slash `/` must separate the network and address portions.
+网络部分是可选的（默认为 `tcp`），可以是 [Go 的 `net.Dial` 函数](https://pkg.go.dev/net#Dial) 识别的任何内容。如果指定了网络，则必须使用单个正斜杠 `/` 分隔网络和地址部分。
 
-The network can be any of the following; ones suffixed with `4` or `6` are IPv4 or IPv6 only, respectively:
+网络可以是以下任一类型；后缀为 `4` 或 `6` 的分别仅限 IPv4 或 IPv6：
 
-- TCP: `tcp`, `tcp4`, `tcp6`
-- UDP: `udp`, `udp4`, `udp6`
-- IP: `ip`, `ip4`, `ip6`
-- Unix: `unix`, `unixgram`, `unixpacket`
+- TCP：`tcp`、`tcp4`、`tcp6`
+- UDP：`udp`、`udp4`、`udp6`
+- IP：`ip`、`ip4`、`ip6`
+- Unix：`unix`、`unixgram`、`unixpacket`
 
-The address part may be any of these forms:
+地址部分可以是以下任何形式：
 
 - `host`
 - `host:port`
@@ -42,17 +42,17 @@ The address part may be any of these forms:
 - `/path/to/unix/socket`
 - `/path/to/unix/socket|0200`
 
-The host may be any hostname, resolvable domain name, or IP address.
+主机可以是任何主机名、可解析域名或 IP 地址。
 
-In the case of IPv6 addresses, the address must be enclosed in square brackets `[]`. The zone identifier (starting with `%`) is optional (often used for link-local addresses).
+对于 IPv6 地址，地址必须括在方括号 `[]` 中。区域标识符（以 `%` 开头）是可选的（通常用于链路本地地址）。
 
-The port may be a single value (`:8080`) or an inclusive range (`:8080-8085`). A port range will be multiplied into singular addresses. Not all config fields accept port ranges. The special port `:0` means any available port.
+端口可以是单个值（`:8080`）或包含范围的端口（`:8080-8085`）。端口范围将被扩展为多个单个地址。并非所有配置字段都接受端口范围。特殊端口 `:0` 表示任何可用端口。
 
-A unix socket path is only acceptable when using a `unix*` network type. The forward slash that separates the network and address is not considered part of the path.
+仅在网络类型为 `unix*` 时才接受 Unix 套接字路径。分隔网络和地址的正斜杠不被视为路径的一部分。
 
-When a unix socket is used as a bind address, you may optionally specify a file permission mode after the path, separated by a pipe `|`. The default is `0200` (octal), i.e. `u=w,g=,o=` (symbolic). The leading `0` is optional.
+当 Unix 套接字用作绑定地址时，您可以选择在路径后使用竖线 `|` 指定文件权限模式。默认为 `0200`（八进制），即 `u=w,g=,o=`（符号表示）。前导 `0` 是可选的。
 
-Valid examples:
+有效示例：
 
 ```
 :8080
@@ -70,133 +70,133 @@ unix//path/to/socket|0200
 
 <aside class="tip">
 
-Caddy network addresses are not URLs. URLs couple the lower and higher layers of the [OSI model <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/OSI_model#Layer_architecture), but Caddy often uses network addresses independently of a specific application, so combining them would be problematic. In Caddy, network addresses refer precisely to resources that can be dialed or bound at L3-L5, but URLs combine L3-L7, which is too many. A network address requires a host+port and path to be mutually exclusive, but URLs do not. Network addresses sometimes support port ranges, but URLs do not.
+Caddy 的网络地址不是 URL。URL 将 [OSI 模型 <img src="/old/resources/images/external-link.svg" class="external-link">](https://en.wikipedia.org/wiki/OSI_model#Layer_architecture) 的较低层和较高层耦合在一起，但 Caddy 通常独立于特定应用使用网络地址，因此将它们组合起来会有问题。在 Caddy 中，网络地址精确地指代可以在 L3-L5 层连接或绑定的资源，而 URL 则组合了 L3-L7 层，层次过多。网络地址要求主机+端口和路径互斥，但 URL 不要求。网络地址有时支持端口范围，但 URL 不支持。
 
 </aside>
 
 
 
 
-## Placeholders
+## 占位符
 
-Caddy's configuration supports the use of _placeholders_. Using placeholders is a simple way to inject dynamic values into a static configuration.
+Caddy 的配置支持使用*占位符*。使用占位符是将动态值注入静态配置的一种简单方法。
 
 <aside class="tip">
 
-Placeholders are a similar idea to variables in other software. For example, [nginx has variables <img src="/old/resources/images/external-link.svg" class="external-link">](https://nginx.org/en/docs/varindex.html) like `$uri` and `$document_root`, whereas Caddy's equivalent would be [`{http.request.uri}`](/docs/json/apps/http/#docs) and [`{http.vars.root}`](/docs/caddyfile/directives/root).
+占位符类似于其他软件中的变量。例如，[nginx 有变量 <img src="/old/resources/images/external-link.svg" class="external-link">](https://nginx.org/en/docs/varindex.html) 如 `$uri` 和 `$document_root`，而 Caddy 中的对应项是 [`{http.request.uri}`](/docs/json/apps/http/#docs) 和 [`{http.vars.root}`](/docs/caddyfile/directives/root)。
 
 </aside>
 
 
-Placeholders are bounded on either side by curly braces `{ }` and contain the identifier inside, for example: `{foo.bar}`. The opening placeholder brace can be escaped `\{like.this}` to prevent replacement. Placeholder identifiers are typically namespaced with dots to avoid collisions across modules.
+占位符由花括号 `{ }` 括起，内部包含标识符，例如：`{foo.bar}`。开头的占位符花括号可以通过 `\{like.this}` 转义以避免替换。占位符标识符通常用点号命名空间，以避免模块间冲突。
 
-Which placeholders are available depends on the context. Not all placeholders are available in all parts of the config. For example, [the HTTP app sets placeholders](/docs/json/apps/http/#docs) that are only available in areas of the config related to handling HTTP requests. When a request passes through the [`reverse_proxy` handler](/docs/json/apps/http/servers/routes/handle/reverse_proxy/#docs), the handler sets several proxy-specific placeholders. These placeholders may be referenced during proxying as well as afterwards (in `handle_response`), for example when setting response headers or enriching access logs.
+哪些占位符可用取决于上下文。并非所有占位符在配置的所有部分都可用。例如，[HTTP 应用设置的占位符](/docs/json/apps/http/#docs) 仅在与处理 HTTP 请求相关的配置区域中可用。当请求通过 [`reverse_proxy` 处理器](/docs/json/apps/http/servers/routes/handle/reverse_proxy/#docs) 时，处理器会设置几个特定于代理的占位符。这些占位符可以在代理期间以及之后（在 `handle_response` 中）被引用，例如在设置响应头或丰富访问日志时。
 
-The following placeholders are always available (global):
+以下占位符始终可用（全局）：
 
-Placeholder | Description
+占位符 | 描述
 ------------|-------------
-`{env.*}` | Environment variable; example: `{env.HOME}`
-`{file.*}` | Contents from a file; example: `{file./path/to/secret.txt}`
-`{system.hostname}` | The system's local hostname
-`{system.slash}` | The system's filepath separator
-`{system.os}` | The system's OS
-`{system.arch}` | The system's architecture
-`{system.wd}` | The current working directory
-`{time.now}` | The current time as a Go Time struct
-`{time.now.http}` | The current time in the format used in [HTTP headers <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified)
-`{time.now.unix}` | The current time as a unix timestamp in seconds
-`{time.now.unix_ms}` | The current time as a unix timestamp in milliseconds
-`{time.now.common_log}` | The current time in Common Log Format
-`{time.now.year}` | The current year in YYYY format
+`{env.*}` | 环境变量；示例：`{env.HOME}`
+`{file.*}` | 文件内容；示例：`{file./path/to/secret.txt}`
+`{system.hostname}` | 系统的本地主机名
+`{system.slash}` | 系统的文件路径分隔符
+`{system.os}` | 系统的操作系统
+`{system.arch}` | 系统架构
+`{system.wd}` | 当前工作目录
+`{time.now}` | 当前时间（Go Time 结构体）
+`{time.now.http}` | [HTTP 标头 <img src="/old/resources/images/external-link.svg" class="external-link">](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) 中使用的格式的当前时间
+`{time.now.unix}` | 当前时间的 Unix 时间戳（秒）
+`{time.now.unix_ms}` | 当前时间的 Unix 时间戳（毫秒）
+`{time.now.common_log}` | 通用日志格式的当前时间
+`{time.now.year}` | 当前年份（YYYY 格式）
 
-Not all config fields support placeholders, but most do where you would expect it. Support for placeholders needs to have been explicitly added to those fields. Plugin authors can [read this article](/docs/extending-caddy/placeholders) to learn how to add support for placeholders in their own modules.
-
-
+并非所有配置字段都支持占位符，但大多数您期望的地方都支持。占位符的支持需要显式添加到这些字段中。插件作者可以[阅读本文](/docs/extending-caddy/placeholders)了解如何在自己的模块中添加对占位符的支持。
 
 
-## File locations
 
-This section contains information about where to find various files. File and directory paths described here are defaults at best; some can be overridden.
 
-### Your config files
+## 文件位置
 
-There is no single, conventional place for you to put your config files. Put them wherever makes the most sense to you.
+本节包含如何查找各种文件的信息。此处描述的文件和目录路径最多只是默认值；有些可以被覆盖。
+
+### 您的配置文件
+
+没有单个、约定俗成的位置存放您的配置文件。将它们放在您认为最合理的地方。
 
 <aside class="tip">
 
-The only exception to this might be a file named `Caddyfile` in the current working directory, which the caddy command tries for convenience if no other config file is specified.
+唯一的例外可能是当前工作目录中名为 `Caddyfile` 的文件，如果未指定其他配置文件，caddy 命令会为了方便而尝试使用它。
 
 </aside>
 
 
-Distributions that ship with a default config file should document where this config file is at, even if it might be obvious to the package/distro maintainers. For most Linux installations, the Caddyfile will be found at `/etc/caddy/Caddyfile`.
+附带默认配置文件的发行版应记录此配置文件的位置，即使对于包/发行版维护者来说可能很明显。对于大多数 Linux 安装，Caddyfile 位于 `/etc/caddy/Caddyfile`。
 
 
-### Data directory
+### 数据目录
 
-Caddy stores TLS certificates and other important assets in a data directory, which is backed by [the configured storage module](/docs/json/storage/) (default: local file system).
+Caddy 将 TLS 证书和其他重要资产存储在数据目录中，该目录由[配置的存储模块](/docs/json/storage/)（默认：本地文件系统）支持。
 
-If the `XDG_DATA_HOME` environment variable is set, it is `$XDG_DATA_HOME/caddy`.
+如果设置了 `XDG_DATA_HOME` 环境变量，则为 `$XDG_DATA_HOME/caddy`。
 
-Otherwise, its path varies by platform, adhering to OS conventions:
+否则，其路径因平台而异，遵守操作系统的约定：
 
-OS | Data directory path
+操作系统 | 数据目录路径
 ---|---------------------
-**Linux, BSD** | `$HOME/.local/share/caddy`
+**Linux、BSD** | `$HOME/.local/share/caddy`
 **Windows** | `%AppData%\Caddy`
 **macOS** | `$HOME/Library/Application Support/Caddy`
 **Plan 9** | `$HOME/lib/caddy`
-**Android** | `$HOME/caddy` (or `/sdcard/caddy`)
+**Android** | `$HOME/caddy`（或 `/sdcard/caddy`）
 
-All other OSes use the Linux/BSD directory path.
+所有其他操作系统都使用 Linux/BSD 的目录路径。
 
-**The data directory must not be treated as a cache.** Its contents are **not** ephemeral or merely for the sake of performance. Caddy stores TLS certificates, private keys, OCSP staples, and other necessary information to the data directory. It should not be purged without understanding the implications.
+**数据目录绝不能被视为缓存。** 其内容**不是**临时性的或仅仅为了性能。Caddy 将 TLS 证书、私钥、OCSP 装订以及其他必要信息存储到数据目录。不经理解后果不应清除它。
 
-It is crucial that this directory is persistent and writeable by Caddy.
+此目录必须持久化且可由 Caddy 写入，这一点至关重要。
 
 
-### Configuration directory
+### 配置目录
 
-This is where Caddy may store certain configuration to disk. Most notably, it persists the last active configuration (by default) to this folder for easy resumption later using [`caddy run --resume`](/docs/command-line#caddy-run).
+这是 Caddy 可能将某些配置存储到磁盘的地方。最值得注意的是，它（默认情况下）将最后的活动配置持久化到此文件夹，以便稍后使用 [`caddy run --resume`](/docs/command-line#caddy-run) 轻松恢复。
 
 <aside class="tip">
 
-The configuration directory is *not* where you need to store [your config files](#your-config-files). (Though, you are allowed to.)
+配置目录*不是*您需要存放[配置文件](#您的配置文件)的地方。（不过，您也可以存放。）
 
 </aside>
 
 
-If the `XDG_CONFIG_HOME` environment variable is set, it is `$XDG_CONFIG_HOME/caddy`.
+如果设置了 `XDG_CONFIG_HOME` 环境变量，则为 `$XDG_CONFIG_HOME/caddy`。
 
-Otherwise, its path varies by platform, adhering to OS conventions:
+否则，其路径因平台而异，遵守操作系统的约定：
 
 
-OS | Config directory path
+操作系统 | 配置目录路径
 ---|---------------------
-**Linux, BSD** | `$HOME/.config/caddy`
+**Linux、BSD** | `$HOME/.config/caddy`
 **Windows** | `%AppData%\Caddy`
 **macOS** | `$HOME/Library/Application Support/Caddy`
 **Plan 9** | `$HOME/lib/caddy`
 
-All other OSes use the Linux/BSD directory path.
+所有其他操作系统都使用 Linux/BSD 的目录路径。
 
-It is crucial that this directory is persistent and writeable by Caddy.
+此目录必须持久化且可由 Caddy 写入，这一点至关重要。
 
 
-## Durations
+## 持续时间
 
-Duration strings are commonly used throughout Caddy's configuration. They take on the same format as [Go's `time.ParseDuration` syntax](https://golang.org/pkg/time/#ParseDuration) except you can also use `d` for day (we assume 1 day = 24 hours for simplicity). Valid units are:
+持续时间字符串在 Caddy 的配置中广泛使用。它们采用与 [Go 的 `time.ParseDuration` 语法](https://golang.org/pkg/time/#ParseDuration) 相同的格式，但您还可以使用 `d` 表示天（为简单起见，我们假设 1 天 = 24 小时）。有效单位是：
 
-- `ns` (nanosecond)
-- `us`/`µs` (microsecond)
-- `ms` (millisecond)
-- `s` (second)
-- `m` (minute)
-- `h` (hour)
-- `d` (day)
+- `ns`（纳秒）
+- `us`/`µs`（微秒）
+- `ms`（毫秒）
+- `s`（秒）
+- `m`（分钟）
+- `h`（小时）
+- `d`（天）
 
-Examples:
+示例：
 
 - `250ms`
 - `5s`
@@ -204,4 +204,4 @@ Examples:
 - `2h45m`
 - `90d`
 
-In the [JSON config](/docs/json/), duration values can also be integers which represent nanoseconds.
+在 [JSON 配置](/docs/json/)中，持续时间值也可以是整数，表示纳秒。

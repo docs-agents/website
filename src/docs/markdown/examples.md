@@ -1,4 +1,4 @@
-Examples
+示例
 ========
 
-This page may soon be developed into a community-maintained set of exmaples. For now, please refer to the examples posted in the [wiki on our community forum](https://caddy.community/c/wiki/13). Feel free to [search the wiki category](https://caddy.community/search?q=%23wiki%20) for something specific.
+此页面即将发展为由社区维护的示例集。目前，请参考发布在[社区论坛的维基](https://caddy.community/c/wiki/13)中的示例。你也可以随时[搜索维基分类](https://caddy.community/search?q=%23wiki%20)来查找特定内容。

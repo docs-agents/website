@@ -1,71 +1,70 @@
 ---
-title: Railway Quick-start
+title: Railway 快速入门
 ---
 
-# Railway quick-start
+# Railway 快速入门
 
-Deploying Caddy on Railway is an easy, no-fuss way to deploy a custom Caddy build with plugins.
+在 Railway 上部署 Caddy 是一种简单、无麻烦的方式，可以部署带有插件的自定义 Caddy 构建。
 
-**Prerequisites:**
-- A free [Railway](https://railway.com) account
+**前提条件：**
+- 一个免费的 [Railway](https://railway.com) 账号
 
-## Deploy Caddy on Railway
+## 在 Railway 上部署 Caddy
 
-Go to our [Download page](/download) and select any plugins you need, then click the purple "Deploy on Railway" button at the top.
+前往我们的 [下载页面](/download)，选择你需要的任意插件，然后点击顶部的紫色“在 Railway 上部署”按钮。
 
 <details>
-	<summary>Or, configure the template manually</summary>
+	<summary>或者，手动配置模板</summary>
 
-Alternatively, if you want to configure the Railway template yourself, here is how to do it.
+如果你希望自己配置 Railway 模板，以下是操作方法。
 
-Go to the template on Railway:
+前往 Railway 上的模板：
 
-<a href="https://railway.com/deploy/caddy?referralCode=YOPtw9&amp;utm_medium=integration&amp;utm_source=template&amp;utm_campaign=generic"><img src="https://railway.com/button.svg" alt="Deploy on Railway"></a>
+<a href="https://railway.com/deploy/caddy?referralCode=YOPtw9&amp;utm_medium=integration&amp;utm_source=template&amp;utm_campaign=generic"><img src="https://railway.com/button.svg" alt="在 Railway 上部署"></a>
 
-and add any plugins you need by clicking "Configure":
+然后通过点击“配置”添加你需要的任意插件：
 
-![Deploy screen](/resources/images/railway/deploy-screen.png)
+![部署界面](/resources/images/railway/deploy-screen.png)
 
-Then paste the plugins into the `CADDY_PLUGINS` variable, separated by spaces:
+接着将插件粘贴到 `CADDY_PLUGINS` 变量中，用空格分隔：
 
-![Adding plugins](/resources/images/railway/deploy-config.png)
+![添加插件](/resources/images/railway/deploy-config.png)
 
 </details>
 
-Click Deploy, then after the deployment finishes, you can try it out by clicking the link here:
+点击部署，部署完成后，你可以点击这里的链接进行测试：
 
-![Visit your deployment](/resources/images/railway/prod-link.png)
+![访问你的部署](/resources/images/railway/prod-link.png)
 
-You should see a welcome page showing that your new server is working!
+你应该会看到一个欢迎页面，显示你的新服务器正在运行！
 
-Next, you can customize your deployment to serve your own site or proxy to another Railway service.
+接下来，你可以自定义部署以托管你自己的站点或作为代理连接到另一个 Railway 服务。
 
-## Customize the deployment
+## 自定义部署
 
-To serve your own website, or to change the config, simply "eject" [our template](https://railway.com/deploy/caddy?referralCode=YOPtw9&amp;utm_medium=integration&amp;utm_source=template&amp;utm_campaign=generic) into your own repository:
+要托管你自己的网站或更改配置，只需将 [我们的模板](https://railway.com/deploy/caddy?referralCode=YOPtw9&amp;utm_medium=integration&amp;utm_source=template&amp;utm_campaign=generic) “弹出”到你自己的仓库中：
 
-![Eject template](/resources/images/railway/eject.png)
+![弹出模板](/resources/images/railway/eject.png)
 
-From your own repository, you can:
+在你自己的仓库中，你可以：
 
-- Put your own site into the `www` folder.
-- Modify Caddy's configuration, which is the [Caddyfile](/docs/caddyfile).
+- 将自己的站点放入 `www` 文件夹。
+- 修改 Caddy 的配置，即 [Caddyfile](/docs/caddyfile)。
 
-Simply commit the changes and push, then you can redeploy on Railway.
+只需提交更改并推送，然后你就可以在 Railway 上重新部署。
 
-If you want to change the plugins in your Caddy build, all you have to do is edit the `CADDY_PLUGINS` variable and redeploy:
+如果你想更改 Caddy 构建中的插件，只需编辑 `CADDY_PLUGINS` 变量并重新部署：
 
-![Change plugins](/resources/images/railway/plugins-variable.png)
+![更改插件](/resources/images/railway/plugins-variable.png)
 
-## Tips
+## 提示
 
-Railway terminates TLS for you, so you should write your Caddy config as if it is being proxied to (because it is). Hence, if you use hosts in your Caddyfile site addresses, you should use `auto_https off` in your global options. Caddy is not edge-facing with our template.
+Railway 会为你终止 TLS，因此你应当将 Caddy 配置视为被代理（事实也是如此）。因此，如果你在 Caddyfile 站点地址中使用主机名，则应在全局选项中设置 `auto_https off`。在我们的模板中，Caddy 不直接面向边缘。
 
+## 变量
 
-## Variables
+你可以在 Railway 项目中设置的环境变量，该模板可能会用到：
 
-Environment variables you can set in your Railway project that this template may use:
-
-Name | Description | Default | Example(s)
+名称 | 描述 | 默认值 | 示例
 ---- | ----------- | ------- | ----------
-`CADDY_PLUGINS` | Space-separated list of Caddy plugins | ` ` | `github.com/caddy-dns/cloudflare github.com/mholt/caddy-ratelimit`
+`CADDY_PLUGINS` | 以空格分隔的 Caddy 插件列表 | ` ` | `github.com/caddy-dns/cloudflare github.com/mholt/caddy-ratelimit`

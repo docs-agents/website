@@ -1,31 +1,31 @@
 <script>
 const quickAssistStructure = {
 	start: {
-		prompt: "What are you looking for?",
+		prompt: "您想了解什么？",
 		options: [
 			{
-				text: "How to install Caddy",
+				text: "如何安装 Caddy",
 				next: "install"
 			},
 			{
-				text: "Help configuring Caddy",
+				text: "帮助配置 Caddy",
 				next: "configure"
 			},
 			{
-				text: "A solution to a problem",
+				text: "问题的解决方案",
 				next: "solution"
 			},
 			{
-				text: "An example for my use case",
+				text: "我的使用场景示例",
 				next: "example"
 			}
 		]
 	},
 	install: {
-		prompt: "How do you want to install Caddy?",
+		prompt: "您想如何安装 Caddy？",
 		options: [
 			{
-				text: "OS package manager",
+				text: "操作系统包管理器",
 				next: "install_pkgmgr"
 			},
 			{
@@ -33,21 +33,21 @@ const quickAssistStructure = {
 				next: "install_docker"
 			},
 			{
-				text: "Build from source",
+				text: "从源码构建",
 				next: "install_build"
 			},
 			{
-				text: "Build with plugins",
+				text: "带插件构建",
 				next: "install_with_plugins"
 			},
 			{
-				text: "Pre-built binary",
+				text: "预编译二进制文件",
 				next: "install_binary"
 			}
 		]
 	},
 	install_pkgmgr: {
-		prompt: "Which OS are you using?",
+		prompt: "您使用哪种操作系统？",
 		options: [
 			{
 				text: "Linux (Debian, Ubuntu, Raspbian)",
@@ -78,179 +78,179 @@ const quickAssistStructure = {
 				next: "install_android"
 			},
 			{
-				text: "Other",
+				text: "其他",
 				next: "install_other"
 			}
 		]
 	},
 	install_dpkg: {
-		title: "Install Caddy on Debian-based systems",
+		title: "在基于 Debian 的系统上安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#debian-ubuntu-raspbian"
 			}
 		]
 	},
 	install_rpm: {
-		title: "Install Caddy via RPM",
+		title: "通过 RPM 安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#fedora-redhat-centos"
 			}
 		]
 	},
 	install_arch: {
-		title: "Install Caddy on Arch/Manjaro/Parabola Linux",
+		title: "在 Arch/Manjaro/Parabola Linux 上安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#arch-linux-manjaro-parabola"
 			}
 		]
 	},
 	install_mac: {
-		title: "Install Caddy on macOS",
+		title: "在 macOS 上安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#homebrew"
 			}
 		]
 	},
 	install_windows: {
-		title: "Install Caddy on Windows",
+		title: "在 Windows 上安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#windows"
 			}
 		]
 	},
 	install_nix: {
-		title: "Install Caddy on Nix/Nixpkgs/NixOS",
+		title: "在 Nix/Nixpkgs/NixOS 上安装 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#nixnixpkgsnixos"
 			}
 		]
 	},
 	install_android: {
-		title: "Install Caddy on Android",
+		title: "在 Android 上安装 Caddy",
 		content: ``,
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#termux"
 			}
 		]
 	},
 	install_other: {
-		title: "Miscellaneous install methods",
+		title: "其他安装方法",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#fedora-redhat-centos"
 			}
 		]
 	},
 	install_docker: {
-		title: "Official Docker image",
+		title: "官方 Docker 镜像",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/install#docker"
 			}
 		]
 	},
 	install_build: {
-		title: "Build Caddy from source",
+		title: "从源码构建 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/build"
 			}
 		]
 	},
 	install_with_plugins: {
-		title: "Build Caddy with plugins",
+		title: "构建带插件的 Caddy",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/build#xcaddy"
 			}
 		]
 	},
 	install_binary: {
-		title: "Install Caddy binary manually",
+		title: "手动安装 Caddy 二进制文件",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/build#xcaddy"
 			}
 		]
 	},
 
 	configure: {
-		prompt: "What are you trying to configure?",
+		prompt: "您想配置什么？",
 		options: [
 			{
-				text: "On-demand TLS",
+				text: "按需 TLS",
 				next: "cfg_ondemand"
 			},
 			{
-				text: "Authentication",
+				text: "认证",
 				next: "cfg_authentication"
 			},
 			{
-				text: "Load balancing",
+				text: "负载均衡",
 				next: "cfg_loadbalancing"
 			}
 		]
 	},
 	cfg_ondemand: {
-		prompt: "Do you control the (DNS records of) the domain names you're serving?",
+		prompt: "您是否控制所提供域名的 DNS 记录？",
 		options: [
 			{
-				text: "Yes",
-				crumb: "I control the domains",
+				text: "是",
+				crumb: "我控制域名",
 				next: "cfg_ondemand_havecontrol"
 			},
 			{
-				text: "No",
-				crumb: "DNS out of my control",
+				text: "否",
+				crumb: "DNS 不在我控制下",
 				next: "cfg_ondemand_ok"
 			}
 		]
 	},
 	cfg_ondemand_havecontrol: {
-		prompt: "Do you have hundreds or thousands of your own domain names to serve?",
+		prompt: "您是否拥有数百或数千个自己的域名需要提供服务？",
 		options: [
 			{
-				text: "Yes",
-				crumb: "Lots of domains",
+				text: "是",
+				crumb: "大量域名",
 				next: "cfg_ondemand_ok"
 			},
 			{
-				text: "No",
-				crumb: "Small scale",
+				text: "否",
+				crumb: "小规模",
 				next: "cfg_ondemand_smallscale"
 			}
 		]
 	},
 	cfg_ondemand_smallscale: {
-		title: "You likely don't need on-demand TLS.",
+		title: "您很可能不需要按需 TLS。",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/automatic-https#on-demand-tls"
 			}
 		]
 	},
 	cfg_ondemand_ok: {
-		prompt: "Are you using the Caddyfile or JSON to configure Caddy?",
+		prompt: "您使用 Caddyfile 还是 JSON 来配置 Caddy？",
 		options: [
 			{
 				text: "Caddyfile",
@@ -263,10 +263,10 @@ const quickAssistStructure = {
 		]
 	},
 	cfg_ondemand_caddyfile: {
-		title: "Setting up On-Demand TLS",
+		title: "设置按需 TLS",
 		options: [
 			{
-				text: "Learn more",
+				text: "了解更多",
 				href: "/docs/automatic-https#on-demand-tls"
 			}
 		]

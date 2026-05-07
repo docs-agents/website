@@ -1,18 +1,18 @@
 ---
-title: Verifying Asset Signatures
+title: 验证工件签名
 ---
 
-# Signature Verification
+# 签名验证
 
-Artifact signing allows you to validate the artifact you have is the same one created by the project's workflow and was not modified by an unauthorized party (e.g. man-in-the-middle). The validation provides common ground, assurance, and knowledge that all parties are referring to the same artifact, collection of bytes, whether it is an executable, SBOM, or text file.
+工件签名允许你验证所拥有的工件是否与项目工作流程创建的工件一致，并且未被未授权方（如中间人攻击）修改。该验证提供了共同基础、保证和知识，确保所有各方引用的是同一工件、同一字节集合，无论是可执行文件、SBOM还是文本文件。
 
-As of Caddy v2.6.0, CI/CD release artifacts are signed using project [Sigstore](https://www.sigstore.dev/) technology, which issues certificates containing details about the subject to whom the certificate is issued. You can start by inspecting the certificate used to sign your artifact of choice. The certificates are base64-encoded, so you first have to base64-decode it to receive the PEM file. In this example, we'll work with the `caddy_2.6.0_checksums.txt` artifact and assume a Linux-like environment.
+自 Caddy v2.6.0 起，CI/CD 发布工件使用项目 [Sigstore](https://www.sigstore.dev/) 技术进行签名，该技术会签发包含被签发对象详细信息的证书。你可以先检查用于签名所选工件的证书。证书是 base64 编码的，因此首先需要将其 base64 解码以获取 PEM 文件。在此示例中，我们将使用 `caddy_2.6.0_checksums.txt` 工件，并假设在类似 Linux 的环境中进行操作。
 
-Start by downloading the the 3 files pertaining to your artifact of choice (i.e. `<the artifact>` which is the actual artifact whose companion signature and certs are to be verified, `<the artifact>.sig` which is the signature of the artifact, and `<the artifact>.pem` is the certificate descending from the root cert by Fulcio by Sigstore). Then base64 decode the downloaded `.pem` file to the armored version:
+首先下载与所选工件相关的三个文件（即 `<工件的实际名称>`——需要验证其附带的签名和证书的工件本身、`<工件名称>.sig`——工件的签名文件、`<工件名称>.pem`——由 Sigstore 的 Fulcio 从根证书派生而来的证书）。然后将下载的 `.pem` 文件 base64 解码为装甲格式：
 
 <pre><code class="cmd bash">base64 -d < caddy_2.6.0_checksums.txt.pem > cert.pem</code></pre>
 
-You can now inspect the certificate using the `openssl` command. Running `openssl x509 -in cert.pem -text` against the certificate we have just decoded shows this snipped print-out:
+现在可以使用 `openssl` 命令检查证书。运行 `openssl x509 -in cert.pem -text` 对我们刚刚解码的证书进行操作，会显示如下截断的输出：
 
 
 <pre><code class="cmd"><span class="bash">openssl x509 -in cert.pem -text</span>
@@ -97,23 +97,23 @@ oFQIJuECMQCnbZfbTMjdRxM9KHqm82RQLFqdnRDQz2/Q6Td2/cyOncNrungHQGpA
 
 <aside class="tip" id="x509-extensions">
 
-Notice the stated intended usage of the certificate, which is `Code Signing`. The certificate also contains the URI of the triggering Github Actions workflow in the `X509v3 Subject Alternative Name` extension, GHA workflow name in `1.3.6.1.4.1.57264.1.4`, the commit to be signed in `1.3.6.1.4.1.57264.1.3`, the repo name in `1.3.6.1.4.1.57264.1.5`, and the triggering ref `1.3.6.1.4.1.57264.1.6`. Those details together pinpoint the single event in the universe for which the certificate is to be used.
+注意证书的既定用途为 `Code Signing`（代码签名）。证书还包含在 `X509v3 Subject Alternative Name` 扩展中触发该操作的 GitHub Actions 工作流的 URI，在 `1.3.6.1.4.1.57264.1.4` 中的 GHA 工作流名称，在 `1.3.6.1.4.1.57264.1.3` 中待签名的提交，在 `1.3.6.1.4.1.57264.1.5` 中的仓库名称，以及在 `1.3.6.1.4.1.57264.1.6` 中的触发 ref。这些详细信息共同确定了该证书所针对的全局唯一事件。
 
 </aside>
 
-Now that we have the certificate, we can use `cosign` cli to validate the signature. We run the following command (notice it uses the undecoded cert):
+现在我们有了证书，可以使用 `cosign` CLI 来验证签名。运行以下命令（注意它使用的是未解码的证书）：
 
 <pre><code class="cmd"><span class="bash">COSIGN_EXPERIMENTAL=1 cosign verify-blob --certificate ./caddy_2.6.0_checksums.txt.pem --signature ./caddy_2.6.0_checksums.txt.sig ./caddy_2.6.0_checksums.txt</span>
 tlog entry verified with uuid: 04deb84e5a73ba75ea69092c6d700eaeb869c29cae3e0cf98dbfef871361ed09 index: 3618623
 Verified OK
 </code></pre>
 
-Let's switch cli tools now and use `rekor-cli`, which interacts with the pubic Rekor server storing the transparency logs. Let's run:
+现在切换 CLI 工具，使用 `rekor-cli` 与存储透明度日志的公共 Rekor 服务器交互。运行：
 
 <pre><code class="cmd bash">rekor-cli get --uuid 04deb84e5a73ba75ea69092c6d700eaeb869c29cae3e0cf98dbfef871361ed09 --format json | jq -r '.'
 </code></pre>
 
-The use of `jq` is to prettify the output. You should see an output like this:
+使用 `jq` 是为了美化输出。你应该会看到类似这样的输出：
 
 ```json
 {
@@ -142,21 +142,21 @@ The use of `jq` is to prettify the output. You should see an output like this:
 }
 ```
 
-Notice how the value of `.Body.HashedRekordObj.signature.content` matches the content of the signature generated in our CI and available in the file `caddy_2.6.0_checksums.txt.sig`. Moreover, the certificate used and downloaded is also stored in the Rekor server and available in the response at `.Body.HashedRekordObj.signature.publicKey.content` and matches the string we have in the file `caddy_2.6.0_checksums.txt.pem`. We can take one step further and check how `.Body.HashedRekordObj.data.hash.value` matches the output of the command `sha256sum ./caddy_2.6.0_checksums.txt`. So by now we have matching certs, matching signatures, and matching checksums (of the file containing the checksums of the archives but not of itself; this checksum is provided and recorded externally via Sigstore ecosystem). All of this is publicly recorded in transparency logs for the general public to validate.
+注意，`.Body.HashedRekordObj.signature.content` 的值与我们的 CI 生成的签名内容一致，该签名可在 `caddy_2.6.0_checksums.txt.sig` 文件中找到。此外，所使用并下载的证书也存储在 Rekor 服务器中，并在响应中的 `.Body.HashedRekordObj.signature.publicKey.content` 中可用，且与 `caddy_2.6.0_checksums.txt.pem` 文件中的字符串匹配。我们可以进一步验证 `.Body.HashedRekordObj.data.hash.value` 是否与命令 `sha256sum ./caddy_2.6.0_checksums.txt` 的输出匹配。至此，我们已经匹配了证书、签名以及（包含归档文件校验和但未包含自身校验和的）文件的校验和；此校验和是通过 Sigstore 生态系统外部提供并记录的）。所有这些都公开记录在透明度日志中，供公众验证。
 
-## Verifying Authenticity of an Artifact
+## 验证工件的真实性
 
-What if you are handed an artifact claimed to be the product of the Caddy project but you were not given the signature file or the certificate? You can use `rekor-cli` to query Rekor server for the subject artifact:
+如果你获得一个声称是 Caddy 项目产物的工件，但未提供签名文件或证书，该怎么办？你可以使用 `rekor-cli` 查询 Rekor 服务器查找该工件：
 
 <pre><code class="cmd"><span class="bash">rekor-cli search --artifact ./caddy_2.6.0_checksums.txt --format json | jq -r '.UUIDs[0]'</span>
 Found matching entries (listed by UUID):
 362f8ecba72f432604deb84e5a73ba75ea69092c6d700eaeb869c29cae3e0cf98dbfef871361ed09</code></pre>
 
-Note how the UUID matches the one encountered in the earlier section for the same file. Like we did in the earlier section, we can query Rekor for the entry details of this UUID:
+注意 UUID 与之前针对同一文件遇到的 UUID 一致。像上一节一样，我们可以查询 Rekor 获取此 UUID 的条目详细信息：
 
 <pre><code class="cmd bash">rekor-cli get --uuid 04deb84e5a73ba75ea69092c6d700eaeb869c29cae3e0cf98dbfef871361ed09 --format json | jq -r '.'</code></pre>
 
-However, we can short-circuit the lookup by running this line to merge the two separate commands into a one-liner:
+不过，我们可以通过运行以下一行命令来简化查找过程，将两个单独的命令合并为一个：
 
 <pre><code class="cmd"><span class="bash">rekor-cli get --uuid $(rekor-cli search --artifact ./caddy_2.6.0_checksums.txt --format json | jq -r '.UUIDs[0]') --format json | jq -r '.'</span>
 {
@@ -185,13 +185,13 @@ However, we can short-circuit the lookup by running this line to merge the two s
 }
 </code></pre>
 
-We now know the artifact is signed, and its signature is logged on Rekor transparency log server. The next step is to validate the signature and the artifact were the product of the CI/CD workflow of the Caddy project. We do this by extracting the public key from the JSON received by querying Rekor, base64-decode it into PEM file, then inspect the certificate using `openssl`. Run the following command to extract the certificate from the Rekor response we received earlier, base64-decode it, and store the result in a file.
+现在我们知道该工件已被签名，且其签名已记录在 Rekor 透明度日志服务器上。下一步是验证签名和工件是否来自 Caddy 项目的 CI/CD 工作流程。我们通过从查询 Rekor 获得的 JSON 中提取公钥，base64 解码为 PEM 文件，然后使用 `openssl` 检查证书来完成此操作。运行以下命令从之前收到的 Rekor 响应中提取证书，base64 解码，并将结果存储到文件中。
 
 <pre>
 <code class="cmd"><span class="bash">rekor-cli get --uuid $(rekor-cli search --artifact ./caddy_2.6.0_checksums.txt --format json | jq -r '.UUIDs[0]') --format json | jq -r '.Body.HashedRekordObj.signature.publicKey.content' | base64 -d > cert.pem</span></code>
 </pre>
 
-Now inspect the certificate using `openssl` and pay attention to the `X509v3 extensions` section.
+现在使用 `openssl` 检查证书，并注意 `X509v3 extensions` 部分。
 
 <pre><code class="cmd"><span class="bash">openssl x509 -in cert.pem -text</span>
 Certificate:
@@ -227,8 +227,8 @@ Certificate:
    ...
 </code></pre>
 
-The [extensions values](#x509-extensions) indicate the authenticity of the artifact. Refer to [Sigstore OID information](https://github.com/sigstore/fulcio/blob/a25fb09c3f0561ac43e50357fdfc427e3f0aca4a/docs/oid-info.md) for the definition of each extension.
+[扩展值](#x509-extensions) 指示了工件的真实性。有关每个扩展的定义，请参考 [Sigstore OID 信息](https://github.com/sigstore/fulcio/blob/a25fb09c3f0561ac43e50357fdfc427e3f0aca4a/docs/oid-info.md)。
 
-## What If The Signature Is Not Verified?
+## 如果签名未验证怎么办？
 
-Signature verification failure indicates the artificate at hand was not produced by the CI/CD workflow of the Caddy project on GitHub. If you have the signature, the certificate, and the artifact, then you are looking for successful verification reported by `cosign`. Alternatively, you can use `rekor-cli` to inspect the Rekor server for the entry, validate the certificate extensions for the correct and expected values, and match the checksums and signatures. Mismatches or absence of Rekor entry means either the artifact was not produced by the CI/CD of the Caddy project, or the artifact was tampered somewhere between the build flow of the CI/CD, the GitHub releases page, and the delivery to you.
+签名验证失败表示您手中的工件并非由 GitHub 上 Caddy 项目的 CI/CD 工作流程生成。如果您拥有签名、证书和工件，那么应寻找 `cosign` 报告的成功验证。或者，您可以使用 `rekor-cli` 检查 Rekor 服务器中的条目，验证证书扩展是否具有正确且预期的值，并匹配校验和与签名。不匹配或 Rekor 条目不存在意味着工件要么不是由 Caddy 项目的 CI/CD 生成，要么是在 CI/CD 构建流程、GitHub 发布页面以及交付给您之间的某个环节被篡改。

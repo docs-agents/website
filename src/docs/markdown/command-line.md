@@ -1,112 +1,112 @@
 ---
-title: "Command Line"
+title: "命令行"
 ---
 
-# Command Line
+# 命令行
 
-Caddy has a standard unix-like command line interface. Basic usage is:
+Caddy 拥有标准的类 Unix 命令行界面。基本用法是：
 
 ```
 caddy <command> [<args...>]
 ```
 
-The `<carets>` indicate parameters that get replaced by your input.
+`<尖括号>` 表示需要由你的输入替换的参数。
 
-The`[brackets]` indicate optional parameters. The `(brackets)` indicate required parameters.
+`[方括号]` 表示可选参数。`(圆括号)` 表示必需参数。
 
-The ellipses `...` indicates a continuation, i.e. one or more parameters.
+省略号 `...` 表示可延续，即一个或多个参数。
 
-The `--flags` may have a single-letter shortcut like `-f`.
+`--标志` 可能有单字母快捷键，如 `-f`。
 
-**Quick start: `caddy`, `caddy help`, or `man caddy` (if installed)**
+**快速开始：**`caddy`、`caddy help` 或 `man caddy`（如果已安装）
 
 ---
 
 - **[caddy adapt](#caddy-adapt)**
-  Adapts a config document to native JSON
+  将配置文档适配为原生 JSON
 
 - **[caddy build-info](#caddy-build-info)**
-  Prints build information
+  打印构建信息
 
 - **[caddy completion](#caddy-completion)**
-  Generate shell completion script
+  生成 shell 补全脚本
 
 - **[caddy environ](#caddy-environ)**
-  Prints the environment
+  打印环境变量
 
 - **[caddy file-server](#caddy-file-server)**
-  A simple but production-ready file server
+  一个简单但可用于生产的文件服务器
 
 - **[caddy file-server export-template](#caddy-file-server-export-template)**
-  Auxiliary command for the file server to export the default file browser template
+  文件服务器的辅助命令，用于导出默认文件浏览器模板
 
 - **[caddy fmt](#caddy-fmt)**
-  Formats a Caddyfile
+  格式化 Caddyfile
 
 - **[caddy hash-password](#caddy-hash-password)**
-  Hashes a password and outputs base64
+  对密码进行哈希并输出 base64
 
 - **[caddy help](#caddy-help)**
-  View help for caddy commands
+  查看 caddy 命令的帮助信息
 
 - **[caddy list-modules](#caddy-list-modules)**
-  Lists the installed Caddy modules
+  列出已安装的 Caddy 模块
 
 - **[caddy manpage](#caddy-manpage)**
-  Generate manpages
+  生成手册页
 
 - **[caddy reload](#caddy-reload)**
-  Changes the config of the running Caddy process
+  更改正在运行的 Caddy 进程的配置
 
 - **[caddy respond](#caddy-respond)**
-  A quick-and-clean, hard-coded HTTP server for development and testing
+  一个快速简洁、硬编码的 HTTP 服务器，用于开发和测试
 
 - **[caddy reverse-proxy](#caddy-reverse-proxy)**
-  A simple but production-ready HTTP(S) reverse proxy
+  一个简单但可用于生产的 HTTP(S) 反向代理
 
 - **[caddy run](#caddy-run)**
-  Starts the Caddy process in the foreground
+  在前台启动 Caddy 进程
 
 - **[caddy start](#caddy-start)**
-  Starts the Caddy process in the background
+  在后台启动 Caddy 进程
 
 - **[caddy stop](#caddy-stop)**
-  Stops the running Caddy process
+  停止正在运行的 Caddy 进程
 
 - **[caddy storage export](#caddy-storage)**
-  Exports the contents of the configured storage to a tarball
+  将已配置存储的内容导出为 tar 包
 
 - **[caddy storage import](#caddy-storage)**
-  Imports a previously exported tarball to the configured storage
+  将之前导出的 tar 包导入到已配置的存储中
 
 - **[caddy trust](#caddy-trust)**
-  Installs a certificate into local trust store(s)
+  将证书安装到本地信任存储中
 
 - **[caddy untrust](#caddy-untrust)**
-  Untrusts a certificate from local trust store(s)
+  从本地信任存储中取消信任证书
 
 - **[caddy upgrade](#caddy-upgrade)**
-  Upgrades Caddy to the latest release
+  将 Caddy 升级到最新版本
 
 - **[caddy add-package](#caddy-add-package)**
-  Upgrades Caddy to the latest release, with additional plugins added
+  将 Caddy 升级到最新版本，并添加额外的插件
 
 - **[caddy remove-package](#caddy-remove-package)**
-  Upgrades Caddy to the latest release, with some plugins removed
+  将 Caddy 升级到最新版本，并移除一些插件
 
 - **[caddy validate](#caddy-validate)**
-  Tests whether a config file is valid
+  测试配置文件是否有效
 
 - **[caddy version](#caddy-version)**
-  Prints the version
+  打印版本
 
-- **[Signals](#signals)**
-  How Caddy handles signals
+- **[信号](#signals)**
+  Caddy 如何处理信号
 
-- **[Exit codes](#exit-codes)**
-  Emitted when the Caddy process exits
+- **[退出码](#exit-codes)**
+  Caddy 进程退出时发出的代码
 
-## Subcommands
+## 子命令
 
 
 ### `caddy adapt`
@@ -117,17 +117,17 @@ The `--flags` may have a single-letter shortcut like `-f`.
 	[-p, --pretty]
 	[--validate]</code></pre>
 
-Adapts a configuration to Caddy's native JSON config structure and writes the output to stdout, along with any warnings to stderr, then exits.
+将配置适配为 Caddy 的原生 JSON 配置结构，并将输出写入 stdout，同时将任何警告写入 stderr，然后退出。
 
-`--config` is the path to the config file. If omitted, assumes `Caddyfile` in current directory if it exists; otherwise, this flag is required. If you wish to use stdin instead of a regular file, use - as the path.
+`--config` 是配置文件的路径。如果省略，则假定当前目录中存在 `Caddyfile`；否则，此标志是必需的。如果你希望使用 stdin 而不是常规文件，请使用 `-` 作为路径。
 
-`--adapter` specifies the config adapter to use; default is `caddyfile`.
+`--adapter` 指定要使用的配置适配器；默认为 `caddyfile`。
 
-`--pretty` will format the output with indentation for human readability.
+`--pretty` 将格式化输出，添加缩进以提高可读性。
 
-`--validate` will load and provision the adapted configuration to check for validity (but it will not actually start running the config).
+`--validate` 将加载并预配适配后的配置以检查其有效性（但不会实际启动运行配置）。
 
-Note that a config which is successfully adapted may still fail validation. For an example of this, use this Caddyfile:
+请注意，成功适配的配置仍可能验证失败。例如，使用以下 Caddyfile：
 
 ```caddy
 localhost
@@ -135,21 +135,21 @@ localhost
 tls cert_notexist.pem key_notexist.pem
 ```
 
-Try adapting it:
+尝试适配：
 
 <pre><code class="cmd bash">caddy adapt --config Caddyfile</code></pre>
 
-It succeeds without error. Then try:
+它会成功且无错误。然后尝试：
 
 <pre><code class="cmd"><span class="bash">caddy adapt --config Caddyfile --validate</span>
 adapt: validation: loading app modules: module name 'tls': provision tls: loading certificates: open cert_notexist.pem: no such file or directory
 </code></pre>
 
-Even though that Caddyfile can be adapted to JSON without errors, the actual certificate and/or key files do not exist, so validation fails because that error arises during the provisioning phase. Thus, validation is a stronger error check than adaptation is.
+尽管该 Caddyfile 可以成功适配为 JSON，但实际的证书和/或密钥文件不存在，因此验证失败，因为该错误发生在预配阶段。因此，验证是比适配更强的错误检查。
 
-#### Example
+#### 示例
 
-To adapt a Caddyfile to JSON that you can easily read and tweak manually:
+要将 Caddyfile 适配为易于手动阅读和调整的 JSON：
 
 <pre><code class="cmd bash">caddy adapt --config /path/to/Caddyfile --pretty</code></pre>
 
@@ -159,7 +159,7 @@ To adapt a Caddyfile to JSON that you can easily read and tweak manually:
 
 <pre><code class="cmd bash">caddy build-info</code></pre>
 
-Prints information provided by Go about the build (main module path, package versions, module replacements).
+打印 Go 提供的构建信息（主模块路径、包版本、模块替换）。
 
 
 
@@ -168,9 +168,9 @@ Prints information provided by Go about the build (main module path, package ver
 
 <pre><code class="cmd bash">caddy completion [bash|zsh|fish|powershell]</code></pre>
 
-Generates shell completion scripts. This allows you to get tab-complete or auto-complete (or similar, depending on your shell) when typing `caddy` commands.
+生成 shell 补全脚本。这允许你在输入 `caddy` 命令时获得 tab 补全或自动补全（或类似功能，具体取决于你的 shell）。
 
-To get instructions for installing this script into your specific shell, run `caddy help completion` or `caddy completion -h`.
+要获取将此脚本安装到特定 shell 的说明，请运行 `caddy help completion` 或 `caddy completion -h`。
 
 
 
@@ -178,7 +178,7 @@ To get instructions for installing this script into your specific shell, run `ca
 
 <pre><code class="cmd bash">caddy environ</code></pre>
 
-Prints the environment as seen by caddy, then exits. Can be useful when debugging init systems or process manager units like systemd.
+打印 caddy 所看到的环境变量，然后退出。在调试初始化系统或进程管理器单元（如 systemd）时很有用。
 
 
 
@@ -198,38 +198,38 @@ Prints the environment as seen by caddy, then exits. Can be useful when debuggin
 	[--no-compress]
 	[-p, --precompressed]</code></pre>
 
-Spins up a simple but production-ready static file server.
+启动一个简单但可用于生产的静态文件服务器。
 
-`--root` specifies the root file path. Default is the current working directory.
+`--root` 指定根文件路径。默认为当前工作目录。
 
-`--listen` accepts a listener address. Default is `:80`, unless `--domain` is used, then `:443` will be the default.
+`--listen` 接受一个监听地址。默认是 `:80`，除非使用了 `--domain`，此时默认使用 `:443`。
 
-`--domain` will only serve files through that hostname, and Caddy will attempt to serve it over HTTPS, so make sure any public DNS is configured properly first if it's a public domain name. The default port will be changed to 443.
+`--domain` 将仅通过该主机名提供文件服务，并且 Caddy 将尝试通过 HTTPS 提供它，因此如果是公共域名，请确保首先正确配置公共 DNS。默认端口将更改为 443。
 
-`--browse` will enable directory listings if a directory without an index file is requested.
+`--browse` 将在请求不包含索引文件的目录时启用目录列表。
 
-`--reveal-symlinks` will show the target of symbolic links in directory listings, when `--browse` is enabled.
+`--reveal-symlinks` 将在启用 `--browse` 时在目录列表中显示符号链接的目标。
 
-`--templates` will enable template rendering.
+`--templates` 将启用模板渲染。
 
-`--access-log` enables the request/access log.
+`--access-log` 启用请求/访问日志。
 
-`--debug` enables verbose logging.
+`--debug` 启用详细日志记录。
 
-`--file-limit` sets a maximum number of files to show in directory listings. Default: `10000`. If the number of files exceeds this limit, only the first N files will be shown, where N is the specified limit.
+`--file-limit` 设置目录列表中显示的最大文件数。默认值：`10000`。如果文件数超过此限制，将仅显示前 N 个文件，其中 N 是指定的限制。
 
-`--no-compress` disables compression. By default, Zstandard and Gzip compression are enabled.
+`--no-compress` 禁用压缩。默认情况下，Zstandard 和 Gzip 压缩处于启用状态。
 
-`--precompressed` specifies encoding formats to search for precompressed sidecar files. Can be repeated for multiple formats. See the [file_server directive](/docs/caddyfile/directives/file_server#precompressed) for more information.
+`--precompressed` 指定要搜索预压缩 sidecar 文件的编码格式。可以重复使用以指定多种格式。有关更多信息，请参阅 [file_server 指令](/docs/caddyfile/directives/file_server#precompressed)。
 
-This command disables the admin API, making it easier to run multiple instances on a local development machine.
+此命令禁用管理 API，从而更容易在本地开发机器上运行多个实例。
 
 
 #### `caddy file-server export-template`
 
 <pre><code class="cmd bash">caddy file-server export-template</code></pre>
 
-Exports the default file browsing template to stdout
+将默认文件浏览模板导出到 stdout
 
 ### `caddy fmt`
 
@@ -237,13 +237,13 @@ Exports the default file browsing template to stdout
 	[-w, --overwrite]
 	[-d, --diff]</code></pre>
 
-Formats or prettifies a Caddyfile, then exits. The result is printed to stdout unless `--overwrite` is used, and will exit with code `1` if there are any differences.
+格式化或美化 Caddyfile，然后退出。结果默认打印到 stdout，除非使用了 `--overwrite`，并且如果存在任何差异，则退出码为 `1`。
 
-`<path>` specifies the path to the Caddyfile. If `-`, the input is read from stdin. If omitted, a file named Caddyfile in the current directory is assumed instead.
+`<path>` 指定 Caddyfile 的路径。如果是 `-`，则从 stdin 读取输入。如果省略，则假定当前目录中存在名为 Caddyfile 的文件。
 
-`--overwrite` causes the result to be written to the input file instead of being printed to the terminal. If the input is not a regular file, this flag has no effect.
+`--overwrite` 将结果写入输入文件而不是打印到终端。如果输入不是常规文件，则此标志无效。
 
-`--diff` causes the output to be compared against the input, and lines will be prefixed with `-` and `+` where they differ. Note that unchanges lines are prefixed with two spaces for alignment, and that this is not a valid patch format; it's just meant as a visual tool.
+`--diff` 使输出与输入进行比较，并在差异处添加 `-` 和 `+` 前缀。请注意，未更改的行以两个空格为前缀以对齐，这不是有效的补丁格式；仅作为可视化工具。
 
 
 ### `caddy hash-password`
@@ -253,49 +253,45 @@ Formats or prettifies a Caddyfile, then exits. The result is printed to stdout u
 	[-a, --algorithm &lt;name&gt;]</code></pre>
 	[--bcrypt-cost &lt;cost&gt;]</code></pre>
 
-Convenient way to hash a plaintext password. The resulting hash is written to stdout as a format usable directly in your Caddy config.
+对明文密码进行哈希的便捷方法。生成的哈希以可直接在 Caddy 配置中使用的格式写入 stdout。
 
 `--plaintext`
-    The password to hash. If omitted, it will be read from stdin.
-    If Caddy is attached to a controlling TTY, the input will not be echoed.
+    要哈希的密码。如果省略，则从 stdin 读取。
+    如果 Caddy 连接到控制 TTY，则输入将不会回显。
 
 `--algorithm`
-    Selects the hashing algorithm. Valid options are:
-      * `argon2id` (recommended for modern security)
-      * `bcrypt`  (legacy, slower, configurable cost, default cost is `14`)
+    选择哈希算法。有效选项为：
+      * `argon2id`（推荐用于现代安全）
+      * `bcrypt`（传统，较慢，可配置成本，默认成本为 `14`）
 
-bcrypt-specific parameters:
+bcrypt 特定参数：
 
 `--bcrypt-cost`
-    Sets the bcrypt hashing difficulty. Higher values increase security by
-    making the hash computation slower and more CPU-intensive.
-    Must be within the valid range [bcrypt.MinCost, bcrypt.MaxCost].
-    If omitted or invalid, the default cost is used.
+    设置 bcrypt 哈希难度。较高的值通过使哈希计算更慢且更消耗 CPU 来提高安全性。
+    必须在有效范围 [bcrypt.MinCost, bcrypt.MaxCost] 内。
+    如果省略或无效，则使用默认成本。
 
-Argon2id-specific parameters:
+Argon2id 特定参数：
 
 `--argon2id-time`
-    Number of iterations to perform. Increasing this makes
-    hashing slower and more resistant to brute-force attacks.
+    执行的迭代次数。增加此值会使哈希变慢，并更能抵抗暴力攻击。
 
 `--argon2id-memory`
-    Amount of memory to use during hashing.
-    Larger values increase resistance to GPU/ASIC attacks.
+    哈希期间使用的内存量。
+    较大的值会增加对 GPU/ASIC 攻击的抵抗力。
 
 `--argon2id-threads`
-    Number of CPU threads to use. Increase for faster hashing
-    on multi-core systems.
+    要使用的 CPU 线程数。在多核系统上增加以获得更快的哈希速度。
 
 `--argon2id-keylen`
-    Length of the resulting hash in bytes. Longer keys increase
-    security but slightly increase storage size.
+    结果哈希的长度（以字节为单位）。更长的密钥可提高安全性，但会略微增加存储大小。
 
 
 ### `caddy help`
 
 <pre><code class="cmd bash">caddy help [&lt;command&gt;]</code></pre>
 
-Prints CLI help text, optionally for a specific subcommand, then exits.
+打印 CLI 帮助文本，可选地针对特定子命令，然后退出。
 
 
 
@@ -307,13 +303,13 @@ Prints CLI help text, optionally for a specific subcommand, then exits.
 	[-s, --skip-standard]
 	[--json]</code></pre>
 
-Prints the Caddy modules that are installed, optionally with package and/or version information from their associated Go modules, then exits.
+打印已安装的 Caddy 模块，可选地附带来自关联 Go 模块的包和/或版本信息，然后退出。
 
-In some scripted situations, it may be redundant to print all of the standard modules as well, so you may use `--skip-standard` to omit those from the output.
+在某些脚本场景中，打印所有标准模块可能是多余的，因此你可以使用 `--skip-standard` 从输出中省略它们。
 
-`--json` outputs the module information in JSON format, which can be useful for programmatic processing.
+`--json` 以 JSON 格式输出模块信息，这对于程序化处理很有用。
 
-NOTE: Due to [a bug in Go](https://github.com/golang/go/issues/29228), version information is only available if Caddy is built as a dependency and not as the main module. Use [xcaddy](/docs/build#xcaddy) to make this easier.
+注意：由于 [Go 中的一个 bug](https://github.com/golang/go/issues/29228)，版本信息仅在 Caddy 作为依赖项而非主模块构建时可用。使用 [xcaddy](/docs/build#xcaddy) 可以使这更容易。
 
 
 
@@ -322,11 +318,11 @@ NOTE: Due to [a bug in Go](https://github.com/golang/go/issues/29228), version i
 <pre><code class="cmd bash">caddy manpage
 	(-o, --directory &lt;path&gt;)</code></pre>
 
-Generates manual/documentation pages for Caddy commands and writes them to the directory at the specified path. The output of this command can be read by the `man` command.
+为 Caddy 命令生成手册/文档页面，并将其写入指定路径的目录。此命令的输出可由 `man` 命令读取。
 
-`--directory` (required) is the path to the directory into which to write the man pages. It will be created if it does not exist.
+`--directory`（必需）是写入手册页的目录路径。如果不存在，将创建该目录。
 
-Once generated, the manual pages generally need to be installed. This procedure varies by platform, but on typical Linux systems, it's something like this:
+生成后，通常需要安装手册页。此过程因平台而异，但在典型的 Linux 系统上，如下所示：
 
 <pre><code class="cmd"><b>$ caddy manpage --directory man
 $ gzip -r man/
@@ -334,9 +330,9 @@ $ sudo cp man/* /usr/share/man/man8/
 $ sudo mandb
 </b></code></pre>
 
-Then you can run `man caddy` (or `man caddy-*` for subcommands) to read documentation in your terminal.
+然后你可以运行 `man caddy`（或 `man caddy-*` 查看子命令）在终端中阅读文档。
 
-Manual pages are separate documentation from what is on our website. Our website has more comprehensive documentation that is updated often.
+手册页与我们网站上的文档是分开的。我们的网站有更全面的文档，并且经常更新。
 
 
 
@@ -349,17 +345,17 @@ Manual pages are separate documentation from what is on our website. Our website
 	[--address &lt;interface&gt;]
 	[-f, --force]</code></pre>
 
-Gives the running Caddy instance a new configuration. This has the same effect as POSTing a document to the [/load endpoint](/docs/api#post-load), but this command is convenient for simple workflows revolving around config files. Compared to the `stop`, `start`, and `run` commands, this single command is the correct, semantic way to change/reload the running configuration.
+为正在运行的 Caddy 实例提供新配置。这具有将文档 POST 到 [/load 端点](/docs/api#post-load) 的效果，但此命令对于围绕配置文件的简单工作流程很方便。与 `stop`、`start` 和 `run` 命令相比，这个单一命令是更改/重新加载运行中配置的正确、语义化的方式。
 
-Because this command uses the API, the admin endpoint must not be disabled.
+由于此命令使用 API，管理端点不得禁用。
 
-`--config` is the config file to apply. If `-`, the config is read from stdin. If not specified, it will try a file called `Caddyfile` in the current working directory and, if it exists, it will adapt it using the `caddyfile` config adapter; otherwise, it is an error if there is no config file to load.
+`--config` 是要应用的配置文件。如果是 `-`，则从 stdin 读取配置。如果未指定，它将尝试当前工作目录中名为 `Caddyfile` 的文件，如果存在，则使用 `caddyfile` 配置适配器进行适配；否则，如果不存在要加载的配置文件，则为错误。
 
-`--adapter` specifies a config adapter to use, if any. This flag is not necessary if the `--config` filename starts with `Caddyfile` or ends with `.caddyfile` which assumes the `caddyfile` adapter. Otherwise, this flag is required if the provided config file is not in Caddy's native JSON format.
+`--adapter` 指定要使用的配置适配器（如果有）。如果 `--config` 文件名以 `Caddyfile` 开头或以 `.caddyfile` 结尾，则此标志不是必需的，因为会假定使用 `caddyfile` 适配器。否则，如果提供的配置文件不是 Caddy 的原生 JSON 格式，则此标志是必需的。
 
-`--address` needs to be used if the admin endpoint is not listening on the default address and if it is different from the address in the provided config file.
+`--address` 在管理端点未监听默认地址且与提供的配置文件中的地址不同时需要。
 
-`--force` will cause a reload to happen even if the specified config is the same as what Caddy is already running. Can be useful to force Caddy to reprovision its modules, which can have side-effects, for example: reloading manually-loaded TLS certificates.
+`--force` 将强制重新加载，即使指定的配置与 Caddy 当前运行的配置相同。可用于强制 Caddy 重新预配其模块，这可能会产生副作用，例如：重新加载手动加载的 TLS 证书。
 
 
 
@@ -376,42 +372,42 @@ Because this command uses the API, the admin endpoint must not be disabled.
 	[&lt;status|body&gt;]</code></pre>
 
 
-Starts one or more simple, hard-coded HTTP servers that are useful for development, staging, and some production use cases. It can be useful for verifying or debugging HTTP clients, scripts, or even load balancers.
+启动一个或多个简单的、硬编码的 HTTP 服务器，适用于开发、暂存以及某些生产用例。可用于验证或调试 HTTP 客户端、脚本甚至负载均衡器。
 
-`--status` is the HTTP status code to return.
+`--status` 是要返回的 HTTP 状态码。
 
-`--header` adds an HTTP header; `Field: value` format is expected. This flag can be used multiple times.
+`--header` 添加一个 HTTP 头；需要 `Field: value` 格式。此标志可以多次使用。
 
-`--body` specifies the response body. Alternatively, the body can be piped from stdin.
+`--body` 指定响应体。或者，可以从 stdin 管道输入主体。
 
-`--listen` is the listener address, which can be any [network address](/docs/conventions#network-addresses) recognized by Caddy, and may include a port range to start multiple servers.
+`--listen` 是监听地址，可以是 Caddy 识别的任何 [网络地址](/docs/conventions#network-addresses)，并且可以包括端口范围以启动多个服务器。
 
-`--debug` enables verbose debug logging.
+`--debug` 启用详细调试日志记录。
 
-`--access-log` enables access/request logging.
+`--access-log` 启用访问/请求日志记录。
 
-With no options specified, this command listens on a random available port and answers HTTP requests with an empty 200 response. The listen address can be customized with the `--listen` flag and will always be printed to stdout. If the listen address includes a port range, multiple servers will be started.
+如果未指定任何选项，此命令会在随机可用端口上监听，并以空 200 响应回答 HTTP 请求。可以使用 `--listen` 标志自定义监听地址，并且始终将其打印到 stdout。如果监听地址包含端口范围，将启动多个服务器。
 
-If a final, unnamed argument is given, it will be treated as a status code (same as the `--status` flag) if it is a 3-digit number. Otherwise, it is used as the response body (same as the `--body` flag). The `--status` and `--body` flags will always override this argument.
+如果给出最后一个未命名参数，如果它是 3 位数字，则将其视为状态码（与 `--status` 标志相同）。否则，它将用作响应体（与 `--body` 标志相同）。`--status` 和 `--body` 标志将始终覆盖此参数。
 
-A body may be given in 3 ways: a flag, a final (and unnamed) argument to the command, or piped to stdin (if flag and argument are unset). Limited [template evaluation](https://pkg.go.dev/text/template) is supported on the body, with the following variables:
+主体可以通过三种方式给出：标志、命令的最后一个（未命名）参数，或通过管道从 stdin 输入（如果标志和参数均未设置）。主体支持有限的 [模板求值](https://pkg.go.dev/text/template)，具有以下变量：
 
-Variable | Description
----------|-------------
-`.N`       | Server number
-`.Port`    | Listener port
-`.Address` | Listener address
+变量 | 描述
+------|----------
+`.N`       | 服务器编号
+`.Port`    | 监听端口
+`.Address` | 监听地址
 
 
-#### Examples
+#### 示例
 
-Empty 200 response on a random port:
+在随机端口上的空 200 响应：
 <pre><code class="cmd bash">caddy respond</code></pre>
 
-HTTP response with a body:
+带主体的 HTTP 响应：
 <pre><code class="cmd bash">caddy respond "Hello, world!"</code></pre>
 
-Multiple servers and templates:
+多个服务器和模板：
 <pre><code class="cmd"><b>$ caddy respond --listen :2000-2004 "{{printf "I'm server {{.N}} on port {{.Port}}"}}"</b>
 
 Server address: [::]:2000
@@ -423,7 +419,7 @@ Server address: [::]:2004
 <b>$ curl 127.0.0.1:2002</b>
 I'm server 2 on port 2002</code></pre>
 
-Pipe in a maintenance page:
+管道输入维护页面：
 <pre><code class="cmd bash">cat maintenance.html | caddy respond \
 	--listen :80 \
 	--status 503 \
@@ -446,33 +442,33 @@ Pipe in a maintenance page:
 	[--access-log]
 	[--insecure]</code></pre>
 
-A simple but production-ready reverse proxy. Useful for quick deployments, demos, and development.
+一个简单但可用于生产的反向代理。适用于快速部署、演示和开发。
 
-Simply shuttles HTTP(S) traffic from the `--from` address to the `--to` address. Multiple `--to` addresses may be specified by repeating the flag. At least one `--to` address is required. The `--to` address may have a port range as a shortcut to expand to multiple upstreams.
+只需将 HTTP(S) 流量从 `--from` 地址发送到 `--to` 地址。可以通过重复标志指定多个 `--to` 地址。至少需要一个 `--to` 地址。`--to` 地址可以有端口范围作为快捷方式，以扩展到多个上游。
 
-Unless otherwise specified in the addresses, the `--from` address will be assumed to be HTTPS if a hostname is given, and the `--to` address will be assumed to be HTTP.
+除非在地址中另有指定，否则 `--from` 地址在给出主机名时将被假定为 HTTPS，而 `--to` 地址将被假定为 HTTP。
 
-If the `--from` address has a host or IP, Caddy will attempt to serve the proxy over HTTPS with a certificate (unless overridden by the HTTP scheme or port).
+如果 `--from` 地址具有主机或 IP，Caddy 将尝试通过 HTTPS 提供代理服务（除非被 HTTP 方案或端口覆盖）。
 
-If serving HTTPS: 
-  - `--disable-redirects` can be used to avoid binding to the HTTP port.
+如果提供 HTTPS：
+  - `--disable-redirects` 可用于避免绑定到 HTTP 端口。
 
-  - `--internal-certs` can be used to force issuance certs using the internal CA instead of attempting to issue a public certificate.
+  - `--internal-certs` 可用于强制使用内部 CA 颁发证书，而不是尝试颁发公共证书。
 
-For proxying:
-  - `--header-up` can be used to set a request header to send to the upstream.
+对于代理：
+  - `--header-up` 可用于设置发送到上游的请求头。
   
-  - `--header-down` can be used to set a response header to send back to the client.
+  - `--header-down` 可用于设置返回给客户端的响应头。
   
-  - `--change-host-header` sets the Host header on the request to the address of the upstream, instead of defaulting to the incoming Host header.
+  - `--change-host-header` 将请求中的 Host 头设置为上游的地址，而不是默认为传入的 Host 头。
 
-    This is a shortcut for `--header-up "Host: {http.reverse_proxy.upstream.hostport}"`
+    这是 `--header-up "Host: {http.reverse_proxy.upstream.hostport}"` 的快捷方式。
   
-  - `--insecure` disables TLS verification with the upstream. WARNING: THIS DISABLES SECURITY BY NOT VERIFYING THE UPSTREAM'S CERTIFICATE.
+  - `--insecure` 禁用与上游的 TLS 验证。警告：这将禁用安全性，因为不会验证上游的证书。
   
-  - `--debug` enables verbose logging.
+  - `--debug` 启用详细日志记录。
 
-This command disables the admin API so it is easier to run multiple instances on a local development machine.
+此命令禁用管理 API，以便更容易在本地开发机器上运行多个实例。
 
 
 
@@ -487,25 +483,25 @@ This command disables the admin API so it is easier to run multiple instances on
 	[-r, --resume]
 	[-w, --watch]</code></pre>
 
-Runs Caddy and blocks indefinitely; i.e. "daemon" mode.
+运行 Caddy 并无限期阻塞；即“守护进程”模式。
 
-`--config` specifies an initial config file to immediately load and use. If `-`, the config is read from stdin. If no config is specified, Caddy will run with a blank configuration and use default settings for the [admin API endpoints](/docs/api), which can be used to feed it new configuration. As a special case, if the current working directory has a file called "Caddyfile" and the `caddyfile` config adapter is plugged in (default), then that file will be loaded and used to configure Caddy, even without any command line flags.
+`--config` 指定要立即加载和使用的初始配置文件。如果是 `-`，则从 stdin 读取配置。如果未指定配置，Caddy 将以空白配置运行，并使用 [管理 API 端点](/docs/api) 的默认设置，这些端点可用于提供新配置。作为一种特殊情况，如果当前工作目录有一个名为“Caddyfile”的文件，并且 `caddyfile` 配置适配器已插入（默认），那么即使没有任何命令行标志，也会加载并使用该文件来配置 Caddy。
 
-`--adapter` is the name of the config adapter to use when loading the initial config, if any. This flag is not necessary if the `--config` filename starts with `Caddyfile` or ends with `.caddyfile` which assumes the `caddyfile` adapter. Otherwise, this flag is required if the provided config file is not in Caddy's native JSON format. Any warnings will be printed to the log, but beware that any adaptation without errors will immediately be used, even if there are warnings. If you want to review the results of the adaptation first, use the [`caddy adapt`](#caddy-adapt) subcommand.
+`--adapter` 是在加载初始配置时使用的配置适配器的名称（如果有）。如果 `--config` 文件名以 `Caddyfile` 开头或以 `.caddyfile` 结尾，则此标志不是必需的，因为会假定使用 `caddyfile` 适配器。否则，如果提供的配置文件不是 Caddy 的原生 JSON 格式，则此标志是必需的。任何警告都将打印到日志中，但请注意，任何无错误的适配将立即使用，即使存在警告也是如此。如果你想先查看适配结果，请使用 [`caddy adapt`](#caddy-adapt) 子命令。
 
-`--pidfile` writes the PID to the specified file.
+`--pidfile` 将 PID 写入指定文件。
 
-`--environ` prints out the environment before starting. This is the same as the `caddy environ` command, but does not exit after printing.
+`--environ` 在启动前打印环境变量。这与 `caddy environ` 命令相同，但打印后不会退出。
 
-`--envfile` loads environment variables from the specified file, in `KEY=VALUE` format. Comments starting with `#` are supported; keys may be prefixed with `export`; values may be double-quoted (double-quotes within can be escaped); multi-line values are supported.
+`--envfile` 从指定文件加载环境变量，格式为 `KEY=VALUE`。支持以 `#` 开头的注释；键可以带有 `export` 前缀；值可以用双引号括起来（内部的双引号可以转义）；支持多行值。
 
-`--resume` uses the last loaded configuration that was autosaved, overriding the `--config` flag (if present). Using this flag guarantees config durability through machine reboots or process restarts. It is most useful in [API](/docs/api)-centric deployments.
+`--resume` 使用上次自动保存的配置，覆盖 `--config` 标志（如果存在）。使用此标志可确保通过机器重启或进程重启实现配置持久性。它在以 [API](/docs/api) 为中心的部署中最有用。
 
-`--watch` will watch the config file and automatically reload it after it changes. ⚠️ This feature is intended for use only in local development environments!
+`--watch` 将监视配置文件并在其更改后自动重新加载。⚠️ 此功能仅用于本地开发环境！
 
 <aside class="advice">
 
-Do not stop the server to change configuration while running in production! That will result in downtime. (This should be obvious but you'd be surprised how many complaints we get about it.) Use the [`caddy reload`](#caddy-reload) command instead, or send a `SIGUSR1` signal to the process, which has the same effect as `caddy reload` with the currently loaded config.
+在生产环境中运行时，不要停止服务器来更改配置！这将导致停机。（这应该是显而易见的，但你会惊讶于我们收到多少关于此事的投诉。）请改用 [`caddy reload`](#caddy-reload) 命令，或向进程发送 `SIGUSR1` 信号，其效果与使用当前加载的配置执行 `caddy reload` 相同。
 
 </aside>
 
@@ -520,13 +516,13 @@ Do not stop the server to change configuration while running in production! That
 	[--pidfile &lt;file&gt;]
 	[-w, --watch]</code></code></pre>
 
-Same as [`caddy run`](#caddy-run), but in the background. This command only blocks until the background process is running successfully (or fails to run), then returns.
+与 [`caddy run`](#caddy-run) 相同，但在后台运行。此命令仅在后台进程成功运行（或运行失败）后阻塞，然后返回。
 
-Note: the flag `--config` does _not_ support `-` to read the config from stdin.
+注意：`--config` 标志 _不_ 支持 `-` 从 stdin 读取配置。
 
-Use of this command is discouraged with system services or on Windows. On Windows, the child process will remain attached to the terminal, so closing the window will forcefully stop Caddy, which is not obvious. Consider running Caddy [as a service](/docs/running) instead.
+不建议在系统服务或 Windows 上使用此命令。在 Windows 上，子进程仍将附加到终端，因此关闭窗口将强制停止 Caddy，这一点并不明显。请考虑将 Caddy [作为服务运行](/docs/running)。
 
-Once started, you can use [`caddy stop`](#caddy-stop) or the [`POST /stop`](/docs/api#post-stop) API endpoint to exit the background process.
+启动后，你可以使用 [`caddy stop`](#caddy-stop) 或 [`POST /stop`](/docs/api#post-stop) API 端点退出后台进程。
 
 
 
@@ -534,31 +530,31 @@ Once started, you can use [`caddy stop`](#caddy-stop) or the [`POST /stop`](/doc
 
 <pre><code class="cmd bash">caddy stop
 	[--address &lt;interface&gt;]
-	[-c, --config &lt;path&gt; [-a, --adapter &lt;name&gt;]]</code></pre>
+	[-c, --config &lt;path&gt; [-a, --adapter &&lt;name&gt;]]</code></pre>
 
 <aside class="tip">
 
-Stopping (and restarting) the server is orthogonal to config changes. **Do not use the stop command to change configuration in production, unless you want downtime.** Use the [`caddy reload`](#caddy-reload) command instead.
+停止（和重启）服务器与配置更改是正交的。**不要在生产环境中使用 stop 命令来更改配置，除非你想要停机。** 请改用 [`caddy reload`](#caddy-reload) 命令。
 
 </aside>
 
 
-Gracefully stops the running Caddy process (other than the process of the stop command) and causes it to exit. It uses the [`POST /stop`](/docs/api#post-stop)  endpoint of the admin API to perform a graceful shutdown.
+优雅地停止正在运行的 Caddy 进程（不是 stop 命令本身的进程）并使其退出。它使用管理 API 的 [`POST /stop`](/docs/api#post-stop) 端点执行优雅关闭。
 
-The address of this request can be customized using the `--address` flag, or from the given `--config`, if the running instance's admin API is not using the default listen address.
+此请求的地址可以使用 `--address` 标志自定义，或者如果正在运行的实例的管理 API 未使用默认监听地址，则可以从提供的 `--config` 中获取。
 
-If you want to stop the current configuration but do not want to exit the process, use [`caddy reload`](#caddy-reload) with a blank config, or the [`DELETE /config/`](/docs/api#delete-configpath) endpoint.
+如果你想停止当前配置但不想退出进程，请使用带有空白配置的 [`caddy reload`](#caddy-reload)，或 [`DELETE /config/`](/docs/api#delete-configpath) 端点。
 
 
 ### `caddy storage`
 
-<i>⚠️ Experimental</i>
+<i>⚠️ 实验性</i>
 
-Allows export and import of the contents of Caddy's configured data storage.
+允许导出和导入 Caddy 配置的数据存储的内容。
 
-This is useful when needing to transition from one [storage module](/docs/json/storage/) to another, by exporting from your old one, updating your config, then importing into the new one.
+当需要从一个[存储模块](/docs/json/storage/)过渡到另一个时，通过从旧存储导出，更新配置，然后导入到新存储，这很有用。
 
-The following command can be used to copy the storage between different modules in one shot, using old and new configs, piping the export command's output into the import command.
+以下命令可用于一次将存储复制到不同模块之间，使用新旧配置，将导出命令的输出管道输入到导入命令。
 
 ```
 $ caddy storage export -c Caddyfile.old -o- |
@@ -567,9 +563,9 @@ $ caddy storage export -c Caddyfile.old -o- |
 
 <aside class="advice">
 
-Please note that when using [filesystem storage](/docs/conventions#data-directory), you must run the export command as the same user that Caddy normally runs as, otherwise the wrong storage location may be used.
+请注意，当使用[文件系统存储](/docs/conventions#data-directory)时，你必须以 Caddy 通常运行的用户身份运行导出命令，否则可能会使用错误的存储位置。
 
-For example, when running Caddy as a [systemd service](/docs/running#linux-service), it will run as the `caddy` user, so you should run the export or import commands as that user. This can typically be done with `sudo -u caddy <command>`.
+例如，当 Caddy 作为 [systemd 服务](/docs/running#linux-service) 运行时，它将作为 `caddy` 用户运行，因此你应该以该用户身份运行导出或导入命令。这通常可以通过 `sudo -u caddy <command>` 完成。
 
 </aside>
 
@@ -580,9 +576,9 @@ For example, when running Caddy as a [systemd service](/docs/running#linux-servi
 	-c, --config &lt;path&gt;
 	[-o, --output &lt;path&gt;]</code></pre>
 
-`--config` is the config file load. This is required, so that the correct storage module is connected to.
+`--config` 是要加载的配置文件。这是必需的，以便连接正确的存储模块。
 
-`--output` is the filename to write the tarball. If `-`, the output is written to stdout.
+`--output` 是要写入 tar 包的文件名。如果是 `-`，则输出写入 stdout。
 
 
 
@@ -592,9 +588,9 @@ For example, when running Caddy as a [systemd service](/docs/running#linux-servi
 	-c, --config &lt;path&gt;
 	-i, --input &lt;path&gt;</code></pre>
 
-`--config` is the config file load. This is required, so that the correct storage module is connected to.
+`--config` 是要加载的配置文件。这是必需的，以便连接正确的存储模块。
 
-`--input` is the filename of the tarball to read from. If `-`, the input is read from stdin.
+`--input` 是要读取的 tar 包的文件名。如果是 `-`，则从 stdin 读取输入。
 
 
 ### `caddy trust`
@@ -604,15 +600,15 @@ For example, when running Caddy as a [systemd service](/docs/running#linux-servi
 	[--address &lt;interface&gt;]
 	[-c, --config &lt;path&gt; [-a, --adapter &lt;name&gt;]]</code></pre>
 
-Installs a root certificate for a CA managed by Caddy's [PKI app](/docs/json/apps/pki/) into local trust stores. 
+将 Caddy 的 [PKI 应用](/docs/json/apps/pki/) 管理的 CA 的根证书安装到本地信任存储中。
 
-Caddy will attempt to install its root certificates into the local trust stores automatically when they are first generated, but it might fail if Caddy doesn't have the appropriate permissions to write to the trust store. This command is necessary to pre-install the certificates before using them, if the server process runs as an unprivileged user (such as via systemd). You may need to run this command with `sudo` to unix systems.
+Caddy 将在首次生成根证书时尝试自动将其安装到本地信任存储中，但如果 Caddy 没有写入信任存储的适当权限，则可能会失败。如果服务器进程以非特权用户身份运行（例如通过 systemd），则此命令对于在使用证书之前预安装证书是必需的。在 Unix 系统上，你可能需要使用 `sudo` 运行此命令。
 
-By default, this command installs the root certificate for Caddy's default CA (i.e. "local"). You may specify the ID of another CA with the `--ca` flag.
+默认情况下，此命令安装 Caddy 默认 CA（即“local”）的根证书。你可以使用 `--ca` 标志指定另一个 CA 的 ID。
 
-This command will attempt to connect to Caddy's [admin API](/docs/api) to fetch the root certificate, using the [`GET /pki/ca/<id>/certificates`](/docs/api#get-pkicaltidgtcertificates) endpoint. You may explicitly specify the `--address`, or use the `--config` flag to load the admin address from your config, if the running instance's admin API is not using the default listen address.
+此命令将尝试连接到 Caddy 的 [管理 API](/docs/api) 以获取根证书，使用 [`GET /pki/ca/<id>/certificates`](/docs/api#get-pkicaltidgtcertificates) 端点。如果正在运行的实例的管理 API 未使用默认监听地址，你可以显式指定 `--address`，或使用 `--config` 标志从配置中加载管理地址。
 
-You may also use the `caddy` binary with this command to install certificates on other machines in your network, if the admin API is made accessible to other machines -- be careful if doing this, to not expose the admin API to untrusted clients.
+如果管理 API 可供其他机器访问，你也可以使用带有此命令的 `caddy` 二进制文件在网络中的其他机器上安装证书——但执行此操作时要小心，不要将管理 API 暴露给不受信任的客户端。
 
 
 ### `caddy untrust`
@@ -623,46 +619,46 @@ You may also use the `caddy` binary with this command to install certificates on
 	[--address &lt;interface&gt;]
 	[-c, --config &lt;path&gt; [-a, --adapter &lt;name&gt;]]</code></pre>
 
-Untrusts a root certificate from the local trust store(s).
+从本地信任存储中取消信任根证书。
 
-This command uninstalls trust; it does not necessarily delete the root certificate from trust stores entirely. Thus, repeatedly trusting and untrusting new certificates can fill up trust databases.
+此命令卸载信任；它不一定完全从信任存储中删除根证书。因此，重复信任和取消信任新证书可能会填满信任数据库。
 
-This command does not delete or modify certificate files from Caddy's configured storage.
+此命令不会从 Caddy 配置的存储中删除或修改证书文件。
 
-This command can be used in one of two ways:
-- By specifying a direct path to the root certificate to untrust with the `--cert` flag.
-- By fetching the root certificate from the [admin API](/docs/api) using the [`GET /pki/ca/<id>/certificates`](/docs/api#get-pkicaidcertificates) endpoint. This is the default behaviour if no flags are given.
+此命令可以通过两种方式之一使用：
+- 通过使用 `--cert` 标志指定要取消信任的根证书的直接路径。
+- 通过从[管理 API](/docs/api) 使用 [`GET /pki/ca/<id>/certificates`](/docs/api#get-pkicaidcertificates) 端点获取根证书。如果未给出任何标志，这是默认行为。
 
-If the admin API is used, then the CA ID defaults to "local". You may specify the ID of another CA with the `--ca` flag. You may explicitly specify the `--address`, or use the `--config` flag to load the admin address from your config, if the running instance's admin API is not using the default listen address.
+如果使用管理 API，则 CA ID 默认为 "local"。你可以使用 `--ca` 标志指定另一个 CA 的 ID。如果正在运行的实例的管理 API 未使用默认监听地址，你可以显式指定 `--address`，或使用 `--config` 标志从配置中加载管理地址。
 
 
 ### `caddy upgrade`
 
-<i>⚠️ Experimental</i>
+<i>⚠️ 实验性</i>
 
 <pre><code class="cmd bash">caddy upgrade
 	[-k, --keep-backup]</code></pre>
 
-Replaces the current Caddy binary with the latest version from [our download page](/download) with the same modules installed, including all third-party plugins that are registered on the Caddy website.
+用来自[我们的下载页面](/download)的最新版本替换当前的 Caddy 二进制文件，并安装相同的模块，包括在 Caddy 网站上注册的所有第三方插件。
 
-Upgrades do not interrupt running servers; currently, the command only replaces the binary on disk. This might change in the future if we can figure out a good way to do it.
+升级不会中断正在运行的服务器；目前，该命令仅替换磁盘上的二进制文件。如果我们能找到一种好的方法，这可能在将来改变。
 
-The upgrade process is fault tolerant; the current binary is backed up first (copied beside the current one) and automatically restored if anything goes wrong. If you wish to keep the backup after the upgrade process is complete, you may use the `--keep-backup` option.
+升级过程具有容错性；首先备份当前二进制文件（复制到当前二进制文件旁边），并在出现任何问题时自动恢复。如果你希望在升级过程完成后保留备份，可以使用 `--keep-backup` 选项。
 
-This command may require elevated privileges if your user does not have permission to write to the executable file.
+如果你的用户没有写入可执行文件的权限，则此命令可能需要提升的权限。
 
 
 
 ### `caddy add-package`
 
-<i>⚠️ Experimental</i>
+<i>⚠️ 实验性</i>
 
 <pre><code class="cmd bash">caddy add-package &lt;packages...&gt;
 	[-k, --keep-backup]</code></pre>
 
-Similarly to `caddy upgrade`, replaces the current Caddy binary with the latest version with the same modules installed, _plus_ the packages listed as arguments included in the new binary. Find the list of packages you can install from [our download page](/download). Each argument should be the full package name.
+与 `caddy upgrade` 类似，用最新版本替换当前的 Caddy 二进制文件，并安装相同的模块，_以及_ 在参数中列出的包包含在新的二进制文件中。从[我们的下载页面](/download)查找你可以安装的包列表。每个参数应该是完整的包名。
 
-For example:
+例如：
 
 <pre><code class="cmd bash">caddy add-package github.com/caddy-dns/cloudflare</code></pre>
 
@@ -670,12 +666,12 @@ For example:
 
 ### `caddy remove-package`
 
-<i>⚠️ Experimental</i>
+<i>⚠️ 实验性</i>
 
 <pre><code class="cmd bash">caddy remove-package &lt;packages...&gt;
 	[-k, --keep-backup]</code></pre>
 
-Similarly to `caddy upgrade`, replaces the current Caddy binary with the latest version with the same modules installed, but _without_ the packages listed as arguments, if they existed in the current binary. Run `caddy list-modules --packages` to see the list of package names of non-standard modules included in the current binary.
+与 `caddy upgrade` 类似，用最新版本替换当前的 Caddy 二进制文件，并安装相同的模块，但 _不包含_ 参数中列出的包（如果它们存在于当前二进制文件中）。运行 `caddy list-modules --packages` 查看当前二进制文件中包含的非标准模块的包名列表。
 
 
 
@@ -683,56 +679,56 @@ Similarly to `caddy upgrade`, replaces the current Caddy binary with the latest 
 
 <pre><code class="cmd bash">caddy validate
 	[-c, --config &lt;path&gt;]
-	[-a, --adapter &lt;name&gt;]
-	[--envfile &lt;file&gt;]</code></pre>
+	[-a, --adapter &<name>]
+	[--envfile &<file>]</code></pre>
 
-Validates a configuration file, then exits. This command deserializes the config, then loads and provisions all of its modules as if to start the config, but the config is not actually started. This exposes errors in a configuration that arise during loading or provisioning phases and is a stronger error check than merely serializing a config as JSON.
+验证配置文件，然后退出。此命令反序列化配置，然后加载并预配其所有模块，就像要启动配置一样，但实际不会启动。这可以暴露在加载或预配阶段出现的配置错误，并且是比仅将配置序列化为 JSON 更强的错误检查。
 
-`--config` is the config file to validate. If `-`, the config is read from stdin. Default is the `Caddyfile` in the current directory, if any.
+`--config` 是要验证的配置文件。如果是 `-`，则从 stdin 读取配置。默认为当前目录中的 `Caddyfile`（如果存在）。
 
-`--adapter` is the name of the config adapter to use. This flag is not necessary if the `--config` filename starts with `Caddyfile` or ends with `.caddyfile` which assumes the `caddyfile` adapter. Otherwise, this flag is required if the provided config file is not in Caddy's native JSON format.
+`--adapter` 是要使用的配置适配器的名称。如果 `--config` 文件名以 `Caddyfile` 开头或以 `.caddyfile` 结尾，则此标志不是必需的，因为会假定使用 `caddyfile` 适配器。否则，如果提供的配置文件不是 Caddy 的原生 JSON 格式，则此标志是必需的。
 
-`--envfile` loads environment variables from the specified file, in `KEY=VALUE` format. Comments starting with `#` are supported; keys may be prefixed with `export`; values may be double-quoted (double-quotes within can be escaped); multi-line values are supported.
+`--envfile` 从指定文件加载环境变量，格式为 `KEY=VALUE`。支持以 `#` 开头的注释；键可以带有 `export` 前缀；值可以用双引号括起来（内部的双引号可以转义）；支持多行值。
 
 
 
 ### `caddy version`
 <pre><code class="cmd bash">caddy version</code></pre>
 
-Prints the version and exits.
+打印版本并退出。
 
 
 
-## Signals
+## 信号
 
-Caddy traps certain signals and ignores others. Signals can initiate specific process behavior.
+Caddy 捕获某些信号并忽略其他信号。信号可以触发特定的进程行为。
 
-Signal | Behavior
+信号 | 行为
 -------|----------
-`SIGINT` | Graceful exit. Send signal again to force exit immediately.
-`SIGQUIT` | Quits Caddy immediately, but still cleans up locks in storage because it is important.
-`SIGTERM` | Graceful exit.
-`SIGUSR1` | Reloads the config file, but only if started with `caddy run` (without `--resume`) and no changes to the config have been made via [the API](/docs/api) (including [`caddy reload`]#caddy-reload)).
-`SIGUSR2` | Ignored.
-`SIGHUP` | Ignored.
+`SIGINT` | 优雅退出。再次发送信号以立即强制退出。
+`SIGQUIT` | 立即退出 Caddy，但**仍然清理存储中的锁**，因为这很重要。
+`SIGTERM` | 优雅退出。
+`SIGUSR1` | 重新加载配置文件，但仅当使用 `caddy run`（不带 `--resume`）启动且未通过[API](/docs/api)（包括 [`caddy reload`](#caddy-reload)）对配置进行任何更改时。
+`SIGUSR2` | 忽略。
+`SIGHUP` | 忽略。
 
-A graceful exit means that new connections are no longer accepted, and existing connections will be drained before the socket is closed. A grace period may apply (and is configurable). Once the grace period is up, connections will be forcefully terminated. Locks in storage and other resources that individual modules need to release are cleaned up during a graceful shutdown.
+优雅退出意味着不再接受新连接，并在关闭套接字之前排空现有连接。可能会应用一个宽限期（并且是可配置的）。宽限期结束后，连接将被强制终止。在优雅关闭期间，会清理存储中的锁以及各个模块需要释放的其他资源。
 
-When a signal to reload config (`SIGUSR1`) is received, it acts like a forced config reload (i.e. reload anyway even if the config text is unchanged) which may reload dependent files like TLS certificates from disk. 
+当收到重新加载配置的信号（`SIGUSR1`）时，它就像强制重新加载配置一样（即使配置文本未更改也重新加载），这可能会重新加载依赖文件，如磁盘上的 TLS 证书。
 
-Signal-based config reloads are only enabled if Caddy is started with `caddy run` with a config file. They become disabled (signals ignored, with a log warning) if Caddy is started with `--resume` (since it implies an API workflow), or if any config change is received via the admin API, or if `caddy reload` is run with a _different_ filename or config adapter than originally started with. This is to avoid conflicts between methods of reloading.
+基于信号的配置重新加载仅在 Caddy 使用配置文件通过 `caddy run` 启动时启用。如果 Caddy 使用 `--resume` 启动（因为这意味着 API 工作流），或者通过管理 API 收到任何配置更改，或者 `caddy reload` 使用与最初启动时 _不同_ 的文件名或配置适配器运行，则它们将被禁用（信号被忽略，并记录警告）。这是为了避免重新加载方法之间的冲突。
 
 
 
-## Exit codes
+## 退出码
 
-Caddy returns a code when the process exits:
+Caddy 在进程退出时返回一个代码：
 
-Code | Meaning
+代码 | 含义
 -----|---------
-`0` | Normal exit.
-`1` | Failed startup. **Do not automatically restart the process; it will likely error again unless changes are made.**
-`2` | Forced quit. Caddy was forced to exit without cleaning up resources.
-`3` | Failed quit. Caddy exited with some errors during cleanup.
+`0` | 正常退出。
+`1` | 启动失败。**不要自动重启进程；它很可能会再次出错，除非进行更改。**
+`2` | 强制退出。Caddy 被强制退出，没有清理资源。
+`3` | 退出失败。Caddy 在清理过程中出现一些错误。
 
-In bash, you can get the exit code of the last command with `echo $?`.
+在 bash 中，你可以使用 `echo $?` 获取最后一个命令的退出码。

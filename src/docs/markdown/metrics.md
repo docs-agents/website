@@ -1,19 +1,16 @@
 ---
-title: Monitoring Caddy with Prometheus metrics
+title: 使用 Prometheus 指标监控 Caddy
 ---
 
-# Monitoring Caddy with Prometheus metrics
+# 使用 Prometheus 指标监控 Caddy
 
-Whether you're running thousands of Caddy instances in the cloud, or a single
-Caddy server on an embedded device, it's likely that at some point you'll want
-to have a high-level overview of what Caddy is doing, and how long it's taking.
-In other words, you're going to want to be able to _monitor_ Caddy.
+无论你是在云端运行数千个 Caddy 实例，还是在嵌入式设备上运行单个 Caddy 服务器，你很可能会在某个时刻想要了解 Caddy 正在做什么、花费了多长时间。换句话说，你将希望能够**监控** Caddy。
 
-## Enabling metrics
+## 启用指标
 
-You'll need to turn metrics on.
+你需要开启指标功能。
 
-If using a Caddyfile, enable metrics [in global options](/docs/caddyfile/options#metrics):
+如果使用 Caddyfile，请在[全局选项](/docs/caddyfile/options#metrics)中启用指标：
 
 ```caddy
 {
@@ -21,9 +18,9 @@ If using a Caddyfile, enable metrics [in global options](/docs/caddyfile/options
 }
 ```
 
-If using JSON, add `"metrics": {}` to your [`apps > http > servers` configuration](/docs/json/apps/http/servers/).
+如果使用 JSON，请在你的 [`apps > http > servers` 配置](/docs/json/apps/http/servers/)中添加 `"metrics": {}`。
 
-To add per-host metrics you can insert the `per_host` option. Host specific metrics will now have a Host tag.
+要添加按主机统计的指标，可以插入 `per_host` 选项。主机特定的指标现在将带有 Host 标签。
 
 ```caddy
 {
@@ -33,7 +30,7 @@ To add per-host metrics you can insert the `per_host` option. Host specific metr
 }
 ```
 
-This configuration will observe configured hosts. If an HTTPS server is configured, the host is observed, even if not explicitly configured, e.g. on-demand TLS setup. If HTTPS is disabled, only the configured hosts are enabled due to potential infinite cardinality risk. To observe all hosts in HTTP setup, even unconfigured ones, use `observe_catchall_hosts` option.
+此配置将会观测已配置的主机。如果配置了 HTTPS 服务器，即使没有显式配置（例如按需 TLS 设置），该主机也会被观测。如果禁用了 HTTPS，则由于存在无限的基数风险，只启用已配置的主机。要观测 HTTP 设置中的所有主机，包括未配置的，请使用 `observe_catchall_hosts` 选项。
 
 ```caddy
 {
@@ -46,24 +43,18 @@ This configuration will observe configured hosts. If an HTTPS server is configur
 
 ## Prometheus
 
-[Prometheus](https://prometheus.io) is a monitoring platform that collects
-metrics from monitored targets by scraping metrics HTTP endpoints on these
-targets. As well as helping you to display metrics with a dashboarding tool like [Grafana](https://grafana.com/docs/grafana/latest/introduction/), Prometheus is also used for [alerting](https://prometheus.io/docs/alerting/latest/overview/).
+[Prometheus](https://prometheus.io) 是一个监控平台，它通过抓取被监控目标的指标 HTTP 端点来收集这些目标的指标。除了帮助你使用像 [Grafana](https://grafana.com/docs/grafana/latest/introduction/) 这样的仪表板工具显示指标之外，Prometheus 还用于[告警](https://prometheus.io/docs/alerting/latest/overview/)。
 
-Like Caddy, Prometheus is written in Go and distributed as a single binary. To
-install it, see the [Prometheus Installation docs](https://prometheus.io/docs/prometheus/latest/installation/),
-or on MacOS just run `brew install prometheus`.
+和 Caddy 一样，Prometheus 也是用 Go 编写的，并以单个二进制文件分发。要安装它，请参阅 [Prometheus 安装文档](https://prometheus.io/docs/prometheus/latest/installation/)，或者在 MacOS 上只需运行 `brew install prometheus`。
 
-Read the [Prometheus docs](https://prometheus.io/docs/introduction/first_steps/)
-if you're brand new to Prometheus, otherwise read on!
+如果你对 Prometheus 完全陌生，请阅读 [Prometheus 文档](https://prometheus.io/docs/introduction/first_steps/)，否则请继续阅读！
 
-To configure Prometheus to scrape from Caddy you'll need a YAML configuration
-file similar to this:
+要配置 Prometheus 从 Caddy 抓取数据，你需要一个类似下面这样的 YAML 配置文件：
 
 ```yaml
 # prometheus.yaml
 global:
-  scrape_interval: 15s # default is 1 minute
+  scrape_interval: 15s # 默认是 1 分钟
 
 scrape_configs:
   - job_name: caddy
@@ -71,26 +62,19 @@ scrape_configs:
       - targets: ['localhost:2019']
 ```
 
-You can then start up Prometheus like this:
+然后你可以这样启动 Prometheus：
 
 ```console
 $ prometheus --config.file=prometheus.yaml
 ```
 
-## Caddy's metrics
+## Caddy 的指标
 
-Like any process monitored with Prometheus, Caddy exposes an HTTP endpoint
-that responds in the [Prometheus exposition format](https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format).
-Caddy's Prometheus client is also configured to respond with the [OpenMetrics exposition format](https://pkg.go.dev/github.com/prometheus/client_golang@v1.7.1/prometheus/promhttp#HandlerOpts)
-if negotiated (that is, if the `Accept` header is set to
-`application/openmetrics-text; version=0.0.1`).
+与任何用 Prometheus 监控的进程一样，Caddy 暴露一个 HTTP 端点，该端点以 [Prometheus 展示格式](https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format) 响应。Caddy 的 Prometheus 客户端也配置为在协商后以 [OpenMetrics 展示格式](https://pkg.go.dev/github.com/prometheus/client_golang@v1.7.1/prometheus/promhttp#HandlerOpts) 响应（即如果 `Accept` 头设置为 `application/openmetrics-text; version=0.0.1`）。
 
-By default, there is a `/metrics` endpoint available at the [admin API](/docs/api)
-(i.e. http://localhost:2019/metrics). But if the admin API is
-disabled or you wish to listen on a different port or path, you can use the
-[`metrics` handler](/docs/caddyfile/directives/metrics) to configure this.
+默认情况下，在[管理 API](/docs/api)（即 http://localhost:2019/metrics）上有一个 `/metrics` 端点。但如果管理 API 被禁用，或者你希望监听不同的端口或路径，你可以使用 [`metrics` 处理器](/docs/caddyfile/directives/metrics) 进行配置。
 
-You can see the metrics with any browser or HTTP client like `curl`:
+你可以用任何浏览器或 HTTP 客户端（如 `curl`）查看这些指标：
 
 ```console
 $ curl http://localhost:2019/metrics
@@ -105,33 +89,28 @@ caddy_http_request_duration_seconds_bucket{code="308",handler="static_response",
 ...
 ```
 
-There are a number of metrics you'll see, that broadly fall under 4 categories:
+你会看到许多指标，大致分为 4 类：
 
-- Runtime metrics
-- Admin API metrics
-- HTTP Middleware metrics
-- Reverse proxy metrics
+- 运行时指标
+- 管理 API 指标
+- HTTP 中间件指标
+- 反向代理指标
 
-### Runtime metrics
+### 运行时指标
 
-These metrics cover the internals of the Caddy process, and are provided
-automatically by the Prometheus Go Client. They are prefixed with `go_*` and
-`process_*`.
+这些指标涵盖 Caddy 进程的内部机制，由 Prometheus Go 客户端自动提供。它们以 `go_*` 和 `process_*` 为前缀。
 
-Note that the `process_*` metrics are only collected on Linux and Windows.
+注意：`process_*` 指标仅在 Linux 和 Windows 上收集。
 
-See the documentation for the [Go Collector](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewGoCollector),
-[Process Collector](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewProcessCollector),
-and [BuildInfo Collector](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewBuildInfoCollector).
+请参阅 [Go 收集器](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewGoCollector)、[进程收集器](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewProcessCollector) 和 [构建信息收集器](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewBuildInfoCollector) 的文档。
 
-### Admin API metrics
+### 管理 API 指标
 
-These are metrics that help to monitor the Caddy admin API. Each of the admin
-endpoints is instrumented to track request counts and errors.
+这些指标有助于监控 Caddy 管理 API。每个管理端点都被检测以跟踪请求计数和错误。
 
-These metrics are prefixed with `caddy_admin_*`.
+这些指标以 `caddy_admin_*` 为前缀。
 
-For example:
+例如：
 
 ```console
 $ curl -s http://localhost:2019/metrics | grep ^caddy_admin
@@ -144,144 +123,135 @@ caddy_admin_http_requests_total{code="200",handler="metrics",method="GET",path="
 
 #### `caddy_admin_http_requests_total`
 
-A counter of the number of requests handled by admin endpoints, including
-modules in the `admin.api.*` namespace.
+管理端点处理的请求数量的计数器，包括 `admin.api.*` 命名空间中的模块。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`code` | HTTP status code
-`handler` | The handler or module name
-`method` | The HTTP method
-`path` | The URL path the admin endpoint was mounted to
+`code` | HTTP 状态码
+`handler` | 处理器或模块名称
+`method` | HTTP 方法
+`path` | 管理端点挂载的 URL 路径
 
 #### `caddy_admin_http_request_errors_total`
 
-A counter of the number of errors encountered in admin endpoints, including
-modules in the `admin.api.*` namespace.
+管理端点中遇到的错误数量的计数器，包括 `admin.api.*` 命名空间中的模块。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`handler` | The handler or module name
-`method` | The HTTP method
-`path` | The URL path the admin endpoint was mounted to
+`handler` | 处理器或模块名称
+`method` | HTTP 方法
+`path` | 管理端点挂载的 URL 路径
 
-### HTTP Middleware metrics
+### HTTP 中间件指标
 
-All Caddy HTTP middleware handlers are instrumented automatically for
-determining request latency, time-to-first-byte, errors, and request/response
-body sizes.
+所有 Caddy HTTP 中间件处理器都会自动被检测，以确定请求延迟、首字节时间、错误以及请求/响应体大小。
 
 <aside class="tip">
-	Because all middleware handlers are instrumented, and many requests are handled by multiple handlers, make sure not to simply sum all the counters together.
+	由于所有中间件处理器都被检测，并且许多请求由多个处理器处理，请确保不要简单地将所有计数器相加。
 </aside>
 
-For the histogram metrics below, the buckets are currently not configurable.
-For durations, the default ([`prometheus.DefBuckets`](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#pkg-variables)
-set of buckets is used (5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, and 10s).
-For sizes, the buckets are 256b, 1kiB, 4kiB, 16kiB, 64kiB, 256kiB, 1MiB, and 4MiB.
+对于下面的直方图指标，桶目前不可配置。对于持续时间，使用默认（[`prometheus.DefBuckets`](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#pkg-variables) 桶集（5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s）。对于大小，桶为 256b, 1kiB, 4kiB, 16kiB, 64kiB, 256kiB, 1MiB, 4MiB。
 
 #### `caddy_http_requests_in_flight`
 
-A gauge of the number of requests currently being handled by this server.
+当前由此服务器处理的请求数量的仪表盘。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
+`server` | 服务器名称
+`handler` | 处理器或模块名称
 
 #### `caddy_http_request_errors_total`
 
-A counter of middleware errors encountered while handling requests.
+处理请求时遇到的中间件错误计数器。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
+`server` | 服务器名称
+`handler` | 处理器或模块名称
 
 #### `caddy_http_requests_total`
 
-A counter of HTTP(S) requests made.
+HTTP(S) 请求数量的计数器。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
+`server` | 服务器名称
+`handler` | 处理器或模块名称
 
 #### `caddy_http_request_duration_seconds`
 
-A histogram of the round-trip request durations.
+往返请求持续时间的直方图。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
-`code` | HTTP status code
-`method` | The HTTP method
+`server` | 服务器名称
+`handler` | 处理器或模块名称
+`code` | HTTP 状态码
+`method` | HTTP 方法
 
 #### `caddy_http_request_size_bytes`
 
-A histogram of the total (estimated) size of the request. Includes body.
+请求总大小（估计值）的直方图。包括 body。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
-`code` | HTTP status code
-`method` | The HTTP method
+`server` | 服务器名称
+`handler` | 处理器或模块名称
+`code` | HTTP 状态码
+`method` | HTTP 方法
 
 #### `caddy_http_response_size_bytes`
 
-A histogram of the size of the returned response body.
+返回的响应体大小的直方图。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
-`code` | HTTP status code
-`method` | The HTTP method
+`server` | 服务器名称
+`handler` | 处理器或模块名称
+`code` | HTTP 状态码
+`method` | HTTP 方法
 
 #### `caddy_http_response_duration_seconds`
 
-A histogram of time-to-first-byte for responses.
+响应首字节时间的直方图。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`server` | The server name
-`handler` | The handler or module name
-`code` | HTTP status code
-`method` | The HTTP method
+`server` | 服务器名称
+`handler` | 处理器或模块名称
+`code` | HTTP 状态码
+`method` | HTTP 方法
 
-### Reverse proxy metrics
+### 反向代理指标
 
 #### `caddy_reverse_proxy_upstreams_healthy`
 
-A gauge of the reverse proxy upstreams healthiness.
+反向代理上游健康状态的仪表盘。
 
-Value `0` means the upstream is unhealthy, where as `1` means the upstream is healthy.
+值 `0` 表示上游不健康，而 `1` 表示上游健康。
 
-Label  | Description
+标签  | 描述
 -------|------------
-`upstream` | Address of the upstream
+`upstream` | 上游地址
 
-## Sample Queries
+## 示例查询
 
-Once you have Prometheus scraping Caddy's metrics, you can start to see some
-interesting metrics about how Caddy's performing.
+一旦你让 Prometheus 抓取了 Caddy 的指标，你就可以开始看到一些关于 Caddy 性能的有趣指标。
 
 <aside class="tip">
 
-If you've started up a Prometheus server to scrape Caddy with the config above, try pasting these queries into the Prometheus UI at [http://localhost:9090/graph](http://localhost:9090/graph)
+如果你已经按照上面的配置启动了一个 Prometheus 服务器来抓取 Caddy，请尝试在 Prometheus UI（[http://localhost:9090/graph](http://localhost:9090/graph)）中粘贴这些查询。
 
 </aside>
 
-
-For example, to see the per-second request rate, as averaged over 5 minutes:
+例如，要查看每秒钟的请求速率（5 分钟平均）：
 
 ```
 rate(caddy_http_requests_total{handler="file_server"}[5m])
 ```
 
-To see the rate at which your latency threshold of 100ms is being exceeded:
+要查看超出 100ms 延迟阈值的速率：
 
 ```
 sum(rate(caddy_http_request_duration_seconds_count{server="srv0"}[5m])) by (handler)
@@ -289,16 +259,13 @@ sum(rate(caddy_http_request_duration_seconds_count{server="srv0"}[5m])) by (hand
 sum(rate(caddy_http_request_duration_seconds_bucket{le="0.100", server="srv0"}[5m])) by (handler)
 ```
 
-To find the 95th percentile request duration on the `file_server`
-handler, you can use a query like this:
+要找出 `file_server` 处理器上请求持续时间的第 95 百分位数，可以使用如下查询：
 
 ```
 histogram_quantile(0.95, sum(caddy_http_request_duration_seconds_bucket{handler="file_server"}) by (le))
 ```
 
-Or to see the median response size in bytes for successful `GET` requests on the
-`file_server` handler:
+或者查看 `file_server` 处理器上成功的 `GET` 请求的中位数响应大小（以字节为单位）：
 
 ```
 histogram_quantile(0.5, caddy_http_response_size_bytes_bucket{method="GET", handler="file_server", code="200"})
-```

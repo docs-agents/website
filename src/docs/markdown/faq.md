@@ -1,4 +1,4 @@
 FAQ
 ===
 
-This page is "under construction" as web pages said a lot in the 90s. Check back later!
+此页面“正在建设中”，就像90年代许多网页常写的那样。请稍后再来查看！

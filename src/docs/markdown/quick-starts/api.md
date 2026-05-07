@@ -1,20 +1,20 @@
 ---
-title: API Quick-start
+title: API 快速入门
 ---
 
-# API quick-start
+# API 快速入门
 
-**Prerequisites:**
-- Basic terminal / command line skills
-- `caddy` and `curl` in your PATH
+**前置要求：**
+- 基本的终端/命令行操作技能
+- 环境变量 `PATH` 中包含 `caddy` 和 `curl`
 
 ---
 
-First start Caddy:
+首先启动 Caddy：
 
 <pre><code class="cmd bash">caddy start</code></pre>
 
-Caddy is currently running idle (with a blank configuration). Give it a simple config with `curl`:
+Caddy 当前处于空闲运行状态（使用空白配置）。使用 `curl` 为其提供一个简单的配置：
 
 <pre><code class="cmd bash">curl localhost:2019/load \
     -H "Content-Type: application/json" \
@@ -40,19 +40,19 @@ Caddy is currently running idle (with a blank configuration). Give it a simple c
     }
 EOF</code></pre>
 
-Giving a POST body with [Heredoc](https://en.wikipedia.org/wiki/Here_document#Unix_shells) can be tedious, so if you prefer to use files, save the JSON to a file called `caddy.json` and then use this command instead:
+使用 [Here文档](https://en.wikipedia.org/wiki/Here_document#Unix_shells) 传递 POST 请求体可能会比较繁琐，如果你更倾向于使用文件，请将 JSON 保存到名为 `caddy.json` 的文件中，然后改用以下命令：
 
 <pre><code class="cmd bash">curl localhost:2019/load \
   -H "Content-Type: application/json" \
   -d @caddy.json
 </code></pre>
 
-Now load [localhost:2015](http://localhost:2015) in your browser or use `curl`:
+现在在浏览器中打开 [localhost:2015](http://localhost:2015) 或使用 `curl`：
 
 <pre><code class="cmd"><span class="bash">curl localhost:2015</span>
 Hello, world!</code></pre>
 
-We can also define multiple sites on different interfaces with this JSON:
+我们还可以使用以下 JSON 在不同接口上定义多个站点：
 
 ```json
 {
@@ -87,20 +87,20 @@ We can also define multiple sites on different interfaces with this JSON:
 }
 ```
 
-Update your JSON then perform the API request again.
+更新你的 JSON 文件，然后再次执行 API 请求。
 
-Try out your new "goodbye" endpoint [in your browser](http://localhost:2016) or with `curl` to make sure it works:
+在浏览器中尝试新的“再见”端点 [localhost:2016](http://localhost:2016) 或使用 `curl` 来确认其正常工作：
 
 <pre><code class="cmd"><span class="bash">curl localhost:2016</span>
 Goodbye, world!</code></pre>
 
-When you are done with Caddy, make sure to stop it:
+当你完成 Caddy 的使用后，请确保将其停止：
 
 <pre><code class="cmd bash">caddy stop</code></pre>
 
-There's a lot more you can do with the API, including exporting configuration and making fine-grained changes to the config (as opposed to updating the whole thing). Be sure to read the [full API tutorial](/docs/api-tutorial) to learn how!
+API 还有更多功能，包括导出配置以及对配置进行精细调整（而不是整体更新）。请务必阅读 [完整 API 教程](/docs/api-tutorial) 来学习如何使用！
 
-## Further reading
+## 延伸阅读
 
-- [Full API tutorial](/docs/api-tutorial)
-- [API documentation](/docs/api)
+- [完整 API 教程](/docs/api-tutorial)
+- [API 文档](/docs/api)

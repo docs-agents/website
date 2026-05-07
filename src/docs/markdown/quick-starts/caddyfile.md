@@ -1,12 +1,12 @@
 ---
-title: Caddyfile Quick-start
+title: Caddyfile 快速入门
 ---
 
-# Caddyfile Quick-start
+# Caddyfile 快速入门
 
-Create a new text file named `Caddyfile` (no extension).
+创建一个新的文本文件，命名为 `Caddyfile`（无扩展名）。
 
-The first thing to type in a Caddyfile is your site's address:
+在 Caddyfile 中，首先要输入的是你网站的地址：
 
 ```caddy
 localhost
@@ -14,11 +14,11 @@ localhost
 
 <aside class="tip">
 
-If the HTTP and HTTPS ports (80 and 443, respectively) are privileged ports on your OS, you will either need to run with elevated privileges or use higher ports. To gain permission, run as root with `sudo -E` or use `sudo setcap cap_net_bind_service=+ep $(which caddy)`. Alternatively, to use higher ports, just change the address to something like `localhost:2080` and change the HTTP port using the [`http_port`](/docs/caddyfile/options) Caddyfile option.
+如果 HTTP 和 HTTPS 端口（分别是 80 和 443）在你的操作系统上是特权端口，那么你需要以提升的权限运行，或者使用更高的端口。要获取权限，可以使用 `sudo -E` 以 root 身份运行，或者使用 `sudo setcap cap_net_bind_service=+ep $(which caddy)`。或者，若要使用更高的端口，只需将地址改为类似 `localhost:2080` 的形式，并使用 Caddyfile 中的 [`http_port`](/docs/caddyfile/options) 选项更改 HTTP 端口。
 
 </aside>
 
-Then hit enter and type what you want it to do, so it looks like this:
+然后按回车键，输入你想要它执行的操作，使其看起来像这样：
 
 ```caddy
 localhost
@@ -26,26 +26,26 @@ localhost
 respond "Hello, world!"
 ```
 
-Save this and run Caddy from the same folder that contains your Caddyfile:
+保存此文件，并在包含 Caddyfile 的同一文件夹中运行 Caddy：
 
 <pre><code class="cmd bash">caddy start</code></pre>
 
-You will probably be asked for your password, because Caddy serves all sites -- even local ones -- over HTTPS by default. (The password prompt should only happen the first time!)
+系统可能会要求你输入密码，因为默认情况下 Caddy 会通过 HTTPS 为所有站点（包括本地站点）提供服务。（密码提示应该只在第一次出现！）
 
 <aside class="tip">
 
-For local HTTPS, Caddy automatically generates certificates and unique private keys for you. The root certificate is added to your system's trust store, which is why the password prompt is necessary. It allows you to develop locally over HTTPS without certificate errors.
+对于本地 HTTPS，Caddy 会自动为你生成证书和唯一的私钥。根证书会添加到系统的信任存储中，这就是为何需要密码提示的原因。这让你可以在 HTTPS 下进行本地开发，而不会出现证书错误。
 
 </aside>
 
-(If you get permission errors, you may need to run with elevated privileges or choose a port higher than 1023.)
+（如果出现权限错误，你可能需要以提升的权限运行，或者选择大于 1023 的端口。）
 
-Either open your browser to [localhost](http://localhost) or `curl` it:
+在浏览器中打开 [localhost](http://localhost) 或使用 `curl`：
 
 <pre><code class="cmd"><span class="bash">curl https://localhost</span>
 Hello, world!</code></pre>
 
-You can define multiple sites in a Caddyfile by wrapping them in curly braces `{ }`. Change your Caddyfile to be:
+你也可以通过使用花括号 `{ }` 在 Caddyfile 中定义多个站点。修改 Caddyfile 如下：
 
 ```caddy
 localhost {
@@ -57,28 +57,28 @@ localhost:2016 {
 }
 ```
 
-You can give Caddy the updated configuration two ways, either with the API directly:
+你可以通过两种方式向 Caddy 提供更新后的配置：直接通过 API：
 
 <pre><code class="cmd bash">curl localhost:2019/load \
 	-H "Content-Type: text/caddyfile" \
 	--data-binary @Caddyfile
 </code></pre>
 
-or with the reload command, which does the same API request for you:
+或者使用 reload 命令，该命令会为你执行相同的 API 请求：
 
 <pre><code class="cmd bash">caddy reload</code></pre>
 
-Try out your new "goodbye" endpoint [in your browser](https://localhost:2016) or with `curl` to make sure it works:
+在[浏览器](https://localhost:2016)中或使用 `curl` 测试新的 "goodbye" 端点，确保其正常工作：
 
 <pre><code class="cmd"><span class="bash">curl https://localhost:2016</span>
 Goodbye, world!</code></pre>
 
-When you are done with Caddy, make sure to stop it:
+当你完成 Caddy 操作后，请确保停止它：
 
 <pre><code class="cmd bash">caddy stop</code></pre>
 
-## Further reading
+## 进一步阅读
 
-- [Caddyfile concepts](/docs/caddyfile/concepts)
-- [Directives](/docs/caddyfile/directives)
-- [Common patterns](/docs/caddyfile/patterns)
+- [Caddyfile 概念](/docs/caddyfile/concepts)
+- [指令](/docs/caddyfile/directives)
+- [常见模式](/docs/caddyfile/patterns)

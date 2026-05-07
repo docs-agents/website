@@ -16,28 +16,28 @@
 <link rel="stylesheet" href="/old/resources/css/common.css{{template "cacheBust"}}">
 <script src="/old/resources/js/common.js{{template "cacheBust"}}"></script>
 
-<!-- General metatags -->
-<meta name="author" content="Caddy Web Server">
-<meta name="description" content="Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go">
+<!-- 常规元标签 -->
+<meta name="author" content="Caddy Web 服务器">
+<meta name="description" content="Caddy 是一款功能强大、企业就绪的开源 Web 服务器，使用 Go 语言编写，自带自动 HTTPS">
 <meta name="theme-color" content="#5ea9a2">
 
-<!-- Open Graph tags -->
+<!-- Open Graph 标签 -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://caddyserver.com/">
-<meta property="og:description" content="Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go">
+<meta property="og:description" content="Caddy 是一款功能强大、企业就绪的开源 Web 服务器，使用 Go 语言编写，自带自动 HTTPS">
 <meta property="og:image" content="https://caddyserver.com/old/resources/images/caddy-open-graph.jpg">
 
-<!-- Twitter card tags additive with the og: tags -->
+<!-- Twitter 卡片标签，与 og: 标签互补 -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:domain" value="caddyserver.com">
-<meta name="twitter:description" value="Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go">
+<meta name="twitter:description" value="Caddy 是一款功能强大、企业就绪的开源 Web 服务器，使用 Go 语言编写，自带自动 HTTPS">
 <meta name="twitter:image" content="https://caddyserver.com/old/resources/images/caddy-open-graph.jpg">
 <meta name="twitter:url" value="https://caddyserver.com/">
 
 <!-- Algolia DocSearch -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-<!-- Global site tag (gtag.js) - Google Analytics (Stack Holdings) -->
+<!-- 全局站点标签（gtag.js）- Google Analytics（Stack Holdings） -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DLB04LK4P"></script>
 <script>
 	window.dataLayer = window.dataLayer || [];
@@ -46,13 +46,12 @@
 	gtag('config', 'G-2DLB04LK4P');
 </script>
 
-<!-- Alpine.js to augment markdown docs -->
+<!-- Alpine.js 用于增强 Markdown 文档 -->
 <script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-<!-- TODO: These don't work -- color values need to be tweaked if they do work -- I think because background-color is set on the body. -->
+<!-- TODO：以下两项不起作用 —— 颜色值需要调整（如果确实起作用的话）—— 我认为是因为 body 上设置了背景颜色。 -->
 <meta name="theme-color" content="#123245" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#123245" media="(prefers-color-scheme: dark)">
 
 {{end}}
-

@@ -1,51 +1,48 @@
 ---
-title: How Logging Works
+title: 日志工作原理
 ---
 
-How Logging Works
-=================
+# 日志工作原理
 
-Caddy has powerful and flexible logging facilities, but they may be different than what you're used to, especially if you're coming from more archaic shared hosting or other legacy web servers.
+Caddy 拥有强大且灵活的日志功能，但它可能与你习惯的方式有所不同，尤其是如果你来自更古老的共享主机或其他传统 Web 服务器。
 
+## 概述
 
-## Overview
+日志有两个主要方面：发射与消费。
 
-There are two main aspects of logging: emission and consumption.
+**发射** 意味着生成消息。它由三个步骤组成：
 
-**Emission** means to produce messages. It consists of three steps:
+1. 收集相关信息（上下文）
+2. 构建有用的表示形式（编码）
+3. 将该表示形式发送到输出端（写入）
 
-1. Gathering relevant information (context)
-2. Building a useful representation (encoding)
-3. Sending that representation to an output (writing)
+此功能内置于 Caddy 的核心中，使 Caddy 代码库或模块（插件）的任何部分都能发射日志。
 
-This functionality is baked into the core of Caddy, enabling any part of the Caddy code base or that of modules (plugins) to emit logs.
+**消费** 是指接收和处理消息。为了有用，发射的日志必须被消费。仅仅写入但从未读取的日志毫无价值。消费日志既可以是管理员读取控制台输出这样简单，也可以是连接日志聚合工具或云服务来过滤、计数和索引日志消息这样高级。
 
-**Consumption** is the intake &amp; processing of messages. In order to be useful, emitted logs must be consumed. Logs that are merely written but never read provide no value. Consuming logs can be as simple as an administrator reading console output, or as advanced as attaching a log aggregation tool or cloud service to filter, count, and index log messages.
+### Caddy 的角色
 
-### Caddy's role
+_Caddy 是一个日志发射器_。除了编码和写入日志所需的最低限度的处理外，它不消费日志。这很重要，因为它使 Caddy 的核心更简单，从而减少错误和边缘情况，同时减轻维护负担。最终，日志处理超出了 Caddy 核心的范围。
 
-_Caddy is a log emitter_. It does not consume logs, except for the minimum processing required to encode and write logs. This is important because it keeps Caddy's core simpler, leading to fewer bugs and edge cases, while reducing maintenance burden. Ultimately, log processing is out of the scope of Caddy core.
+然而，始终存在一个 Caddy 应用模块消费日志的可能性。（据我们所知，目前还没有这样的模块。）
 
-However, there's always the possibility for a Caddy app module that consumes logs. (It just doesn't exist yet, to our knowledge.)
+## 结构化日志
 
+与大多数现代应用程序一样，Caddy 的日志是**结构化的**。这意味着消息中的信息不仅仅是一个不透明的字符串或字节片段。相反，数据保持强类型，并以单独的**字段名**为键，直到需要编码消息并写出它为止。
 
-## Structured logs
-
-As with most modern applications, Caddy's logs are _structured_. This means that the information in a message is not simply an opaque string or byte slice. Instead, data remains strongly typed and is keyed by individual _field names_ until it is time to encode the message and write it out.
-
-Compare traditional unstructured logs&mdash;like the archaic Common Log Format (CLF)&mdash;commonly used with traditional HTTP servers:
+比较传统的非结构化日志——比如传统的 Common Log Format（CLF）——传统 HTTP 服务器常用的格式：
 
 ```
 127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.1" 200 2326
 ```
 
-This format "has structure" but is not "structured": it can only be used to log HTTP requests. There is no (efficient) way to encode it differently, because it is an opaque string of bytes. It is also missing a lot of information. It does not even include the Host header of the request! This log format is only useful when hosting a single site, and for getting the most basic of information about requests.
+这种格式“有结构”但并非“结构化”：它只能用来记录 HTTP 请求。没有（高效的）方法以不同方式编码它，因为它是一个不透明的字节字符串。它还缺少大量信息。它甚至不包含请求的 Host 头部！这种日志格式仅在托管单个站点时有用，并且只能获取关于请求的最基本信息。
 
 <aside class="tip">
-	The lack of host information in CLF is why these logs usually need to be written to separate files when hosting more than one site: there is no way to know the Host header from the request otherwise!
+	CLF 中缺少主机信息，这就是为什么在托管多个站点时这些日志通常需要写入单独的文件：否则无法从请求中获知 Host 头部！
 </aside>
 
-Now compare an equivalent structured log message from Caddy, encoded as JSON and formatted nicely for display:
+现在比较 Caddy 中等效的结构化日志消息，编码为 JSON 并经过良好格式化以便显示：
 
 ```json
 {
@@ -88,22 +85,21 @@ Now compare an equivalent structured log message from Caddy, encoded as JSON and
 }
 ```
 
-You can see how the structured log is much more useful and contains much more information. The abundance of information in this log message is not only useful, but it comes at virtually no performance overhead: Caddy's logs are zero-allocation. Structured logs have no restrictions on data types or context: they can be used in any code path and include any kind of information.
+你可以看到结构化日志更加有用，包含更多信息。此日志消息中丰富的信息不仅有用，而且几乎没有性能开销：Caddy 的日志是零分配的。结构化日志对数据类型或上下文没有限制：它们可以在任何代码路径中使用，并包含任何类型的信息。
 
-Because the logs are structured and strongly-typed, they can be encoded into any format. So if you don't want to work with JSON, logs can be encoded into any other representation. Caddy supports others through [log encoder modules](/docs/json/logging/logs/encoder/), and even more can be added.
+由于日志是结构化且强类型的，因此可以编码为任何格式。所以如果你不想使用 JSON，日志可以编码为任何其他表示形式。Caddy 通过[日志编码模块](/docs/json/logging/logs/encoder/)支持其他格式，甚至可以添加更多格式。
 
-**Most importantly** in the distinction between structured logs and legacy formats, with a performance penalty a structured log [can be transformed into the legacy Common Log Format <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddyserver/transform-encoder), but not the other way around. It is non-trivial (or at least inefficient) to go from CLF to structured formats, and impossible considering the lack of information.
+**最重要**的是在结构化日志和传统格式之间的区别：以性能为代价，结构化日志[可以转换为传统的 Common Log 格式 <img src="/old/resources/images/external-link.svg" class="external-link">](https://github.com/caddyserver/transform-encoder)，但反过来不行。从 CLF 转换为结构化格式并非易事（或至少效率低下），而且由于信息缺失，这是不可能的。
 
-In essence, efficient, structured logging generally promotes these philosophies:
+本质上，高效的结构化日志通常倡导以下理念：
 
-- Too many logs are better than too few
-- Filtering is better than discarding
-- Defer encoding for greater flexibility and interoperability
- 
+- 日志过多优于过少
+- 过滤优于丢弃
+- 延迟编码以获得更大的灵活性和互操作性
 
-## Emission
+## 发射
 
-In code, a log emission resembles the following:
+在代码中，日志发射如下所示：
 
 ```go
 logger.Debug("proxy roundtrip",
@@ -116,52 +112,50 @@ logger.Debug("proxy roundtrip",
 ```
 
 <aside class="tip">
-	This is an actual line of code from Caddy's reverse proxy. This line is what allows you to inspect requests to configured upstreams when you have debug logging enabled. It is an invaluable piece of data when troubleshooting!
+	这是 Caddy 反向代理中的实际一行代码。这一行允许你在启用调试日志时检查对配置的上游的请求。这是排查问题时非常宝贵的数据！
 </aside>
 
-You can see that this one function call contains the log level, a message, and several fields of data. All these are strongly-typed, and Caddy uses a zero-allocation logging library so log emissions are quick and efficient with almost no overhead.
+你可以看到这个函数调用包含日志级别、消息和几个数据字段。所有这些都是强类型的，Caddy 使用零分配的日志库，因此日志发射快速高效，几乎没有开销。
 
-The `logger` variable is a `zap.Logger` that may have any amount of context associated with it, which includes both a name and fields of data. This allows loggers to "inherit" from parent contexts quite nicely, enabling advanced tracing and metrics.
+`logger` 变量是一个 `zap.Logger`，它可能关联任意数量的上下文，包括名称和数据字段。这使得日志记录器能够很好地从父上下文“继承”，从而实现高级追踪和指标。
 
-From there, the message is sent through a highly efficient processing pipeline where it is encoded and written.
+从那里，消息被发送到高效的处理管道，在那里被编码和写入。
 
+## 日志处理管道
 
-## Logging pipeline
+如上所述，消息由**日志记录器**发射。然后消息被发送到**日志**进行处理。
 
-As you saw above, messages are emitted by **loggers**. The messages are then sent to **logs** for processing.
-
-Caddy lets you [configure multiple logs](/docs/json/logging/logs/) which can process messages. A log consists of an encoder, writer, minimum level, sampling ratio, and a list of loggers to include or exclude. In Caddy, there is always a default log named `default`. You can customize it by specifying a log keyed as `"default"` in [this object](/docs/json/logging/logs/) in the config.
+Caddy 允许你[配置多个日志](/docs/json/logging/logs/)来处理消息。一个日志包含编码器、写入器、最低级别、采样比率以及要包含或排除的日志记录器列表。在 Caddy 中，始终存在一个名为 `default` 的默认日志。你可以通过在配置[此对象](/docs/json/logging/logs/)中指定键为 `"default"` 的日志来自定义它。
 
 <aside class="tip">
 
-Now would be a good time to [explore Caddy's logging docs](/docs/json/logging/) so you can become familiar with the structure and parameters we're talking about.
+现在是[探索 Caddy 的日志文档](/docs/json/logging/)的好时机，这样你可以熟悉我们正在讨论的结构和参数。
 
 </aside>
 
+- **编码器：** 日志的格式。将内存中的数据表示转换为字节切片。编码器可以访问日志消息的所有字段。
+- **写入器：** 日志输出。可以是任何日志写入器模块，例如文件或网络套接字。它只是写入字节。
+- **级别：** 日志有各种级别，从 DEBUG 到 FATAL。低于指定级别的消息将被日志忽略。
+- **采样：** 极热的路径可能发射的日志多于可以有效处理的量；启用采样是在减轻负载的同时仍能产生代表性样本的一种方式。
+- **包含/排除：** 每条消息由一个日志记录器发射，该记录器有一个名称（通常来自模块 ID）。日志可以包含或排除来自特定日志记录器的消息。
 
-- **Encoder:** The format for the log. Transforms the in-memory data representation into a byte slice. Encoders have access to all fields of a log message.
-- **Writer:** The log output. Can be any log writer module, like to a file or network socket. It simply writes bytes.
-- **Level:** Logs have various levels, from DEBUG to FATAL. Messages lower than the specified level will be ignored by the log.
-- **Sampling:** Extremely hot paths may emit more logs than can be processed effectively; enabling sampling is a way to reduce the load while still yielding a representative sample of messages.
-- **Include/exclude:** Each message is emitted by a logger, which has a name (usually derived from the module ID). Logs can include or exclude messages from certain loggers.
+当 Caddy 发射一条日志消息时：
 
-When a log message is emitted from Caddy:
+- 原始日志记录器的名称会对照每个日志的包含/排除列表进行检查；如果被包含（或未被排除），则被准入该日志。
+- 如果启用了采样，会进行快速计算以确定是否保留该日志消息。
+- 使用日志配置的编码器对消息进行编码。
+- 然后编码后的字节被写入日志配置的写入器。
 
-- The originating logger's name is checked against each log's include/exclude list; if included (or not excluded), it is admitted into that log.
-- If sampling is enabled, a quick calculation determines whether to keep the log message.
-- The message is encoded using the log's configured encoder.
-- The encoded bytes are then written to the log's configured writer.
+默认情况下，所有消息都会进入所有配置的日志。这符合上述结构化日志的价值。你可以通过设置包含/排除列表来限制哪些消息进入哪些日志，但这主要用于过滤来自不同模块的消息；它不应该像日志聚合服务那样使用。为了保持 Caddy 的日志管道精简高效，高级的日志消息处理被推迟到消费阶段。
 
-By default, all messages go to all configured logs. This adheres to the values of structured logging described above. You can limit which messages go to which logs by setting their include/exclude lists, but this is mostly for filtering messages from different modules; it is not intended to be used like a log aggregation service. To keep Caddy's logging pipeline streamlined and efficient, advanced processing of log messages is deferred to consumption.
+## 消费
 
-## Consumption
+在消息被发送到输出端之后，消费者会读取它们、解析它们并相应地进行处理。
 
-After messages are sent to an output, a consumer will read them in, parse them, and handle them accordingly.
+这是一个与发射日志截然不同的问题领域，Caddy 的核心并不处理消费（尽管 Caddy 应用模块当然可以处理）。你可以使用许多工具来处理 JSON 消息流（或其他格式），并查看、过滤、索引和查询日志。你甚至可以编写或实现自己的工具。
 
-This is a very different problem domain from emitting logs, and the core of Caddy does not handle consumption (although a Caddy app module certainly could). There are numerous tools you can use for processing streams of JSON messages (or other formats) and viewing, filtering, indexing, and querying logs. You could even write or implement your own.
+例如，如果你运行需要将 CLF 根据特定字段（如主机名）分隔到不同文件的旧软件，你可以使用或编写一个简单的工具，读取 JSON，调用 `sprintf()` 创建 CLF 字符串，然后根据 `request.host` 字段的值将其写入文件。
 
-For example, if you run legacy software that requires CLF separated into different files based on a particular field (e.g. hostname), you could use or write a simple tool that reads in the JSON, calls `sprintf()` to create a CLF string, then write it to a file based on the value in the `request.host` field.
+Caddy 的日志功能也可以用于实现指标和追踪：指标基本上是统计具有特定特征的消息，而追踪根据消息之间的共同点将它们链接在一起。
 
-Caddy's logging facilities can be used to implement metrics and tracing as well: metrics basically count messages with certain characteristics, and tracing links multiple messages together based on commonalities between them.
-
-There are countless possibilities for what you can do by consuming Caddy's logs!
+通过消费 Caddy 的日志，你可以做无限可能的事情！

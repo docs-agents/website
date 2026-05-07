@@ -2,15 +2,15 @@
 
 ```caddy
 localhost {
-	respond "Hello from HTTPS!"
+	respond "来自 HTTPS 的问候！"
 }
 
 192.168.1.10 {
-	respond "Also HTTPS!"
+	respond "同样也是 HTTPS！"
 }
 
 http://localhost {
-	respond "Plain HTTP"
+	respond "普通 HTTP"
 }
 ```
 

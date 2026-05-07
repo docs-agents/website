@@ -1,58 +1,58 @@
 ---
-title: acme_server (Caddyfile directive)
+title: acme_server (Caddyfile指令)
 ---
 
 # acme_server
 
-An embedded [ACME protocol](https://tools.ietf.org/html/rfc8555) server handler. This allows a Caddy instance to issue certificates for any other ACME-compatible software (including other Caddy instances).
+一个嵌入式的 [ACME协议](https://tools.ietf.org/html/rfc8555) 服务器处理器。它允许 Caddy 实例为任何其他兼容 ACME 的软件（包括其他 Caddy 实例）颁发证书。
 
-When enabled, requests matching the path `/acme/*` will be handled by the ACME server.
-
-
-## Client configuration
-
-Using ACME server defaults, ACME clients should simply be configured to use `https://localhost/acme/local/directory` as their ACME endpoint. (`local` is the ID of Caddy's default CA.)
+启用后，匹配路径 `/acme/*` 的请求将由 ACME 服务器处理。
 
 
-## Syntax
+## 客户端配置
+
+使用 ACME 服务器默认配置时，ACME 客户端只需将 `https://localhost/acme/local/directory` 配置为其 ACME 端点即可。（`local` 是 Caddy 默认 CA 的 ID。）
+
+
+## 语法
 
 ```caddy-d
-acme_server [<matcher>] {
-	ca         <id>
-	lifetime   <duration>
-	resolvers  <resolvers...>
-	challenges <challenges...>
+acme_server [<匹配器>] {
+	ca         <ID>
+	lifetime   <持续时间>
+	resolvers  <解析器列表...>
+	challenges <挑战类型列表...>
 	allow_wildcard_names
 	allow {
-		domains <domains...>
-		ip_ranges <addresses...>
+		domains <域名列表...>
+		ip_ranges <地址列表...>
 	}
 	deny {
-		domains <domains...>
-		ip_ranges <addresses...>
+		domains <域名列表...>
+		ip_ranges <地址列表...>
 	}
 }
 ```
 
-- **ca** specifies the ID of the certificate authority with which to sign certificates. The default is `local`, which is Caddy's default CA, intended for locally-used, self-signed certificates, which is most common in dev environments. For broader use, it is recommended to specify a different CA to avoid confusion. If the CA with the given ID does not already exist, it will be created. See the [PKI app global options](/docs/caddyfile/options#pki-options) to configure alternate CAs.
+- **ca** 指定用于签署证书的证书颁发机构的 ID。默认值为 `local`，即 Caddy 的默认 CA，用于本地使用的自签名证书，这在开发环境中最为常见。对于更广泛的使用，建议指定不同的 CA 以避免混淆。如果给定 ID 的 CA 尚不存在，则会创建它。请参阅 [PKI 应用程序全局选项](/docs/caddyfile/options#pki-options) 来配置其他 CA。
 
-- **lifetime** (Default: `12h`) is a [duration](/docs/conventions#durations) which specifies the validity period for issued certificates. This value must be less than the lifetime of the [intermediate certificate](/docs/caddyfile/options#intermediate-lifetime) used for signing. It is not recommended to change this unless absolutely necessary.
+- **lifetime**（默认值：`12h`）是一个 [持续时间](/docs/conventions#durations)，指定所颁发证书的有效期。此值必须小于用于签署证书的 [中间证书](/docs/caddyfile/options#intermediate-lifetime) 的有效期。除非绝对必要，否则不建议更改此值。
 
-- **resolvers** are the addresses of DNS resolvers to use when looking up the TXT records for solving ACME DNS challenges. Accepts [network addresses](/docs/conventions#network-addresses) defaulting to UDP and port 53 unless specified. If the host is an IP address, it will be dialed directly to resolve the upstream server. If the host is not an IP address, the addresses are resolved using the [name resolution convention](https://golang.org/pkg/net/#hdr-Name_Resolution) of the Go standard library. If multiple resolvers are specified, then one is chosen at random.
+- **resolvers** 是用于在解决 ACME DNS 挑战时查找 TXT 记录的 DNS 解析器地址。接受 [网络地址](/docs/conventions#network-addresses)，默认使用 UDP 和端口 53（除非另行指定）。如果主机是 IP 地址，则会直接拨号以解析上游服务器。如果主机不是 IP 地址，则使用 Go 标准库的 [名称解析约定](https://golang.org/pkg/net/#hdr-Name_Resolution) 来解析这些地址。如果指定了多个解析器，则随机选择一个。
 
-- **challenges** sets the enabled challenge types. If not set or the directive is used without values, then all challenge types are enabled. Accepted values are: http-01, tls-alpn-01, dns-01.
+- **challenges** 设置启用的挑战类型。如果未设置或指令使用时未带值，则启用所有挑战类型。接受的值为：http-01、tls-alpn-01、dns-01。
 
-- **allow_wildcard_names** enables issuing of certificates with wildcard SAN (Subject Alternative Name)
+- **allow_wildcard_names** 允许颁发包含通配符 SAN（主题备用名称）的证书。
 
-- **allow**, **deny** configure the operational policy of the `acme_server`. The policy evaluation follows the criteria described by Step-CA [here](https://smallstep.com/docs/step-ca/policies/#policy-evaluation).
+- **allow**、**deny** 配置 `acme_server` 的操作策略。策略评估遵循 Step-CA 在此描述的 [标准](https://smallstep.com/docs/step-ca/policies/#policy-evaluation)。
 
-	- **domains** sets the subject domain names to be allowed or denied per the policy evaluation criteria.
+	- **domains** 设置根据策略评估标准允许或拒绝的域名。
 
-	- **ip_ranges** sets the subject IP ranges to be allowed or denied per the policy evaluation criteria.
+	- **ip_ranges** 设置根据策略评估标准允许或拒绝的 IP 范围。
 
-## Examples
+## 示例
 
-To serve an ACME server with ID `home` on the domain `acme.example.com`, with the CA customized via the [`pki` global option](/docs/caddyfile/options#pki-options), and issuing its own certificate using the `internal` issuer:
+在域名 `acme.example.com` 上提供 ID 为 `home` 的 ACME 服务器，通过 [`pki` 全局选项](/docs/caddyfile/options#pki-options) 自定义 CA，并使用 `internal` 颁发者为其自身颁发证书：
 
 ```caddy
 {
@@ -75,7 +75,7 @@ acme.example.com {
 }
 ```
 
-If you have another Caddy server, it can use the above ACME server to issue its own certificates:
+如果你有另一个 Caddy 服务器，它可以使用上述 ACME 服务器来颁发自己的证书：
 
 ```caddy
 {
@@ -86,4 +86,3 @@ If you have another Caddy server, it can use the above ACME server to issue its 
 example.com {
 	respond "Hello, world!"
 }
-```
